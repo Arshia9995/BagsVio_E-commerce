@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orders</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      /* This ensures the body takes up at least the full height of the viewport */
+    }
+
+    main {
+      flex-grow: 1;
+      /* This ensures the main content area expands to fill the remaining vertical space */
+    }
+
+    footer {
+      margin-top: auto;
+      /* This pushes the footer to the bottom of the page */
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navbar/Header (Assuming the header is included using an external file) -->
+  <div style="height: 75px;"></div>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+            <ul class="dropdown-menu">
+              <% categories.forEach(category=> { %>
+              <% if (!category.isBlocked) { %>
+              <li><a class="dropdown-item" href="/products/<%= category.categoryName %>">
+                  <%= category.categoryName %>
+                </a></li>
+              <% } %>
+              <% }); %>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" style="margin-right: 10px;">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="/profile">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="/cart">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <header>
+    <!-- Header content here -->
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block  sidebar">
+        <div class="position-sticky">
+          <div style="margin-left: 50px; margin-top: 30px;">
+            <a href="#" class="list-group-item list-group-item-action"><b>Manage My Account</b></a>
+            <ul class="pl-4">
+              <li><a href="/profile" class="list-group-item list-group-item-action"
+                  style="list-style: none;">Profile</a></li>
+              <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
+              <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
+              <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
+              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+            </ul>
+            <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
+            <ul class="pl-4">
+              <li><a href="/orders" class="list-group-item list-group-item-action" style="list-style: none;">My
+                  Orders</a></li>
+              <li><a href="/returns" class="list-group-item list-group-item-action">Returns</a></li>
+              <li><a href="/cancellations" class="list-group-item list-group-item-action">Cancellations</a></li>
+
+            </ul>
+            <a href="/cart" class="list-group-item list-group-item-action"><b>Cart</a></b><br>
+            <a href="/wishlist" class="list-group-item list-group-item-action"><b>Wishlist</a></b><br>
+            <a href="/logout" class="list-group-item list-group-item-action"><b>Logout</a></b><br>
+          </div>
+        </div>
+      </nav>
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="col-md-9">
+            <div class="osahan-account-page-right shadow bg-white p-4 h-100">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
+                        <h4 class="font-weight-bold mt-0 mb-4">Orders</h4>
+                        <% order.forEach(orderItem => { %>
+                            <div class="bg-white card mb-4 order-list shadow-sm">
+                                <div class="gold-members p-4">
+                                    <span class="float-end text-info">Ordered On: <%= orderItem.orderDate.toLocaleDateString() %> <i class="icofont-check-circled text-success"></i></span>
+                                    <h6 class="mb-2">Products</h6>
+                                    <% orderItem.products.forEach(product => { %>
+                                        <div class="media mb-3">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <img src="/uploads/<%= product.productId.images[0] %>" style="height: 100px; width: 100px;">
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <div class="media-body">
+                                                        <p><%= product.productId.ProductName %></p>
+                                                        <h6 class="mb-1">Quantity: <%= product.quantity %></h6>
+                                                        <p class="text-dark">Total Price: ₹<%= product.productId.Price * product.quantity %></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }) %>
+                                    <p class="text-gray mb-3">Payment Method: <%= orderItem.paymentMethod %></p>
+                                    <span class="badge rounded-pill bg-info"><%= orderItem.status %></span>
+
+                                    <div class="float-end">
+                                        <a class="btn btn-sm btn-primary" href="/orderdetails/<%= orderItem._id %>" class="text-decoration-none text-dark"><i class="icofont-refresh"></i> View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    
+    
+    
+    
+    </div>
+  </div>
+  
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
+
+
+

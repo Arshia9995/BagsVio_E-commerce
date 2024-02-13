@@ -1,0 +1,301 @@
+/* Navbar Styles */
+
+.navbar {
+    background-color: #d2558d !important;
+  }
+  
+  .navbar-brand,
+  .navbar-nav .nav-link {
+    color: black;
+  }
+  
+  .navbar-toggler-icon {
+    background-color: #ffffff;
+  }
+  
+  .navbar-toggler {
+    border-color: #ffffff;
+  }
+  
+  /* Form Styles */
+  .form-control {
+    /* background-color: #f8f9fa; */
+    /* color: #495057; */
+  }
+  
+  .btn-outline-success {
+    border-color: #28a745;
+    color: #28a745;
+  }
+  
+  /* Icons Styles */
+  .icons a {
+    color: #495057;
+    margin-right: 10px;
+  }
+  
+  /* Banner Styles */
+  .banner-container {
+    position: relative;
+    max-height: 400px;
+    overflow: hidden;
+  }
+  
+  .banner-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+ /* New Arrivals Styles */
+.my-5 {
+    margin-top: 3rem !important; /* Adjust margin as needed */
+  }
+  
+  .text-center {
+    text-align: center;
+  }
+  
+  /* Card Styles */
+  .card {
+    border: none; /* Remove card borders */
+  }
+  
+ .card-img-top {
+  border-bottom: 1px solid #dee2e6; /* Add a border between image and card body */
+  max-width: 241px; /* Set your desired maximum width for the card images */
+  height: auto; /* Ensure the aspect ratio is maintained */
+}
+  
+  .card-title {
+    font-size: 1.2rem; /* Adjust card title font size */
+    margin-bottom: 0.5rem; /* Adjust margin as needed */
+  }
+  
+  .card-text {
+    font-size: 0.9rem; /* Adjust card text font size */
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .card {
+      margin-bottom: 1.5rem; /* Adjust margin for smaller screens */
+    }
+  }
+  
+
+
+
+
+  /* admin */
+
+
+  /* Global Styles */
+body {
+  font-family: 'Arial', sans-serif;
+}
+
+/* Header Styles */
+.top-right-content {
+  float: right;
+  margin-top: 20px;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  height: 100%;
+  width: 200px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #343a40;
+  padding-top: 20px;
+}
+
+.sidebar a {
+  padding: 10px 16px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+/* Content Styles */
+.content {
+  margin-left: 250px;
+  padding: 16px;
+}
+
+.box {
+  background-color: #fff;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+/* Footer Styles */
+/* Add your custom styles for the footer as needed */
+
+/* Responsive Styles */
+@media screen and (max-width: 600px) {
+  .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+  }
+
+  .sidebar a {
+      float: left;
+      width: 100%;
+  }
+
+  .content {
+      margin-left: 0;
+  }
+}
+
+
+/* Styles for Admin Dashboard Sections */
+
+/* Section Title */
+.content .box h3 {
+  color: #333; /* Set your desired text color */
+  margin-bottom: 10px;
+}
+
+/* Box Container */
+.content .box {
+  background-color: #fff; /* Set your desired background color */
+  border: 1px solid #ddd; /* Set your desired border color */
+  border-radius: 8px; /* Set your desired border radius */
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+  width:330px;
+}
+
+/* Individual Box Content */
+.content .box h3 {
+  font-size: 18px; /* Set your desired font size */
+  margin-bottom: 15px;
+}
+
+/* Additional Styling */
+.content {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Responsive Design (adjust as needed) */
+@media (max-width: 768px) {
+  .content {
+    flex-direction: column;
+  }
+
+  .content .box {
+    width: 100%;
+  }
+}
+
+
+
+
+
+
+
+
+
+body {
+  padding-top: 56px; /* Adjusted for fixed navbar */
+}
+
+@media (max-width: 991.98px) {
+  body {
+      padding-top: 0; /* Remove padding for mobile */
+  }
+}
+
+.sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  padding-top: 15px;
+}
+
+.sidebar a {
+  padding: 15px 10px;
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
+  display: block;
+}
+
+.sidebar a:hover {
+  background-color: #ddd;
+  color: #333;
+}
+
+/* category */
+
+.edit-button {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.status-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+
+/* edit category */
+
+.container {
+  margin: 50px auto;
+  max-width: 1080px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.delete-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.save-button {
+  background-color: blue;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+}
+
+
+
+@media (min-width: 1025px) {
+  .h-custom {
+  height: 100vh !important;
+  }
+  } 

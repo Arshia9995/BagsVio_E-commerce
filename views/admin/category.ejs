@@ -1,0 +1,99 @@
+<%- include('header')-%>
+    <div class="container-fluid">
+
+        <div class="row justify-content-center align-items-center g-2">
+            <div class="col col-md-2">
+
+                <div class="sidebar">
+                    <a href="/admin/admindashboard"><i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
+                    <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Products</a>
+                    <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Category</a>
+                    <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Customers</a>
+                    <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;"
+                                aria-hidden="true"></i>Brand</a>
+                    <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Orders</a>
+                    <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Sales</a>
+                    <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Logout</a>
+                </div>
+            </div>
+            <div class="main-content col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="mb-0">Category List</h2>
+                    <!-- Add Category Button -->
+                    <a href="/admin/addcategory" class="btn btn-success">Add Category</a>
+                </div>
+                <div class="table-responsive" style="margin-top: 20px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Category</th>
+
+                                <th>Edit</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% categories.forEach((category,index)=>{ %>
+                                <tr>
+                                    <td>
+                                        <%= index+1%>
+                                    </td>
+                                    <td>  
+                                        <%= category.categoryName %>
+                                    </td>
+
+                                    <td><a class="btn btn-success" href="/admin/editcategory/<%=category._id%>">Edit</a>
+                                    </td>
+                                   
+                                    <td> 
+                                        <% if (category.isBlocked) { %>
+                                            <form action="/admin/unblockcategory/<%= category._id %>" method="post" onsubmit="return confirm('Are you sure you want to unblock this category?');">
+                                                <button class="btn btn-danger">Unblock</button>
+                                            </form>
+                                        <% } else { %>
+                                            <form action="/admin/blockcategory/<%= category._id %>" method="post" onsubmit="return confirm('Are you sure you want to block this category?');">
+                                                <button class="btn btn-success">Block</button>
+                                            </form>
+                                        <% } %>
+                                    </td>
+                                    
+                                </tr>
+                                <% })%>
+                                    <!-- <tr>
+                            <td>1</td>
+                            <td>Sample Category</td>
+                            <td><img src="/assets/images/imag9.jpeg" alt="Sample Image" style="width: 50px; height: 50px;"></td>
+                            <td><button class="edit-button" onclick="editProduct(1)">Edit</button></td>
+                            <td><button class="status-button" onclick="changeStatus(1)">Block</button></td>
+                        </tr> -->
+                                    <!-- Add more rows as needed -->
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        function blockcategory(categoryId) {
+          
+            console.log('Block category with id:', categoryId);
+        }
+    
+        function unblockcategory(categoryId) {
+            
+            console.log('Unblock category with id:',categoryId );
+        }
+    </script>
+
+    <%- include('footer')-%>

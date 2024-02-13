@@ -1,0 +1,433 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="/user/css/home.css">
+  <link rel="stylesheet" href="/user/css/unAuthorised.css">
+  <link rel="stylesheet" href="/user/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+</head>
+
+<body>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+            <ul class="dropdown-menu">
+              
+              <% categories.forEach(category => { %>
+                <% if (!category.isBlocked) { %>
+                <li><a class="dropdown-item" href="/products/<%= category.categoryName %>"><%= category.categoryName %></a></li>
+                <% } %>
+                <% }); %>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" style="margin-right: 10px;">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="/profile">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="item mt-4"></div>
+ 
+
+
+
+<section class="bg-white">
+    <div class="container-fluid p-5">
+      <div class="row">
+        <!-- cart -->
+        <div class="col-lg-9">
+          <div class="card border rounded shadow">
+            <div class="m-4 rounded shadow-5">
+              <h4 class="card-title mb-4">Your shopping cart</h4>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" class="h5">items</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">total</th>
+                    <th scope="col">remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+
+
+                  <% let totalQuantity = 0; %>
+                  <% let totalPrice = 0; %>
+                  <% if (cart && cart.items && cart.items.length> 0) { %>
+                   
+                    <% cart.items.forEach(item=> { %>
+
+                      <% totalQuantity += item.quantity; %>
+                      <% totalPrice += (item.productId?.Price || 0) * item.quantity; %>
+
+                      <tr data-item-id="<%= item._id %>">
+                        <td>
+                          <div class="d-flex align-items-center">
+                            <% if (item.productId && item.productId.images &&
+                              Array.isArray(item.productId.images) && item.productId.images.length> 0) {
+                              %>
+                              <img src="/uploads/<%= item.productId.images[0] %>" class="border rounded me-3"
+                                style="width: 60px; height: 60px;" />
+                              <% } else { %>
+                                <img src="#" class="border rounded me-3" style="width: 60px; height: 60px;" />
+                                <% } %>
+                                  <div class="flex-column ms-4">
+                                    <h6>
+                                      <% if (item.productId) { %>
+                                        <%= item.productId.ProductName %>
+                                          <% } else { %>
+                                            Product Not Available
+                                            <% } %>
+                                    </h6>
+                                  </div>
+
+                          </div>
+                        </td>
+
+                        <td id="totalPrice_<%= item._id %>">
+                          <p class="mb-2"><strong>&#x20B9;<%= item.productId ? item.productId.Price : 0 %></strong>
+                          </p>
+                        </td>
+
+                        <td>
+                          <!-- HTML - Update Quantity Buttons -->
+                          <div class="input-group" style="width: 120px;">
+                            <% if(item.quantity <= 1){ %>
+                              <button disabled class="btn btn-outline-secondary" type="button"
+                                onclick="updateCartQuantity('<%= item._id %>', -1)" id="decrementButton">-</button>
+                            <% }else{  %>
+                              <button  class="btn btn-outline-secondary" type="button"
+                                onclick="updateCartQuantity('<%= item._id %>', -1)" id="decrementButton">-</button>
+                            <% } %>
+                            <input type="number" class="form-control allQuantity" value="<%= item.quantity %>" id="cartQuantity<%= item._id %>" min="1"
+                              max="<%= item.productId?.AvailableQuantity || 1 %>" onchange="updateCartQuantity('<%= item._id %>', this.value)">
+                            <button class="btn btn-outline-secondary" type="button"
+                              onclick="updateCartQuantity('<%= item._id %>', 1)">+</button>
+                          </div>
+                        
+                        </td>
+                        <td id="totalapriceofoneproduct_<%= item._id %>">
+                          <p class="mb-2">
+                            <strong>&#x20B9;<%= (item.productId?.Price || 0) * item.quantity.toFixed(2) %></strong>
+                          </p>
+                        </td>
+
+
+
+
+
+                        <td>
+                          <div>
+                        <a href="#" class="align-middle remove-from-cart"
+                         data-product-id="<%= item.productId?._id %>"
+                         data-cart-id="<%= cart._id %>"
+                         data-product-name="<%= item.productId?.ProductName %>">
+
+                         <i class="fa fa-trash-can fa-md" style="color: #c01b1b;"></i>
+                         </a>
+                         </div>
+
+                        </td>
+                      </tr>
+                      <% }) %>
+                       
+
+                   
+
+
+                        <% } else { %>
+                          <tr>
+                            <td colspan="5">
+                              <p>Your cart is currently empty.</p>
+                            </td>
+                          </tr>
+                          <% } %>
+                
+
+
+
+
+
+                 
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <!-- cart -->
+        <!-- summary -->
+        <div class="col-lg-3">
+          <!--<div class="card mb-3 border shadow">
+            <div class="card-body">
+              <form>
+                <div class="form-group">
+                  <label class="form-label">Have coupon?</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control border" name="" placeholder="Coupon code" />
+                    <button class="btn btn-light border">Apply</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div> -->
+          <div class="card shadow border">
+            <div class="card-body">
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Total Quantity:</p>
+                <p class="mb-2" id="totalQuantity"><strong><%= totalQuantity %></strong></p>
+              </div>
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Total price:</p>
+                <p class="mb-2" id="totalPrice"><strong>&#x20B9;<%= totalPrice.toFixed(2) %></strong></p>
+                
+              </div>
+              <!--<div class="d-flex justify-content-between">
+                <p class="mb-2">Discount:</p>
+                <p class="mb-2 text-success">-₹</p>
+              </div>
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">TAX:</p>
+                <p class="mb-2" id="tax"><strong>&#x20B9;</strong></p>
+              </div>-->
+              <hr />
+              <div class="d-flex justify-content-between">
+                <p class="mb-2">Total price:</p>
+                <p class="mb-2" id="totalPrice"><strong>&#x20B9;<%= totalPrice.toFixed(2) %></strong></p>
+
+              </div>
+              <div class="mt-3">
+                <a href="/checkout" class="btn btn-success w-100 shadow-0 mb-2"> Make Purchase </a>
+                <a href="/user/home" class="btn btn-light w-100 border mt-2"> Back to shop </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- summary -->
+        <!-- <div class="col-lg-12">
+          <div class="card border rounded shadow">
+            <div class="m-4 rounded shadow-5 m-5">
+              <h1 class="text-center bg-black" style="color: #ffff; padding-top: 30px;">YOUR CART</h1>
+              <div class="d-flex justify-content-center">
+                <button class="btn btn-dark p-2 rounded-0" style="width: 500px;">
+                  continue shopping
+                </button>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </section>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+  
+
+
+
+
+
+    function updateCartQuantity(itemId, change) {
+
+  const decrementButton = document.getElementById('decrementButton');
+  const inputValue = document.querySelector('.allQuantity').value;
+
+
+
+  // alert('update called')
+  const newQuantity = parseInt(change);
+  fetch('/updateQuantity', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      itemId: itemId,
+      newQuantity: newQuantity,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        inputValue
+        window.location.reload()
+        
+        // alert('quantity update succcess')
+        console.log('Quantity updated successfully');
+   
+      } else {
+        console.error('Error updating quantity:', data.message);
+        // Optionally, show an error message to the user
+      }
+    })
+    .catch((error) => {
+      console.error('Error updating quantity:', error);
+      // Optionally, show an error message to the user
+    });
+}
+
+
+  
+    function addToCart(itemId) {
+      fetch('/user/addToCart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          itemId: itemId,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert('success')
+            updateCartUI();
+            swal("Success!", "Item added to cart", "success");
+          } else {
+            console.error('Error adding product to the cart:', data.message);
+            swal("Error!", "Failed to add item to cart", "error");
+          }
+        })
+        .catch((error) => {
+          console.error('Error adding product to the cart:', error);
+          swal("Error!", "Failed to add item to cart", "error");
+        });
+    }
+    function updateCartUI() {
+      window.location.reload();
+    }
+  
+  
+
+
+  
+
+  // Function to handle item removal from the cart
+  async function removeFromCart(productId) {
+    // alert('fuccn called'+productId)
+    try {
+      const response = await fetch(`/removeFromCart`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          productId: productId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Item removed successfully
+        alert('Item removed from cart successfully');
+        // Optionally, you can update the UI to reflect the removal
+        // For example, you can remove the corresponding HTML element from the cart table
+        // or update the total quantity and total price
+
+        // Reload the page to reflect the changes (you can also update the UI without reloading)
+        window.location.reload();
+      } else {
+        // Failed to remove item
+        console.error('Error removing item from cart:', data.message);
+        alert('Failed to remove item from cart');
+      }
+    } catch (error) {
+      console.error('Error removing item from cart:', error);
+      alert('Failed to remove item from cart');
+    }
+  }
+
+
+
+
+  // Attach event listeners to your "Remove" buttons or links
+  document.addEventListener('DOMContentLoaded', function () {
+    const removeButtons = document.querySelectorAll('.remove-from-cart');
+
+    removeButtons.forEach(button => {
+      button.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        const productId = button.getAttribute('data-product-id');
+
+        // Call the removeFromCart function with the product details
+        removeFromCart(productId);
+      });
+    });
+  });
+
+
+
+
+  
+</script>
+
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

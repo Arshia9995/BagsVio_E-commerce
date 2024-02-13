@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Address Book</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      /* This ensures the body takes up at least the full height of the viewport */
+    }
+
+    main {
+      flex-grow: 1;
+      /* This ensures the main content area expands to fill the remaining vertical space */
+    }
+
+    footer {
+      margin-top: auto;
+      /* This pushes the footer to the bottom of the page */
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- Navbar/Header (Assuming the header is included using an external file) -->
+  <div style="height: 75px;"></div>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+              <ul class="dropdown-menu">
+
+                <% categories.forEach(category=> { %>
+                  <% if (!category.isBlocked) { %>
+                    <li><a class="dropdown-item" href="/products/<%= category.categoryName %>">
+                        <%= category.categoryName %>
+                      </a></li>
+                    <% } %>
+                      <% }); %>
+              </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" style="margin-right: 10px;">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="/profile">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="/cart">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <header>
+    <!-- Header content here -->
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block  sidebar">
+        <div class="position-sticky">
+          <div style="margin-left: 50px; margin-top: 30px;">
+            <a href="#" class="list-group-item list-group-item-action"><b>Manage My Account</b></a>
+            <ul class="pl-4">
+              <li><a href="/profile" class="list-group-item list-group-item-action"
+                  style="list-style: none;">Profile</a></li>
+              <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
+              <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
+              <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
+              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+            </ul>
+            <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
+            <ul class="pl-4">
+              <li><a href="/orders" class="list-group-item list-group-item-action" style="list-style: none;">My
+                  Orders</a></li>
+              <li><a href="/returns" class="list-group-item list-group-item-action">Returns</a></li>
+              <li><a href="/cancellations" class="list-group-item list-group-item-action">Cancellations</a></li>
+
+            </ul>
+            <a href="/cart" class="list-group-item list-group-item-action"><b>Cart</a></b><br>
+            <a href="/wishlist" class="list-group-item list-group-item-action"><b>Wishlist</a></b><br>
+            <a href="/logout" class="list-group-item list-group-item-action"><b>Logout</a></b><br>
+          </div>
+        </div>
+      </nav>
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+        <div class="container">
+          <div class="row">
+            <!-- Add Address Card -->
+            <div class="col-md-4 mb-3">
+              <div class="card">
+                <div class="card-body text-center">
+                  <i class="fa fa-plus" id="addAddressIcon" aria-hidden="true" style="font-size: 110px;"></i><br>
+                  <p class="card-link">Add Address</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Saved Addresses -->
+            <!-- Addresses will be dynamically added here using JavaScript -->
+
+            <% if (addresses.addresses && addresses.addresses.length> 0) { %>
+              <% addresses.addresses.forEach(data=> { %>
+                <div class="col-md-4 mb-3">
+                  <div class="card">
+                    <div class="card-body">
+
+                      <h6 class="card-title ">
+                        <%= data.name %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 ">
+                        <%= data.addressline %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 ">
+                        <%= data.street %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 ">
+                        <%= data.city %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2">
+                        <%= data.state %>
+                      </h6>
+                      <h6 class="card-subtitle mb-2 ">
+                        <%= data.pincode %>
+                      </h6>
+                      <button class="btn btn-primary editAddressButton" id="editAddressBtn"
+                        onclick="editAddress('<%= data._id %>')">Edit</button>
+                      <button class="btn btn-danger" onclick="deleteAddress('<%= data._id %>')">Delete</button>
+                    </div>
+                  </div>
+                </div>
+                <% }) %>
+                  <% } else { %>
+                    <p class="col-md-12">No addresses found.</p>
+                    <% } %>
+          </div>
+        </div>
+        <% if (messages.success) { %>
+          <div class="container my-3" style="border-radius: 20px;" id="msg-div">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <p class="m-0"><strong>Message.! </strong>
+                <%= messages.success %>
+              </p>
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          </div>
+          <% }else if (messages.error){ %>
+            <div class="container my-3" style="border-radius: 20px;" id="msg-div">
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <p class="m-0"><strong>Message.! </strong>
+                  <%= messages.error %>
+                </p>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+            </div>
+            <%}%>
+
+              <!-- Modals -->
+              <!-- Add new address modal -->
+              <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+
+                  <div class="modal-content">
+
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="staticBackdropLabel">Add new address</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form id="addressForm" action="/addaddress" method="POST">
+                      <div class="modal-body">
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="name" class="form-label">Name:</label>
+                            <input type="text" class="form-control" id="name" name="name" placeholder="">
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="address" class="form-label">Address Line 1:</label>
+                            <input type="text" class="form-control" id="address" name="addressline" placeholder="">
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="pincode" class="form-label">Pin Code</label>
+                            <input type="text" class="form-control" id="pincode" name="pincode"
+                              placeholder="Enter your pincode">
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="state" class="form-label">Street</label>
+                            <input type="text" class="form-control" id="street" name="street"
+                              placeholder="Enter Street name">
+                          </div>
+                        </div>
+
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="city" class="form-label">City</label>
+                            <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="state" class="form-label">State</label>
+                            <input type="text" class="form-control" id="state" name="state" placeholder="Enter State">
+                          </div>
+                        </div>
+                        <div class="row mb-3">
+                          <div class="col-md-12">
+                            <label for="mobile" class="form-label">Mobile</label>
+                            <input type="text" class="form-control" id="mobile" name="mobile"
+                              placeholder="Enter your mobile number">
+                          </div>
+                        </div>
+
+                        <div class="modal-footer">
+                          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                          <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+                </form>
+              </div>
+    </div>
+  </div>
+
+  <!-- Edit Address Modal -->
+  <div class="modal fade" id="editAddressModal" tabindex="-1" aria-labelledby="editAddressModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editAddressModal">Edit Address</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form id="editAddressForm" action="/editaddress" method="POST">
+          <div class="modal-body">
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editName" class="form-label">Name:</label>
+                <input type="text" class="form-control" id="editName" name="name" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editAddress" class="form-label">Address Line 1:</label>
+                <input type="text" class="form-control" id="editAddress" name="addressline" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editPincode" class="form-label">Pin Code:</label>
+                <input type="text" class="form-control" id="editPincode" name="pincode" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editStreet" class="form-label">Street:</label>
+                <input type="text" class="form-control" id="editStreet" name="street" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editCity" class="form-label">City:</label>
+                <input type="text" class="form-control" id="editCity" name="city" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editState" class="form-label">State:</label>
+                <input type="text" class="form-control" id="editState" name="state" placeholder="">
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-12">
+                <label for="editMobile" class="form-label">Mobile:</label>
+                <input type="text" class="form-control" id="editMobile" name="mobile" placeholder="">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div style="height: 50px;"></div>
+  <footer>
+    <!-- Footer content here -->
+  </footer>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Additional Scripts -->
+  <script>
+    // Get the plus button element
+    var addAddressButton = document.getElementById('addAddressIcon');
+
+    // Get the modal element
+    var addAddressModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+
+    // Add click event listener to the plus button
+    addAddressButton.addEventListener('click', function () {
+      // Show the modal when the button is clicked
+      addAddressModal.show();
+    });
+
+    // var editAddressButton = document.getElementById('editAddressBtn')
+    document.querySelectorAll('.editAddressButton').forEach(btn => {
+      btn.addEventListener('click', function () {
+        var editAddressressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+        editAddressressModal.show();
+      });
+    });
+
+    // Get the modal element
+
+    //  editAddressButton.addEventListener('click',function(){
+    //   editAddressressModal.show()
+    //  })
+
+    // Add click event listener to the plus button
+    addAddressButton.addEventListener('click', function () {
+      // Show the modal when the button is clicked
+      addAddressModal.show();
+    });
+    // Function to handle the click event on the edit button
+
+
+
+    // Event listener for edit buttons
+    document.addEventListener('DOMContentLoaded', function () {
+      // Add click event listener to all elements with class 'editButton'
+      document.querySelectorAll('.editButton').forEach(button => {
+        button.addEventListener('click', function (event) {
+          event.preventDefault();
+          var addressId = this.getAttribute('data-addressid');
+          editAddress(addressId); // Call the editAddress function
+        });
+      });
+    });
+
+
+    function editAddress(addressId) {
+      fetch(`/getaddress/${addressId}`)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(address => {
+          // alert(JSON.stringify(address))
+          // Populate the edit modal form fields with the retrieved address details
+          document.getElementById('editName').value = address.userFirstAddress.name;
+          document.getElementById('editAddress').value = address.userFirstAddress.addressline;
+          document.getElementById('editPincode').value = address.userFirstAddress.pincode;
+          document.getElementById('editStreet').value = address.userFirstAddress.street;
+          document.getElementById('editCity').value = address.userFirstAddress.city;
+          document.getElementById('editState').value = address.userFirstAddress.state;
+          document.getElementById('editMobile').value = address.userFirstAddress.mobile;
+
+          // Show the edit address modal
+          var editAddressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
+          editAddressModal.show();
+        })
+        .catch(error => {
+          console.error('Error fetching address details:', error);
+          // Handle error (e.g., display error message)
+        });
+    }
+
+
+
+    // JavaScript function to delete an address
+    function deleteAddress(addressId) {
+  if (confirm("Are you sure you want to delete this address?")) {
+    fetch(`/deleteaddress/${addressId}`, {
+      method: 'DELETE'
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      console.log('Address deleted successfully'); // Log success message
+      // Reload the page after successful deletion
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error('Error deleting address:', error);
+      // Handle error (e.g., display error message)
+    });
+  }
+} 
+
+
+
+
+
+  </script>
+
+
+
+
+  <%- include('../partials/user-footer') %>

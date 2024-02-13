@@ -1,0 +1,98 @@
+
+
+
+<%- include('header')-%>
+
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="/assets/images/logo.png" alt="Logo" height="40">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Category
+          </a>
+          <% console.log(categories); %>
+          <ul class="dropdown-menu">
+            <% categories.forEach(category=> { %>
+            <% if (!category.isBlocked) { %>
+            <li><a class="dropdown-item" href="/products/<%= category.categoryName %>">
+                <%= category.categoryName %>
+              </a></li>
+            <% } %>
+            <% }); %>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contacts</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search" style="margin-right: 10px;">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <div class="icons">
+        <a href="#">
+          <i class="fa fa-user text-dark" aria-hidden="true"></i>
+        </a>
+        <a href="/cart">
+          <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+        </a>
+        <a href="#">
+          <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="card" style="height: 500px;">
+                <div class="card-body text-center">
+                    <img src="/assets/images/tic.jpg" style="height: 300px;width: 300px;">
+                    <h2 class="card-title mt-5">Order Placed Successfully!</h2>
+                    <p class="card-text">Thank you for your purchase.</p>
+                    <a href="/" class="btn btn-primary mt-1">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+  </body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <%- include('../partials/user-footer') %>
+    <%- include('footer')-%>
+
+
+
+      
+

@@ -1,0 +1,267 @@
+<%- include('header')-%>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img src="/assets/images/logo.png" alt="Logo" height="40">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Category
+          </a>
+          <% console.log(categories); %>
+          <ul class="dropdown-menu">
+            <% categories.forEach(category=> { %>
+            <% if (!category.isBlocked) { %>
+            <li><a class="dropdown-item" href="/products/<%= category.categoryName %>">
+                <%= category.categoryName %>
+              </a></li>
+            <% } %>
+            <% }); %>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Contacts</a>
+        </li>
+      </ul>
+      <form class="d-flex" role="search" style="margin-right: 10px;">
+        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success" type="submit">Search</button>
+      </form>
+      <div class="icons">
+        <a href="#">
+          <i class="fa fa-user text-dark" aria-hidden="true"></i>
+        </a>
+        <a href="/cart">
+          <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+        </a>
+        <a href="#">
+          <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- content -->
+<section class="py-5">
+  <div class="container">
+    <div class="row gx-5">
+
+      <aside class="col-lg-6">
+        <div class="border rounded-4 mb-3 d-flex justify-content-center" style="overflow: hidden;">
+          <img
+            style="max-width: 100%; max-height: 100vh; transform-origin: center center; object-fit: cover; cursor: crosshair;"
+            id="container" class="rounded-4 fit main-img" src="/uploads/<%= products.images[0] %>"
+            alt="<%= products.ProductName %>" />
+        </div>
+        <div class="d-flex justify-content-center mb-3">
+          <% products.images.slice(0, 3).forEach(image => { %>
+          <a data-fslightbox="mygalley" class="border mx-1 rounded-2" target="_blank" data-type="image"
+            class="item-thumb" onclick="changeImage(this)">
+            <img width="60" height="60" class="rounded-2" id="img" src="/uploads/<%= image %>" />
+          </a>
+          <% }); %>
+        </div>
+      </aside>
+
+      <main class="col-lg-6">
+        <div class="ps-lg-3">
+          <h4 class="title text-dark">
+            <%= products.ProductName %>
+          </h4>
+
+          <div class="mb-3">
+            <span class="h5">₹<%= products.Price %></span>
+          </div>
+
+          <p>
+            <%= products.Description %>
+          </p>
+
+          <div class="row">
+            <dt class="col-3">Category:</dt>
+            <dd class="col-9">
+              <%= products.Category.categoryName %>
+            </dd>
+
+            <dt class="col-3">Brand:</dt>
+            <dd class="col-9">
+              <%= products.BrandName.brandName %>
+            </dd>
+
+            <dt class="col-3">Stock:</dt>
+            <dd class="col-9">
+              <%= products.AvailableQuantity %>
+            </dd>
+          </div>
+
+          <hr />
+
+          <div class="row mb-4">
+            <!-- <div class="col-md-4 col-6">
+              <label class="mb-2">Size</label>
+              <select class="form-select border border-secondary" style="height: 35px;">
+                <option>Small</option>
+                <option>Medium</option>
+                <option>Large</option>
+              </select>
+            </div> -->
+            <!-- col.// -->
+            <!-- <div class="col-md-4 col-6 mb-3">
+              <label class="mb-2 d-block">Quantity</label>
+              <div class="input-group mb-3" style="width: 170px;">
+                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1"
+                  data-mdb-ripple-color="dark">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input type="text" class="form-control text-center border border-secondary" 
+                  aria-label="Example text with button addon" aria-describedby="button-addon1" />
+                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2"
+                  data-mdb-ripple-color="dark">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            </div> -->
+
+            <div class="col-md-4 col-6 mb-3">
+              <label class="mb-2 d-block">Quantity</label>
+              <div class="input-group mb-3" style="width: 170px;">
+                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1"
+                  data-mdb-ripple-color="dark">
+                  <i class="fa fa-minus"></i>
+                </button>
+                <input type="text" id="quantityInput" class="form-control text-center border border-secondary" placeholder="1"
+                  aria-label="Example text with button addon" aria-describedby="button-addon1" value="1" />
+                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2"
+                  data-mdb-ripple-color="dark">
+                  <i class="fa fa-plus"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
+          <a href="#" class="btn btn-primary shadow-0" onclick="addToCart('<%= products._id %>',document.getElementById('quantityInput').value)">
+            <i class="me-1 fa fa-shopping-basket"></i> Add to cart
+          </a>
+          
+          <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
+              class="me-1 fa fa-heart fa-lg"></i>Add to Wishlist </a>
+        </div>
+      </main>
+
+    </div>
+  </div>
+</section>
+
+<script>
+  const container = document.getElementById("container");
+  const img = document.querySelector(".main-img");
+
+  container.addEventListener("mousemove", onZoom);
+  container.addEventListener("mouseover", onZoom);
+  container.addEventListener("mouseleave", offZoom);
+
+  function onZoom(e) {
+    const x = e.clientX - e.target.offsetLeft;
+    const y = e.clientY - e.target.offsetTop;
+
+    img.style.transformOrigin = `${x}px ${y}px`;
+    img.style.transform = "scale(1.2)";
+  }
+
+  function offZoom(e) {
+    img.style.transformOrigin = `center center`;
+    img.style.transform = "scale(1)";
+  }
+
+  function changeImage(element) {
+  const newImageSrc = element.querySelector('img').getAttribute("src");
+  img.src = newImageSrc;
+}
+
+async function addToCart(productId, quantity) {
+  try {
+    const quantityInput = document.getElementById("quantityInput");
+    const quantity = parseInt(quantityInput.value); // Parse the value as an integer
+    const existingQuantity = parseInt(quantityInput.getAttribute("data-quantity") || 0);
+
+    const totalQuantity = quantity + existingQuantity;
+
+    const response = await fetch('/addToCart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId,quantity: totalQuantity }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+     
+
+      alert('Product added to cart successfully!');
+    } else {
+      alert('Failed to add product to cart.');
+      
+     
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('An error occurred while adding the product to the cart.');
+  }
+}
+
+// Increment quantity
+document.getElementById("button-addon2").addEventListener("click", function() {
+    var quantityInput = document.getElementById("quantityInput");
+    quantityInput.value = parseInt(quantityInput.value) + 1;
+});
+
+// Decrement quantity
+document.getElementById("button-addon1").addEventListener("click", function() {
+    var quantityInput = document.getElementById("quantityInput");
+    if (parseInt(quantityInput.value) > 1) {
+        quantityInput.value = parseInt(quantityInput.value) - 1;
+    }
+});
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <%- include('../partials/user-footer') %>
+    <%- include('footer')-%>
+
+
+
+      
+

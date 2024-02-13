@@ -1,0 +1,383 @@
+<!-- Admin Add Product Page -->
+<%- include('header')-%>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin/admindashboard">
+              <i class="fa fa-home"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/adminproduct">
+              <i class="fa fa-product-hunt"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/category">
+              <i class="fa fa-list"></i> Category
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/customers">
+              <i class="fa fa-users"></i> Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/brand">
+              <i class="fa fa-users"></i> Brands
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/orders">
+              <i class="fa fa-bars"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/sales">
+              <i class="fa fa-line-chart"></i> Sales
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/logout">
+              <i class="fa fa-sign-out"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="container mt-5 mt-lg-1 shadow-lg rounded-2">
+
+        <div class="container-fluid">
+          <div class="row ">
+            <main class="px-md-4 icons">
+              <div class="row d-flex justify-content-between">
+                <div class="col-md-8">
+                  <h1 class="mt-2 text-white">Add Product</h1>
+
+                  <form action="/admin/addproduct" method="post" enctype="multipart/form-data"
+                    class="card p-3 bg-light mb-3 text-dark text-shadow" id="myForm">
+                    <% if (messages.success) { %>
+                      <div class="alert alert-success">
+                        <%= messages.success %>
+                      </div>
+                      <% }else if (messages.error){ %>
+                        <div class="alert alert-danger">
+                          <%= messages.error %>
+                        </div>
+                        <%}%>
+
+                          <div class="form-group">
+                            <label for="productName">Product Name:</label>
+                            <input type="text" name="ProductName" class="form-control bg-light" id="productName"
+                              placeholder="Enter product name" />
+                            <div id="nameError"></div>
+                          </div>
+                          <br>
+
+
+                          <label for="isnewarrival">
+                            <input type="checkbox" name="isNewArrival" id="isnewarrival">
+                            New Arrivals
+                          </label>
+                          <br>
+
+                          <label for="isnewtrends">
+                            <input type="checkbox" name="isNewTrends" id="isnewtrends">
+                            New Trends
+                          </label>
+                          <br>
+                          <div class="form-group">
+                            <label for="productDescription">Product Description:</label>
+                            <textarea class="form-control bg-light" name="Description" id="productDescription" rows="4"
+                              placeholder="Enter product description"></textarea>
+                            <div id="DescriptionError"></div>
+                          </div>
+
+                          <br>
+
+                          <br>
+
+
+
+                          <div class="bg-light">
+                            <h3>Media</h3>
+
+
+                            <div class="form-group my-2">
+                              <label for="image1">Image 1:</label>
+                              <input type="file" name="image1" class="form-control imageInput" id="imageInput"
+                                accept="image/*" />
+                              <img src="" alt="Image 1" class="img-fluid imageInput"
+                                style="max-height: 50px;width: auto; display: none;">
+                            </div>
+                            <div id="fileError"></div>
+
+
+                            <div class="form-group my-2">
+                              <label for="image2">Image 2:</label>
+                              <input type="file" name="image2" class="form-control imageInput" id="image2"
+                                accept="image/*" />
+                              <img src="" alt="Image 2" class="img-fluid imageInput"
+                                style="max-height: 50px;width: auto; display: none;" id="previewImage2">
+                            </div>
+
+
+                            <div class="form-group my-2">
+                              <label for="image3">Image 3:</label>
+                              <input type="file" name="image3" class="form-control imageInput" id="image3"
+                                accept="image/*" />
+                              <img src="" alt="Image 3" class="img-fluid imageInput"
+                                style="max-height: 50px;width: auto; display: none;" id="previewImage3">
+                            </div>
+                          </div>
+
+
+                          <div class="">
+                            <h2>Pricing</h2>
+                            <div class="form-group">
+                              <label for="basePrice">Base Price:</label>
+                              <input type="number" name="Price" class="form-control bg-light" id="basePrice"
+                                placeholder="Enter base price" />
+                              <div id="priceError"></div>
+                            </div>
+
+                            <br>
+                            <div class="form-group">
+                              <label for="discountAmount">Discount Amount:</label>
+                              <input type="number" name="DiscountAmount" class="form-control bg-light"
+                                id="discountAmount" placeholder="Enter  After discount amount" />
+                              <div id="DiscountAmountError"></div>
+                            </div>
+
+                          </div>
+
+
+                          <div class="">
+                            <h2>Stock</h2>
+
+                            <div class="form-group">
+                              <label for="quantity">Quantity:</label>
+                              <input type="number" name="AvailableQuantity" class="form-control bg-light" id="quantity"
+                                placeholder="Enter quantity" />
+                              <div id="stockError"></div>
+                            </div>
+
+                          </div>
+
+
+
+                          
+                </div>
+
+                <div class="col-md-4 my-5 py-3">
+                  <div class="bg-light text-light p-3 rounded border">
+                    <div class="form-group">
+                      <br>
+                      <label for="category">Category:</label>
+                      <select class="form-select bg-light" id="category" name="Category" id="productCategory">
+                        <option value="" selected disabled>Select a category</option>
+                        <% categories.forEach(function(category) { %>
+                          <option value="<%=category.categoryName %>">
+                            <%=category.categoryName%>
+                          </option>
+                          <% }); %>
+                      </select>
+                      <div id="categoryError"></div>
+                    </div>
+
+                    <br>
+                    <div class="form-group">
+                      <br>
+                      <label for="brandName">Brand Name:</label>
+                      <select name="BrandName" class="form-select bg-light" id="brand">
+                        <option value="" selected disabled>Select a Brand</option>
+                        <% brands.forEach(function(brand) { %>
+                          <option value="<%=brand.brandName%>">
+                            <%=brand.brandName%>
+                          </option>
+                          <% }); %>
+                      </select>
+                      <div id="BrandError"></div>
+                    </div>
+
+                    <br>
+                    <!-- <div class="form-group">
+                                  <label for="tags">Tags:</label>
+                                  <input type="text" class="form-control bg-light" name="Tags" id="tags"
+                                      placeholder="Enter tags" required />
+                              </div> -->
+                    <div class="d-flex justify-content-end">
+                      <button type="submit" class="btn btn-primary mt-3 mb-0">Add Product</button>
+                    </div>
+                  </div>
+                </div>
+                </form>
+              </div>
+            </main>
+          </div>
+        </div>
+
+        <script>
+          console.log('Script executed');
+          document.getElementById('myForm').addEventListener('submit', function (event) {
+
+            var imageInputs = document.querySelectorAll('.imageInput');
+
+            var productNameInput = document.getElementById('productName');
+            var productCategoryInput = document.getElementById('category');
+            var productPriceInput = document.getElementById('basePrice');
+            var productStockInput = document.getElementById('quantity');
+            var productDiscountAmountInput = document.getElementById('discountAmount');
+            var productDescriptionInput = document.getElementById('productDescription');
+            var productBrandInput = document.getElementById('brand');
+
+           
+
+
+            var nameError = document.getElementById('nameError');
+            var categoryError = document.getElementById('categoryError');
+            var priceError = document.getElementById('priceError');
+            var stockError = document.getElementById('stockError');
+            var discountAmountError = document.getElementById('DiscountAmountError');
+            var descriptionError = document.getElementById('DescriptionError');
+            var brandError = document.getElementById('BrandError');
+
+            var fileError = document.getElementById('fileError');
+
+            var isValid = true;
+
+            // fileError.textContent = '';
+
+
+
+            // Check each image input
+            //         imageInputs.forEach(function(imageInput) {
+            //         var images = imageInput.files;
+
+            //         // Check if at least one image is selected
+            //         if (images.length === 0) {
+            //         fileError.textContent = 'Please upload at least one image.';
+            //         isValid = false;
+            //     }
+
+            //          // Check each selected image file
+            //         for (var i = 0; i < images.length; i++) {
+            //         var image = images[i];
+            //         var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+
+            //         // Check file extension
+            //         if (!allowedExtensions.test(image.name)) {
+            //         fileError.textContent = 'Invalid file type. Please upload images with extensions: .jpg, .jpeg, .png, .gif';
+            //         isValid = false;
+            //     }
+
+            //          // Check file size (adjust the size limit as needed)
+            //         var maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
+            //         if (image.size > maxSizeInBytes) {
+            //         fileError.textContent = 'File size exceeds the limit. Please upload images up to 5 MB.';
+            //         isValid = false;
+            //     }
+            //   }
+            // });
+
+
+            // Name 
+            if (productNameInput.value.trim() === '') {
+              nameError.textContent = 'Please enter a name.';
+              nameError.style.display = 'block';
+              nameError.style.color = 'red';
+              isValid = false;
+            } else {
+              nameError.textContent = '';
+              nameError.style.display = 'none';
+            }
+
+
+            // Description
+            if (productDescriptionInput.value.trim() === '') {
+              descriptionError.textContent = 'Please enter a description.';
+              descriptionError.style.display = 'block';
+              descriptionError.style.color = 'red';
+              isValid = false;
+            } else {
+              descriptionError.textContent = '';
+              descriptionError.style.display = 'none';
+            }
+
+            // Category
+            if (productCategoryInput.value.trim() === '') {
+              categoryError.textContent = 'Please enter a category.';
+              categoryError.style.display = 'block';
+              categoryError.style.color = 'red';
+              isValid = false;
+            } else {
+              categoryError.textContent = '';
+              categoryError.style.display = 'none';
+            }
+
+            // Brand
+            if (productBrandInput.value.trim() === '') {
+              brandError.textContent = 'Please enter a brand.';
+              brandError.style.display = 'block';
+              brandError.style.color = 'red';
+              isValid = false;
+            } else {
+              brandError.textContent = '';
+              brandError.style.display = 'none';
+            }
+
+            // Price
+            var priceValue = parseFloat(productPriceInput.value);
+            if (isNaN(priceValue) || priceValue <= 0) {
+              priceError.textContent = 'Please enter a valid positive price.';
+              priceError.style.color = 'red';
+              priceError.style.display = 'block';
+              isValid = false;
+            } else {
+              priceError.textContent = '';
+              priceError.style.display = 'none';
+            }
+
+            // Stock
+            var stockValue = parseFloat(productStockInput.value);
+            if (isNaN(stockValue) || stockValue <= 0) {
+              stockError.textContent = 'Please enter a valid positive number.';
+              stockError.style.color = 'red';
+              stockError.style.display = 'block';
+              isValid = false;
+            } else {
+              stockError.textContent = '';
+              stockError.style.display = 'none';
+            }
+
+            // Discount Amount
+            var discountAmountValue = parseFloat(productDiscountAmountInput.value);
+            if (isNaN(discountAmountValue) || discountAmountValue <= 0) {
+              discountAmountError.textContent = 'Please enter a valid positive number.';
+              discountAmountError.style.color = 'red';
+              discountAmountError.style.display = 'block';
+              isValid = false;
+            } else {
+              discountAmountError.textContent = '';
+              discountAmountError.style.display = 'none';
+            }
+
+            // other validations 
+
+            if (!isValid) {
+              console.log('Form validation failed. Stopping submission.');
+              event.preventDefault();
+            } else {
+              console.log('Form is valid. Submitting...');
+            }
+
+
+          });
+        </script>
+
+
+        <%- include('footer')-%>

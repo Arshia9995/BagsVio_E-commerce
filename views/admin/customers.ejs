@@ -1,0 +1,88 @@
+<%- include('header')-%>
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center g-2">
+            <div class="col col-md-2">
+                <div class="sidebar">
+                    <a href="/admin/admindashboard"><i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
+                    <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Products</a>
+                    <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Category</a>
+                    <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Customers</a>
+                    <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Brand</a>
+                    <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Orders</a>
+                    <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Sales</a>
+                    <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;"
+                            aria-hidden="true"></i>Logout</a>
+                </div>
+            </div>
+            <div class="main-content col-md-10">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="mb-0">Customers</h2>
+                    
+                </div>
+                <div class="table-responsive" style="margin-top: 20px;">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Id</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% customers.forEach((customer,index) => { %>
+                            <tr>
+                                <td><%= index+1%></td>
+                                <td><%= customer._id %></td>
+                                <td><%= customer.name %></td>
+                                <td><%= customer.email %></td>
+                                
+                                <!-- <td><% customer.action %></td> -->
+
+                                <td>
+                                    <% if (customer.isBlocked) { %>
+                                        <form action="/admin/unblock/<%= customer._id %>" method="post" onsubmit="return confirm('Are you sure you want to unblock this customer?');">
+                                            <button class="btn btn-danger">Unblock</button>
+                                        </form>
+                                    <% } else { %>
+                                        <form action="/admin/block/<%= customer._id %>" method="post" onsubmit="return confirm('Are you sure you want to block this customer?');">
+                                            <button class="btn btn-success">Block</button>
+                                        </form>
+                                    <% } %>
+                                </td>
+                                
+                                
+                              
+
+                            </tr>
+                        <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function blockUser(customerId) {
+          
+            console.log('Block user with id:', customerId);
+        }
+    
+        function unblockUser(customerId) {
+            
+            console.log('Unblock user with id:',customerId );
+        }
+    </script>
+
+
+    <%- include('footer')-%>
+
+   

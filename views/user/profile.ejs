@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+    .img-account-profile {
+        max-width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar/Header (Assuming the header is included using an external file) -->
+  <div style="height: 40px;"></div>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+            <ul class="dropdown-menu">
+              
+              <% categories.forEach(category => { %>
+                <% if (!category.isBlocked) { %>
+                <li><a class="dropdown-item" href="/products/<%= category.categoryName %>"><%= category.categoryName %></a></li>
+                <% } %>
+                <% }); %> 
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" style="margin-right: 10px;">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="/profile">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="/cart">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- <div class="margin-top:30px;"></div> -->
+  
+ 
+  <div class="container-fluid ">
+    <div class="row">
+      <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block  sidebar">
+        <div class="position-sticky">
+          <div style="margin-left: 50px; margin-top: 30px;">
+            <a href="#" class="list-group-item list-group-item-action"><b>Manage My Account</b></a>
+            <ul class="pl-4">
+              <li><a href="/profile" class="list-group-item list-group-item-action" style="list-style: none;">Profile</a></li>
+              <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
+              <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
+              <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
+              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+            </ul>
+            <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
+            <ul class="pl-4">
+                <li><a href="/orders" class="list-group-item list-group-item-action" style="list-style: none;">My Orders</a></li>
+                <li><a href="/returns" class="list-group-item list-group-item-action">Returns</a></li>
+                <li><a href="/cancellations" class="list-group-item list-group-item-action">Cancellations</a></li>
+               
+              </ul>
+            <a href="/cart" class="list-group-item list-group-item-action"><b>Cart</a></b><br>
+            <a href="/wishlist" class="list-group-item list-group-item-action"><b>Wishlist</a></b><br>
+            <a href="/logout" class="list-group-item list-group-item-action"><b>Logout</a></b><br>
+          </div>
+        </div>
+      </nav>
+      
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="container-xl px-4 mt-4">
+            <hr class="mt-0 mb-4">
+            <div class="row">
+              
+                <div class="col-xl-3" style="height: 250px;"> <!-- Reduced column size to 3/12 -->
+                    <!-- Profile picture card -->
+                    <div class="card mb-4">
+                        <div class="card-header">Profile Picture</div>
+                        <div class="card-body text-center">
+                            <form id="profileForm" enctype="multipart/form-data">
+                                <!-- Profile picture image -->
+                                <img class="img-account-profile rounded-circle mb-2" src="https://www.w3schools.com/howto/img_avatar.png" alt="Avatar">
+                                                                    
+                                <div class="small font-italic text-muted mb-4">JPG or PNG no larger than 5 MB</div>
+                                <!-- Profile picture upload button -->
+                                <button class="btn btn-primary" type="button">Upload new image</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+              <div class="col-xl-8">
+                  <!-- Account details card-->
+                  <div class="card mb-4">
+                      <div class="card-header">Account Details</div>
+                      <div class="card-body">
+                          <form id="profileform1">
+                              <!-- Form Group (username)-->
+                              <div class="mb-3">
+                                
+                                <label class="small mb-1" for="inputUsername">First Name </label>
+                                <input class="form-control" id="inputUsername" type="text"  value="<%= user.name %>" readonly>
+                            </div>
+                             <div class="mb-3">
+                                  <label class="small mb-1" for="inputLastname">Last Name </label>
+                                  <input class="form-control" id="inputLastname" type="text" name="lastName" value="<%= user.lastName  %>">
+                              </div>
+                              <div class="mb-3">
+                                  <label class="small mb-1" for="inputEmailAddress">Email address</label>
+                                  <input class="form-control" id="inputEmailAddress" type="email" placeholder="Enter your email address" value="<%= user.email  %>" readonly>
+                              </div>
+                              <div class="row gx-3 mb-3">
+                                
+                                  <div class="md-3">
+                                      <label class="small mb-1" for="inputPhone">Phone number</label>
+                                      <input class="form-control" id="inputPhone" type="tel" name="phoneNumber" placeholder="Enter your phone number" value="<%= user.phoneNumber  %>">
+                                  </div>
+                              </div>
+                            
+                              <button class="btn btn-primary" type="submit">Save changes</button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js
+"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.getElementById('profileform1').addEventListener('submit', function (e) {
+        e.preventDefault();
+  console.log("entered")
+        const formData = {
+          lastName: document.getElementById('inputLastname').value,
+          phoneNumber: document.getElementById('inputPhone').value
+        };
+  console.log(formData,"ffffffffffff")
+        fetch('/updateProfile', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log('Profile updated successfully', data);
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Profile updated Successfully'
+          });
+        })
+        .catch(error => {
+          console.error('Error updating profile', error);
+        });
+      });
+    });
+  </script>
+  
+
+
+<%- include('../partials/user-footer') %>
+
+

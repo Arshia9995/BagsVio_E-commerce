@@ -1,0 +1,231 @@
+<!-- Admin edit Product Page -->
+<%- include('header')-%>
+
+  <div class="container-fluid">
+    <div class="row">
+      <!-- Sidebar -->
+      <div class="col-md-3 col-lg-2 sidebar">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="/admin/admindashboard">
+              <i class="fa fa-home"></i> Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/adminproduct">
+              <i class="fa fa-product-hunt"></i> Products
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/category">
+              <i class="fa fa-list"></i> Category
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/customers">
+              <i class="fa fa-users"></i> Customers
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/brand">
+              <i class="fa fa-users"></i> Brands
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/orders">
+              <i class="fa fa-bars"></i> Orders
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/sales">
+              <i class="fa fa-line-chart"></i> Sales
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/admin/logout">
+              <i class="fa fa-sign-out"></i> Logout
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="container mt-5 mt-lg-1 shadow-lg rounded-2">
+        <form action="/admin/editproduct/<%= product._id%>" method="post" enctype="multipart/form-data" >
+          <div class="container-fluid">
+            <div class="row ">
+              <main class="px-md-4 icons">
+                <div class="row d-flex justify-content-between">
+                  <div class="col-md-8">
+                    <h1 class="mt-2 text-white">Add Product</h1>
+
+
+                    <% if (messages.success) { %>
+                      <div class="alert alert-success">
+                        <%= messages.success %>
+                      </div>
+                      <% }else if (messages.error){ %>
+                        <div class="alert alert-danger">
+                          <%= messages.error %>
+                        </div>
+                        <%}%>
+
+                          <div class="form-group">
+                            <label for="productName">Product Name:</label>
+                            <input type="text" name="ProductName" class="form-control bg-light" id="productName"
+                              placeholder="Enter product name" value="<%= product.ProductName %>" required />
+                          </div><br>
+
+                          <div class="form-group">
+                            <label for="productDescription">Product Description:</label>
+                            <textarea class="form-control bg-light" name="Description" id="productDescription"
+                              placeholder="Enter product description" required><%= product.Description %></textarea>
+                          </div>
+                          <br>
+                          <div class="bg-light">
+                            <h3>Media</h3>
+
+
+                            <div class="form-group my-2">
+                              <label for="image1">Image 1:</label>
+                              <input type="file" name="image1" class="form-control imageInput" id="imageInput"
+                                accept="image/*" />
+                              <img src="/uploads/<%=product.images[0]  %>" alt="Image 1" class="img-fluid imagePreview"
+                                style="max-height: 50px;width: auto;">
+                            </div>
+
+
+                            <div class="form-group my-2">
+                              <label for="image2">Image 2:</label>
+                              <input type="file" name="image2" class="form-control imageInput" id="imageInput"
+                                accept="image/*" />
+                              <img src="/uploads/<%=product.images[1]  %>" alt="Image 2" class="img-fluid imagePreview"
+                                style="max-height: 50px;width: auto;" id="previewImage2">
+                            </div>
+
+
+                            <div class="form-group my-2">
+                              <label for="image3">Image 3:</label>
+                              <input type="file" name="image3" class="form-control imageInput" id="imageInput"
+                                accept="image/*" />
+                              <img src="/uploads/<%=product.images[2]  %>" alt="Image 3" class="img-fluid imagePreview"
+                                style="max-height: 50px;width: auto;" id="previewImage3">
+                            </div>
+                          </div>
+                          <div class="">
+                            <h2>Pricing</h2>
+                            <div class="form-group">
+                              <label for="basePrice">Base Price:</label>
+                              <input type="number" name="Price" class="form-control bg-light" id="basePrice"
+                                placeholder="Enter base price" value="<%= product.Price %>" required />
+                            </div>
+                            <br>
+                            <div class="form-group">
+                              <label for="discountAmount">Discount Amount:</label>
+                              <input type="number" name="DiscountAmount" class="form-control bg-light"
+                                id="discountAmount" placeholder="Enter  After discount amount"
+                                value="<%= product.DiscountAmount %>" required />
+                            </div>
+                          </div>
+
+                          <div class="">
+                            <h2>Stock</h2>
+
+                            <div class="form-group">
+                              <label for="quantity">Quantity:</label>
+                              <input type="number" name="AvailableQuantity" class="form-control bg-light" id="quantity"
+                                placeholder="Enter quantity" value="<%= product.AvailableQuantity %>" required />
+                            </div>
+                          </div>
+                  </div>
+                  <div class="col-md-4 my-5 py-3">
+                    <div class="bg-light text-light p-3 rounded border">
+                      <div class="form-group">
+                        <br>
+                        <label for="category">Category:</label>
+                        <select class="form-select bg-light" id="category" name="Category" required>
+                          <% categories.forEach(function (category) { %>
+                            <option value="<%= category._id %>" <%= product.Category.equals(category._id) ? 'selected' : '' %>>
+                              <%= category.categoryName %>
+                            </option>
+                          <% }); %>
+                        </select>
+                      </div><br>
+                      <div class="form-group">
+                        <br>
+                        <label for="brandName">Brand Name:</label>
+                        <select name="BrandName" class="form-select bg-light" id="brand" required>
+                          <!-- <option value="" selected disabled>Select a Brand</option> -->
+                          <% brands.forEach(function (brand) { %>
+                            <option value="<%= brand._id %>" <%= product.BrandName.equals(brand._id) ? 'selected' : '' %>>
+                              <%= brand.brandName %>
+                            </option>
+                          <% }); %>
+                        </select>
+                      </div><br>
+                      <!-- <div class="form-group">
+                                  <label for="tags">Tags:</label>
+                                  <input type="text" class="form-control bg-light" name="Tags" id="tags"
+                                      placeholder="Enter tags" required />
+                              </div> -->
+                      <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary mt-3 mb-0">edit Product</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </main>
+            </div>
+          </div>
+        </form>
+
+
+        <script>
+          const imageInput = document.querySelectorAll('.imageInput');
+          const imagePreview = document.querySelectorAll('.imagePreview');
+          imageInput.forEach((input, index) => {
+
+            input.addEventListener('change', function () {
+              const file = input.files[0];
+
+              if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                  imagePreview[index].src = e.target.result;
+                  imagePreview[index].style.display = 'block';
+                };
+
+                reader.readAsDataURL(file);
+              } else {
+                imagePreview[index].src = '';
+                imagePreview[index].style.display = 'none';
+              }
+            });
+          });
+        </script>
+
+
+
+
+        <!-- <script>
+  function previewImages() {
+    const previewContainer = document.getElementById('image-preview');
+    const filesInput = document.getElementById('photo');
+    previewContainer.innerHTML = ''; // Clear previous previews
+
+    // Display image previews
+    for (const file of filesInput.files) {
+      const imageElement = document.createElement('img');
+      imageElement.src = URL.createObjectURL(file);
+      imageElement.classList.add('preview-image');
+
+      // Set the size of the preview images (adjust the values accordingly)
+      imageElement.style.width = '200px';
+      imageElement.style.height = '200px';
+
+      previewContainer.appendChild(imageElement);
+    }
+  }
+</script> -->
+        <%- include('footer')-%>

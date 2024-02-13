@@ -1,0 +1,137 @@
+<%- include('header')-%>
+
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+            <ul class="dropdown-menu">
+              
+              <% categories.forEach(category => { %>
+                <% if (!category.isBlocked) { %>
+                  <li><a class="dropdown-item" href="/products/<%= category.categoryName %>"><%= category.categoryName %></a></li>
+                <% } %>
+                <% }); %>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="#">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="/cart">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div style="height: 50px;"></div>
+  <h1 style="margin-left: 80px; margin-top: 20px;">Products in: <%= selectedCategory %></h1>
+  
+  <div class="container mt-5 ml-3">
+    <section class="row mb-4">
+      <% if (products.length > 0) { %>
+        <% products.forEach(product => { %>
+          <div class="col-lg-4">
+            <div class="card">
+              <a href="/productdetails/<%= product._id %>">
+              <!-- <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>"> -->
+              <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
+
+
+              <div class="card-body">
+                <h5 class="card-title text-dark"><%= product.ProductName %></h5>
+                <!-- <p class="card-text"><%= product.Description %></p>
+                <p class="card-text">Brand: <%= product.BrandName.brandName %></p> -->
+                <p class="card-text text-dark">Price: <%= product.Price %></p></a>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="col-12">
+          <p>No products available in this category.</p>
+        </div>
+      <% } %>
+    </section>
+    </div>
+</div>
+
+    
+
+
+
+
+
+<!-- Footer Section -->
+<footer class="container-fluid bg-light py-4 mt-5">
+    <div class="container">
+      <div class="row">
+        <!-- Categories -->
+        <div class="col-md-4 mb-3">
+          <h5>Categories</h5>
+          <ul class="list-unstyled">
+            <li><a href="#">Backpacks</a></li>
+            <li><a href="#">Handbags</a></li>
+            <li><a href="#">Travel Bags</a></li>
+          </ul>
+        </div>
+  
+        <!-- Address -->
+        <div class="col-md-4 mb-3">
+          <h5>Address</h5>
+          <address>
+            Your Company Name<br>
+            Street Address<br>
+            City, State, ZIP Code<br>
+            Country
+          </address>
+        </div>
+  
+        <!-- Social Media -->
+        <div class="col-md-4 mb-3">
+          <h5>Social Media</h5>
+          <ul class="list-unstyled">
+            <li><a href="#" target="_blank"><i class="fa fa-facebook text-dark"></i> Facebook</a></li>
+            <li><a href="#" target="_blank"><i class="fa fa-twitter text-dark"></i> Twitter</a></li>
+            <li><a href="#" target="_blank"><i class="fa fa-instagram text-dark"></i> Instagram</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
+  
+  
+  
+
+
+
+<%- include('footer')-%>

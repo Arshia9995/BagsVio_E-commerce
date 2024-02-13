@@ -1,0 +1,71 @@
+<%- include('header')-%>
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/admindashboard">
+        <i class="fa fa-home"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/adminproduct">
+        <i class="fa fa-product-hunt"></i> Products
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/category">
+        <i class="fa fa-list"></i> Category
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/customers">
+        <i class="fa fa-users"></i> Customers
+      </a>
+    </li>
+
+    
+     
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/brand">
+          <i class="fa fa-users"></i> Brand
+        </a>
+      </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/orders">
+        <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/logout">
+        <i class="fa fa-sign-out"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="container mt-5 ml-3">
+  <h2 class="mb-4">Add Brand</h2>
+
+  <!-- Add brand Form -->
+  <form action="/admin/addbrand" method="POST" >
+    <div class="mb-3">
+      <label for="categoryName" class="form-label">Brand Name</label>
+      <input type="text" class="form-control" id="brandName" name="brandName" required>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+
+
+
+
+<%- include('footer')-%>

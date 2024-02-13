@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Checkout </title>
+    <!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+
+	<!-- Demo CSS (No need to include it into your project) -->
+	<link rel="stylesheet" href="css/demo.css">
+  
+  </head>
+  <body>
+    <%- include("header") %>
+ <header class="intro">
+ <!-- <h1> Bootstrap 5 Checkout Form Example </h1>
+ <p> A checkout form page with Bootstrap native input fields.</p> -->
+
+ <!-- <div class="action">
+ <a href="https://www.codehim.com/bootstrap/bootstrap-forms/bootstrap-5-checkout-form-page/" title="Back to download and tutorial page" class="btn back">Back to Tutorial</a>
+ 
+ </div> -->
+ 
+ </header>
+  
+ <main>
+        <div class="container">
+            <div class="py-5 text-center">
+                <h2>Checkout</h2>
+            </div>
+            <form action="/placeorder" method="POST">
+                <div class="row">
+                    <!-- Addresses Column -->
+                    <div class="col-md-8 order-md-1">
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title">Shipping Address</h5>
+                            </div>
+
+                          
+
+                            <div class="container">
+                              <% if (addresses && addresses.length > 0) { %>
+                                <% addresses.forEach(data => { %>
+                  
+                                    <div class="col-md-4">
+                                        <div class="card mb-2" style="width: 18rem;">
+                                            <div class="card-body " style="height: 220px;">
+                                              <div class="card-body d-flex flex-column justify-content-between" style="height: 220px;">
+                                                <!-- Radio button with label -->
+                                                <label for="<%= data._id %>" class="d-flex align-items-center">
+                                                    <input type="radio" id="<%= data._id %>" name="selectedAddress" value="<%= data._id %>">
+                                                    <p class="card-title mb-0 ms-2">Deliver to this address</p>
+                                                </label>
+                                                
+                                                <h6 class="card-title "> <%= data.name %></h5>
+                                                <h6 class="card-subtitle mb-2 "><%= data.street %></h6>
+                                                <h6 class="card-subtitle mb-2 "><%= data.city %></h6>
+                                                <h6 class="card-subtitle mb-2"><%= data.state %></h6>
+                                                <h6 class="card-subtitle mb-2 "><%= data.pincode %></h6>
+                                                <h6 class="card-subtitle mb-3 "><%= data.mobile %></h6>
+                                              </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            
+                            
+                                <% }) %>
+                            <% } else { %>
+                                <p>No addresses found.</p>
+                            <% } %>
+                            <div class="col">
+                              <div class="card justify-content-center align-items-center" style="width: 18rem;">
+                                  <div class="card-body" style="height: 220px;">
+                                      <i class="fa fa-plus" id="addAddressIcon" aria-hidden="true" style="font-size: 100px;"></i><br>
+                                      <p class="card-link justify-content-center align-items-center" id="addAddressBtn">Add Address</p>
+                                  </div>
+                            </div>
+                        </div>
+                        <div id="newAddressForm" style="display: none;">
+                          <!-- Your form fields for adding a new address -->
+                          <input type="text" id="newName" placeholder="Name">
+                          <input type="text" id="newAddress" placeholder="Address Line 1">
+                          <input type="text" id="newPincode" placeholder="Pin Code">
+                          <input type="text" id="newStreet" placeholder="Street">
+                          <input type="text" id="newCity" placeholder="City">
+                          <input type="text" id="newState" placeholder="State">
+                          <input type="text" id="newMobile" placeholder="Mobile">
+                          <!-- Add other address fields here -->
+                          <button id="saveAddressBtn">Save Address</button>
+                      </div>
+                            </div>
+                            </div>
+                        <!-- Payment Section -->
+                        <hr class="mb-4">
+                        <h4 class="mb-3">Payment</h4>
+                        
+                          <div class="custom-control custom-radio">
+                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" value="Card" checked required>
+                            <label class="custom-control-label" for="credit">Card</label>
+                          </div>
+                          <div class="custom-control custom-radio">
+                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Cash On Delivery" required>
+                            <label class="custom-control-label" for="debit">Cash On Delivery</label>
+                          </div>
+                    </div>
+
+                    <!-- Your Cart Column -->
+                    <div class="col-md-4 order-md-2 mb-4">
+                        <h4 class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-muted">Your cart</span>
+                           
+                            <% let totalPrice = 0; %>
+    <% userCart.items.forEach(item => { %>
+        <% let itemPrice = item.productId.Price * item.quantity; %>
+        <% totalPrice += itemPrice; %>
+    <% }); %>
+                            <span class="badge badge-secondary badge-pill">3</span>
+                        </h4>
+                        <ul class="list-group mb-3">
+                          <% userCart.items.forEach(item => { %>
+                            <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                <div class="d-flex flex-column">
+                                    <div>
+                                        <h6 class="my-0"><%= item.productId.ProductName%></h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">Quantity: <%= item.quantity%>  </small>
+                                        <span class="text-muted">  </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price:  ₹<%= item.productId.Price * item.quantity %></span>
+                                    </div>
+                                </div>
+                            </li>
+                        <% }); %>
+                    
+                    <!-- <li class="list-group-item d-flex justify-content-between bg-light" style="margin-top: 10px;">
+                       <div class="text-success">
+                        <h6 class="my-0">Promo code</h6>
+                         <small>EXAMPLECODE</small> 
+                      </div> -->
+                      <!-- <span class="text-success">-$5</span> 
+                    </li> -->
+                    <li class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
+                      <span>Total Price:</span>
+                      <strong>₹ <%= totalPrice  %></strong>
+                    </li>
+                        </ul>
+                        <!-- Cart summary and form -->
+                        <form class="card p-2">
+                            <!-- Cart summary, promo code input, etc. -->
+                            <!-- Add your cart summary, promo code input, etc. here -->
+                        
+                    </div>
+                </div>
+                <!-- Continue to checkout button -->
+                <div class="row">
+                  <div class="col-md-4 offset-md-8">
+                      <hr class="mb-4">
+                      <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                  </div>
+              </div>
+            </form>
+        </div>
+    </main>
+ 
+</form>
+  
+<!-- Bootstrap 5 JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+  </body>
+</html>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('addAddressBtn').addEventListener('click', function() {
+      document.getElementById('newAddressForm').style.display = 'block';
+    });
+
+    document.getElementById('saveAddressBtn').addEventListener('click', function() {
+      // Retrieve values from the input fields
+      const name = document.getElementById('newName').value;
+      const address = document.getElementById('newAddress').value;
+      const pincode = document.getElementById('newPincode').value;
+      const city = document.getElementById('newCity').value;
+      const street = document.getElementById('newStreet').value;
+      const state = document.getElementById('newState').value;
+      const mobile = document.getElementById('newMobile').value;
+
+      // Retrieve other address field values similarly
+
+      // Perform actions to save the new address (e.g., via Fetch)
+      // ...
+
+      // After saving the address, hide the form
+      document.getElementById('newAddressForm').style.display = 'none';
+    });
+  })
+    </script>
