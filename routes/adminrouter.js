@@ -9,6 +9,7 @@ const customercontroller = require('../controllers/customercontroller');
 const upload=require('../middleware/multer')
 const adminAuth = require('../middleware/adminAuth');
 const ordercontroller = require('../controllers/ordercontroller');
+const couponcontroller = require("../controllers/couponcontroller")
 
 
 
@@ -99,6 +100,14 @@ admin.get('/orderview/:orderId',ordercontroller.adminOrderViewPage)
 
 admin.post("/updateOrderStatus/:orderId",ordercontroller.updateOrderStatus)
 
+//coupons
+
+admin.get('/coupon',couponcontroller.getCouponPage)
+
+admin.post('/addcoupon',couponcontroller.postAddCoupon)
+admin.post("/editcoupon/:couponId",couponcontroller.postEditCoupon)
+
+admin.delete("/deletecoupon/:couponId",couponcontroller.postdeletecoupon)
 
 
 

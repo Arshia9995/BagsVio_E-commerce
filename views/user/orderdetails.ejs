@@ -60,7 +60,7 @@
                                 </div>
                                 <div class="col-md-10">
                                     <p><strong>Product Name:</strong><%= product.productId.ProductName %></p>
-                                    <p><strong>Price:</strong> ₹<%= product.productId.Price %></p>
+                                    <p><strong>Price:</strong> ₹<%= product.price %></p>
                                     <p><strong>Quantity:</strong> <%= product.quantity %></p>
                                     <p><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
                                 </div>
@@ -105,8 +105,11 @@
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="text-end">
+                    <% if(order.status == "Pending" || order.status == "Processing") {%>
                     <button id="cancelOrderBtn" class="btn btn-danger">Cancel Order</button>
-
+                   <% } else if (order.status =="Delivered") { %>
+                    <button id="returnOrderBtn" class="btn btn-danger">Return Order</button>
+                   <% } %>
                 </div>
             </div>
         </div>
@@ -121,31 +124,110 @@
 
 <script>
     document.getElementById("cancelOrderBtn").addEventListener("click", async function() {
-      try {
-        // Send an AJAX request to update the order status
-        const response = await fetch('/cancelorder/<%= order._id %>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+        // Show a confirmation dialog using SweetAlert before proceeding
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure you want to cancel this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((confirmed) => {
+            if (confirmed) {
+                // If the user confirms, proceed with the cancel order action
+                try {
+                    // Send an AJAX request to update the order status
+                    fetch('/cancelorder/<%= order._id %>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // If the request was successful, display a SweetAlert message
+                            swal("Success!", "Order cancelled successfully.", "success")
+                            .then(() => {
+                                // Reload the page after the user clicks "OK"
+                                window.location.reload();
+                                document.querySelector('.badge.bg-success').textContent = 'Cancelled';
+                            });
+                        } else {
+                            // If there was an error, display a SweetAlert error message
+                            swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // If there was an error, display a SweetAlert error message
+                        swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    // If there was an error, display a SweetAlert error message
+                    swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                }
+            } else {
+                // If the user cancels, do nothing
+                return;
+            }
         });
-  
-        if (response.ok) {
-          // If the request was successful, display a SweetAlert message
-          swal("Success!", "Order cancelled successfully.", "success");
-          // Update the order status displayed on the page
-          document.querySelector('.badge.bg-success').textContent = 'Cancelled';
-        } else {
-          // If there was an error, display a SweetAlert error message
-          swal("Error!", "Failed to cancel order. Please try again later.", "error");
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        // If there was an error, display a SweetAlert error message
-        swal("Error!", "Failed to cancel order. Please try again later.", "error");
-      }
     });
-  </script>
-  
+</script>
 
+
+<script>
+    document.getElementById("returnOrderBtn").addEventListener("click", function() {
+        // Show a confirmation dialog before proceeding
+        // Show a confirmation dialog using SweetAlert before proceeding
+swal({
+    title: "Are you sure?",
+    text: "Are you sure you want to return this order?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+})
+.then((confirmed) => {
+    if (confirmed) {
+        // If the user confirms, proceed with the return order action
+        try {
+            // Send an AJAX request to update the order status
+            fetch('/returnorder/<%= order._id %>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If the request was successful, display a SweetAlert message
+                    swal("Success!", "Order returned successfully.", "success")
+                    .then(() => {
+                        // Reload the page after the user clicks "OK"
+                        window.location.reload();
+                        document.querySelector('.badge.bg-success').textContent = 'Returned';
+                    });
+                } else {
+                    // If there was an error, display a SweetAlert error message
+                    swal("Error!", "Failed to return order. Please try again later.", "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // If there was an error, display a SweetAlert error message
+                swal("Error!", "Failed to return order. Please try again later.", "error");
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            // If there was an error, display a SweetAlert error message
+            swal("Error!", "Failed to return order. Please try again later.", "error");
+        }
+    } else {
+        // If the user cancels, do nothing
+        return;
+    }
+});
+    })
+</script>

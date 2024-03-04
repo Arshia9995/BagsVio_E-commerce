@@ -22,7 +22,7 @@ const session=require('express-session')
 // };
 
 const verifyUser = (req,res,next)=>{
-    if(req.session.email){
+    if(req.session.userLogged){
         next()
     }else{
         res.redirect('/login')

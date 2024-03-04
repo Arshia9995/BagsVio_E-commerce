@@ -7,6 +7,7 @@ const sendOTP = require('./otpcontroller');
 const Otp=require('../models/otpSchema');
 const Users = require('../models/user');
 const flash=require('express-flash')
+const Wallet=require('../models/wallet')
 
 module.exports = 
 {
@@ -90,11 +91,135 @@ module.exports =
     showForgetPassword: (req, res) => {
         res.render('user/forgetpassword')
     },
-    showResetPassword:(req,res)=>{
-
-     
-        res.render('user/resetpassword')
+    showReqOtpPage:(req,res)=>{
+      res.render('user/reqotp')
     },
+    requestOtp:async(req,res)=>{
+      try {
+
+          
+        const {email} =req.body;
+        const userExist = await Users.findOne({email:email})
+
+
+        if(!userExist){
+          res.render('user/usersignup',{err:"user not found"})
+       }
+
+       const createdOTP= await sendOTP(email);
+       console.log(createdOTP,'otp created');
+       req.session.email=email;
+       res.render('user/reqotp')
+        
+      } catch (error) {
+        
+      }
+    },
+    validatereqOtp:async(req,res)=>{
+
+      try {
+      const email=req.session.email
+      const { otp1, otp2, otp3, otp4 } = req.body;
+      const enteredOtp = otp1 + otp2 + otp3 + otp4;
+
+      console.log("entered otp", enteredOtp);
+      const createdOTPrecord = await Otp.findOne({ email, otp: enteredOtp });
+
+      if (!createdOTPrecord) {
+        console.log('Invalid OTP Rendering user/Otp...')
+        return res.render('user/reqotp', { error: 'Invalid OTP' });
+      }
+        // req.session.email=null
+
+       res.render('user/resetpassword')
+        
+      } catch (error) {
+        console.error('Error in OTP verification:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+        
+      }
+
+      
+
+
+    },
+
+    showResetPassword:(req,res)=>{
+      res.render('user/resetpassword')
+    },
+
+
+    resetPassword:async(req,res)=>{
+      try {
+        const email=req.session.email ;
+        const{newPassword, confirmPassword}=req.body
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        const user = await Users.findOneAndUpdate({ email },{ $set: { password: hashedPassword } },{ new: true });
+      
+        // if (newPassword !== confirmPassword) {
+        //   return res.render('user/resetpassword', { error: 'Passwords do not match' });
+        // }
+       const error=''
+        // user.password = newPassword;
+        // await user.save();
+        console.log('password changed successfully.....')
+        return res.render('user/userlog',{error})
+
+      } catch (error) {
+        
+      }
+     },
+     showChangePassword:async(req,res)=>{
+      
+        const categories=await category.find()
+        const email = req.session.email; 
+
+        const user = await Users.findOne({ email: email }); 
+         res.render('user/changepassword',{categories,user})
+        
+      
+     },
+
+     postChangePassword:async (req, res) => {
+      // Retrieve the form data from the request body
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+      console.log(req.body,"qqqqqqqqqq")
+      const user = req.session.user
+      console.log(user.password);
+      console.log(user,"uuuuuuu");
+  
+      // Check if the current password matches the user's actual password
+      // if (currentPassword !== user.password) {
+      //     return res.status(400).send('Current password is incorrect');
+      // }
+
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).send('Current password is incorrect');
+    }
+  
+      // Check if the new password matches the confirm password
+      if (newPassword !== confirmPassword) {
+          return res.status(400).send('New password and confirm password do not match');
+      }
+      try {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        await Users.findByIdAndUpdate(user._id, { password: hashedPassword });
+
+        // Password updated successfully
+        res.redirect('/profile'); // Redirect to the profile page or any other appropriate page
+    } catch (err) {
+        console.error('Error updating password:', err);
+        return res.status(500).send('An error occurred while updating the password');
+    }
+  },
+  
+     
     showUserHomePage:async (req, res) => {
         // console.log('email of the user',req.session.email)
         console.log('user home reached')
@@ -111,10 +236,7 @@ module.exports =
           
         const {name,email,password,confirmPassword} =req.body;
         const userExist = await user.findOne({email:email})
-        // const categories=await category.find()
-
-        // const newarrival = await Product.find({ isNewArrival: true, isBlocked: false })
-        // const newtrends = await Product.find({ isNewTrends: true, isBlocked: false })
+       
          
 
          if(userExist){
@@ -235,6 +357,22 @@ module.exports =
         })
        
         const savedUser= await newUser.save()
+
+         // Create a new wallet for the user
+      const newWallet = new Wallet({
+      userId: savedUser._id, // Set the userId to the newly created user's ID
+      balance: 0, // Optionally set an initial balance
+      transactions: [], // Initialize transactions array
+    });
+
+      // Save the wallet to the database
+      await newWallet.save();
+      
+      req.session.userLogged = true;
+      req.session.email = email;
+      req.session.user= savedUser;
+      req.session.userIsLoged = email;
+      req.session.userId=savedUser
         req.session.userLogged=savedUser
           return res.render('user/userhome', {  categories,newarrival,newtrends });
         }
@@ -298,7 +436,7 @@ module.exports =
       const categories=await category.find()
       const email = req.session.email; 
       const user = await Users.findOne({ email: email }).populate('addresses');
-      console.log(user.addresses.addresses,'////////////////////////////')
+      console.log(user?.addresses?.addresses,'////////////////////////////')
      
 
       res.render('user/addressbook',{categories,addresses: user.addresses})
