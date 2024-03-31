@@ -16,6 +16,11 @@
                                 aria-hidden="true"></i>Brand</a>
                     <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;"
                             aria-hidden="true"></i>Orders</a>
+                    <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;"
+                                aria-hidden="true"></i>Coupons</a>
+                    <a href="/admin/productoffer"><i class="fa fa-bars" style="margin-right: 10px;"
+                                    aria-hidden="true"></i>ProductOffer</a>
+                                
                     <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
                             aria-hidden="true"></i>Sales</a>
                     <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;"
@@ -54,14 +59,15 @@
                                    
                                     <td> 
                                         <% if (category.isBlocked) { %>
-                                            <form action="/admin/unblockcategory/<%= category._id %>" method="post" onsubmit="return confirm('Are you sure you want to unblock this category?');">
-                                                <button class="btn btn-danger">Unblock</button>
+                                            <form id="unblockForm_<%= category._id %>" action="/admin/unblockcategory/<%= category._id %>" method="post">
+                                                <button class="btn btn-danger unblock-button" data-categoryid="<%= category._id %>">Unblock</button>
                                             </form>
                                         <% } else { %>
-                                            <form action="/admin/blockcategory/<%= category._id %>" method="post" onsubmit="return confirm('Are you sure you want to block this category?');">
-                                                <button class="btn btn-success">Block</button>
+                                            <form id="blockForm_<%= category._id %>" action="/admin/blockcategory/<%= category._id %>" method="post">
+                                                <button class="btn btn-success block-button" data-categoryid="<%= category._id %>">Block</button>
                                             </form>
                                         <% } %>
+                                        
                                     </td>
                                     
                                 </tr>
@@ -82,6 +88,7 @@
             </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 
 
     <script>
@@ -95,5 +102,50 @@
             console.log('Unblock category with id:',categoryId );
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const blockButtons = document.querySelectorAll('.block-button');
+            const unblockButtons = document.querySelectorAll('.unblock-button');
+    
+            blockButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const categoryId = this.getAttribute('data-categoryid');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You want to block this category',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, block it!',
+                        cancelButtonText: 'No, cancel!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById(`blockForm_${categoryId}`).submit();
+                        }
+                    });
+                });
+            });
+    
+            unblockButtons.forEach(button => {
+                button.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const categoryId = this.getAttribute('data-categoryid');
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'You want to unblock this category',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, unblock it!',
+                        cancelButtonText: 'No, cancel!',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById(`unblockForm_${categoryId}`).submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+    
 
     <%- include('footer')-%>

@@ -1,4 +1,7 @@
 <%- include('header')-%>
+<script>
+  $('.carousel').carousel()
+  </script>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
   <div class="container-fluid">
@@ -11,7 +14,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
@@ -45,7 +48,7 @@
         <a href="/cart">
           <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
         </a>
-        <a href="#">
+        <a href="/wishlist">
           <i class="fa fa-heart text-dark" aria-hidden="true"></i>
         </a>
       </div>
@@ -57,9 +60,38 @@
 <div style="height: 150px;"></div> -->
 
 <!-- Banner Section -->
-<div class="container-fluid p-0 banner-container">
+<!-- <div class="container-fluid p-0 banner-container">
   <img src="/assets/images/b2.jpg" class="img-fluid banner-img" alt="Banner Image">
+</div> -->
+
+<!-- First banner section -->
+
+<div class="container-fluid p-0">
+  <a href="/products/<%= banners[0].category.categoryName %>"> 
+  <img src="/uploads/<%= banners[0].image %>" class="img-fluid banner-img" style=" height: 600px; width: 100%; margin-top: 20px;" alt="Banner Image">
+</a>
 </div>
+
+<!-- Banner Section -->
+<!-- <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+  <div class="carousel-inner">
+    <% banners.forEach(function(banner, index) { %>
+      <div class="carousel-item <%= index === 0 ? 'active' : '' %>">
+        <img class="d-block w-100" src="/uploads/<%= banner.image %>" alt="Slide <%= index + 1 %>">
+      </div>
+    <% }); %>
+  </div>
+  <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div>  -->
+
+
 
 
 
@@ -94,9 +126,27 @@
 
 
 <!-- Banner Section -->
-<div class="container-fluid p-0 banner-container">
+<!-- <div class="container-fluid p-0 banner-container">
   <img src="/assets/images/b2.jpg" class="img-fluid banner-img" alt="Banner Image">
+</div> -->
+
+
+<div class="container-fluid p-0">
+  <% for (let i = 1; i < banners.length; i++) { %>
+      <div class="banner-item">
+          <a href="/products/<%= banners[i].category.categoryName %> ">
+              <img src="/uploads/<%= banners[i].image %>" alt="Banner <%= i + 1 %>" style="height: 600px; width: 100%; margin-top: 10px;">
+          </a>
+      </div>
+  <% } %>
 </div>
+
+<!-- Banner Section -->
+<!-- <div class="container-fluid p-0 h-75">
+    <% if (banners && banners.length > 1 && banners[1].image) { %>
+      <img src="/uploads/<%= banners[1].image %>" style="width: 100%;max-height: 700px;" alt="Banner Image">
+    <% } %>
+  </div> -->
 
 
 
@@ -129,6 +179,10 @@
 
     
 </section>
+
+<!-- Add this JavaScript code after including Bootstrap's JavaScript -->
+
+
 
 <%- include('../partials/user-footer') %>
 <%- include('footer')-%>

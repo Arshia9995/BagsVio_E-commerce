@@ -30,6 +30,7 @@
             <div class="py-5 text-center">
                 <h2>Checkout</h2>
             </div>
+          
             <form action="/placeorder" method="POST">
                 <div class="row">
                     <!-- Addresses Column -->
@@ -43,7 +44,7 @@
 
                             <div class="container">
                               <% if (addresses && addresses.length > 0) { %>
-                                <% addresses.forEach(data => { %>
+                                <% addresses?.forEach(data => { %>
                   
                                     <div class="col-md-4">
                                         <div class="card mb-2" style="width: 18rem;">
@@ -72,6 +73,16 @@
                             <% } else { %>
                                 <p>No addresses found.</p>
                             <% } %>
+                       
+
+                            <% let totalPrice = 0; %>
+                            <% let deliveryCharge = 50; %>
+    <% userCart.items.forEach(item => { %>
+        <% let itemPrice = item.productId.Price * item.quantity; %>
+        <% totalPrice += itemPrice; %>
+    <% }); %>
+
+
                             <div class="col">
                               <div class="card justify-content-center align-items-center" style="width: 18rem;">
                                   <div class="card-body" style="height: 220px;">
@@ -81,17 +92,16 @@
                             </div>
                         </div>
                         <div id="newAddressForm" style="display: none;">
-                          <!-- Your form fields for adding a new address -->
-                          <input type="text" id="newName" placeholder="Name">
-                          <input type="text" id="newAddress" placeholder="Address Line 1">
-                          <input type="text" id="newPincode" placeholder="Pin Code">
-                          <input type="text" id="newStreet" placeholder="Street">
-                          <input type="text" id="newCity" placeholder="City">
-                          <input type="text" id="newState" placeholder="State">
-                          <input type="text" id="newMobile" placeholder="Mobile">
-                          <!-- Add other address fields here -->
-                          <button id="saveAddressBtn">Save Address</button>
+                          <input type="text" id="name" placeholder="Name">
+                          <input type="text" id="address" placeholder="Address">
+                          <input type="text" id="pincode" placeholder="Pin Code">
+                          <input type="text" id="city" placeholder="City">
+                          <input type="text" id="street" placeholder="Street">
+                          <input type="text" id="state" placeholder="State">
+                          <input type="text" id="mobile" placeholder="Mobile">
+                          <button id="saveAddressBtn" type="button">Save Address</button>
                       </div>
+                      
                             </div>
                             </div>
                         <!-- Payment Section -->
@@ -99,12 +109,24 @@
                         <h4 class="mb-3">Payment</h4>
                         
                           <div class="custom-control custom-radio">
-                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" value="Card" checked required>
-                            <label class="custom-control-label" for="credit">Card</label>
+                            <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" value="Online Payment" checked required>
+                            <label class="custom-control-label" for="credit">Online Payment</label>
                           </div>
+                          <!-- Check if the total price is greater than 1000 -->
+<% if (totalPrice > 1000) { %>
+    <div class="custom-control custom-radio">
+        <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Cash On Delivery" required disabled>
+        <label class="custom-control-label" for="debit">Cash On Delivery (Not Available)</label>
+    </div>
+<% } else { %>
+    <div class="custom-control custom-radio">
+        <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Cash On Delivery" required>
+        <label class="custom-control-label" for="debit">Cash On Delivery</label>
+    </div>
+<% } %>
                           <div class="custom-control custom-radio">
-                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Cash On Delivery" required>
-                            <label class="custom-control-label" for="debit">Cash On Delivery</label>
+                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Wallet" required>
+                            <label class="custom-control-label" for="debit">Wallet</label>
                           </div>
                     </div>
 
@@ -113,11 +135,8 @@
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">Your cart</span>
                            
-                            <% let totalPrice = 0; %>
-    <% userCart.items.forEach(item => { %>
-        <% let itemPrice = item.productId.Price * item.quantity; %>
-        <% totalPrice += itemPrice; %>
-    <% }); %>
+                     
+ 
                             <span class="badge badge-secondary badge-pill">3</span>
                         </h4>
                         <ul class="list-group mb-3">
@@ -134,24 +153,37 @@
                                 </div>
                             </li>
                         <% }); %>
-                    
-                    <!-- <li class="list-group-item d-flex justify-content-between bg-light" style="margin-top: 10px;">
-                       <div class="text-success">
-                        <h6 class="my-0">Promo code</h6>
-                         <small>EXAMPLECODE</small> 
-                      </div> -->
-                      <!-- <span class="text-success">-$5</span> 
-                    </li> -->
-                    <li class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
-                      <span>Total Price:</span>
-                      <strong>₹ <%= totalPrice  %></strong>
-                    </li>
-                        </ul>
-                        <!-- Cart summary and form -->
-                        <form class="card p-2">
-                            <!-- Cart summary, promo code input, etc. -->
-                            <!-- Add your cart summary, promo code input, etc. here -->
-                        
+
+                         <!-- Delivery charge (if applicable) -->
+ <% if (totalPrice < 1000) { %>
+    <li class="list-group-item d-flex justify-content-between">
+        <span>Delivery Charge:</span>
+        <strong>₹ <%= deliveryCharge  %> </strong> <!-- Example delivery charge -->
+
+    </li>
+<% } %>
+                 
+                     <!-- Total Price -->
+        <li id="totalPrice" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
+            <span>Total Price:</span>
+            <% if (totalPrice < 1000) { %> 
+                <% totalPrice += deliveryCharge %>
+                <% } %>
+            <strong>₹ <%= totalPrice  %></strong>
+        </li>
+
+
+
+                    <!-- Coupon Code Input Field -->
+        <li class="list-group-item">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Enter Coupon Code" id="couponCodeInput">
+                <button class="btn btn-outline-secondary" type="button" id="applyCouponBtn">Apply</button>
+            </div>
+        </li>
+           </ul>
+                       
+                        <form class="card p-2">              
                     </div>
                 </div>
                 <!-- Continue to checkout button -->
@@ -169,32 +201,250 @@
   
 <!-- Bootstrap 5 JavaScript Bundle with Popper -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   </body>
 </html>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    document.getElementById('addAddressBtn').addEventListener('click', function() {
-      document.getElementById('newAddressForm').style.display = 'block';
+  // Client-side JavaScript code
+ document.addEventListener('DOMContentLoaded', function() {
+     // Event listener for Add Address button
+     document.getElementById('addAddressBtn').addEventListener('click', function() {
+         document.getElementById('newAddressForm').style.display = 'block'; // Show the new address form
+     });
+ 
+     // Event listener for Save Address button
+     document.getElementById('saveAddressBtn').addEventListener('click', async function() {
+         // Retrieve values from the input fields
+         const name = document.getElementById('name').value;
+         const address = document.getElementById('address').value;
+         const pincode = document.getElementById('pincode').value;
+         const city = document.getElementById('city').value;
+         const street = document.getElementById('street').value;
+         const state = document.getElementById('state').value;
+         const mobile = document.getElementById('mobile').value;
+ 
+         // Send the new address data to the server
+         try {
+             const response = await fetch('/checkoutaddaddress', {
+                 method: 'POST',
+                 headers: {
+                     'Content-Type': 'application/json'
+                 },
+                 body: JSON.stringify({ name, address, pincode, city, street, state, mobile })
+             });
+             if (response.ok) {
+                 // Address added successfully
+                 document.getElementById('newAddressForm').style.display = 'none'; // Hide the form
+                 // Fetch and update the address list dynamically
+                 location.reload();
+                 await updateAddressList();
+             } else {
+                 console.error('Failed to add address:', response.statusText);
+             }
+         } catch (error) {
+             console.error('Error adding address:', error);
+         }
+     });
+ 
+     // Function to fetch and update the address list dynamically
+     async function updateAddressList() {
+         try {
+             const response = await fetch(`/getaddress/${addressId}`); // Assuming this endpoint returns the list of addresses
+             if (response.ok) {
+                 const addresses = await response.json();
+                 const addressListContainer = document.getElementById('addressListContainer');
+                 addressListContainer.innerHTML = ''; // Clear previous address list
+                 addresses.forEach(address => {
+                     const addressElement = document.createElement('div');
+                     addressElement.textContent = address.name + ', ' + address.address;
+                     addressListContainer.appendChild(addressElement);
+                 });
+             } else {
+                 console.error('Failed to fetch addresses:', response.statusText);
+             }
+         } catch (error) {
+             console.error('Error fetching addresses:', error);
+         }
+     }
+ 
+     // Call the updateAddressList function on page load
+     updateAddressList();
+ });
+ </script>
+
+ <!-- Place this script at the end of the body section -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const paymentButton = document.getElementById('paymentButton');
+        const checkoutForm = document.getElementById('checkoutForm');
+        const paymentMethodRadio = document.querySelectorAll('input[name="paymentMethod"]');
+
+        // Function to update button text and action
+        function updatePaymentButton() {
+            const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+            if (selectedPaymentMethod && selectedPaymentMethod.value === 'Card') {
+                paymentButton.textContent = 'Pay Now';
+                checkoutForm.action = '/onlinepayment'; // Update form action for online payment
+            } else {
+                paymentButton.textContent = 'Place Order';
+                checkoutForm.action = '/confirmorder'; // Update form action for other payment methods
+            }
+        }
+
+        // Event listener for payment method change
+        paymentMethodRadio.forEach(function(radio) {
+            radio.addEventListener('change', updatePaymentButton);
+        });
+
+        // Initial call to update button text and action
+        updatePaymentButton();
     });
+</script>
 
-    document.getElementById('saveAddressBtn').addEventListener('click', function() {
-      // Retrieve values from the input fields
-      const name = document.getElementById('newName').value;
-      const address = document.getElementById('newAddress').value;
-      const pincode = document.getElementById('newPincode').value;
-      const city = document.getElementById('newCity').value;
-      const street = document.getElementById('newStreet').value;
-      const state = document.getElementById('newState').value;
-      const mobile = document.getElementById('newMobile').value;
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    // Check if the showCouponsBtn element exists
+    const showCouponsBtn = document.getElementById('showCouponsBtn');
+    if (showCouponsBtn) {
+        // Add event listener only if the element exists
+        showCouponsBtn.addEventListener('click', async function() {
+            alert("asdfghj")
+            try {
+                const response = await fetch('/getcoupons'); // Replace '/getcoupons' with your actual endpoint
+                if (response.ok) {
+                    const coupons = await response.json();
+                    // Assuming you have a function to display the coupons, update the DOM here
+                    displayCoupons(coupons);
+                } else {
+                    console.error('Failed to fetch coupons:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching coupons:', error);
+            }
+        });
+    } else {
+        console.error('Element with id "showCouponsBtn" not found.');
+    }
 
-      // Retrieve other address field values similarly
+    // Function to display the coupons
+    function displayCoupons(coupons) {
+        // Assuming you have a container element to display the coupons
+        const couponsContainer = document.getElementById('couponsContainer');
+        couponsContainer.innerHTML = ''; // Clear previous coupons
+        coupons.forEach(coupon => {
+            // Create elements to display each coupon
+            const couponElement = document.createElement('div');
+            couponElement.textContent = `Coupon Name: ${coupon.name}, Coupon Code: ${coupon.code}, Discount: ${coupon.discount}%`;
+            // Append coupon element to the container
+            couponsContainer.appendChild(couponElement);
+        });
+    }
+});
 
-      // Perform actions to save the new address (e.g., via Fetch)
-      // ...
-
-      // After saving the address, hide the form
-      document.getElementById('newAddressForm').style.display = 'none';
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('applyCouponBtn').addEventListener('click', async function() {
+        const couponCode = document.getElementById('couponCodeInput').value;
+        try {
+            const response = await fetch('/applycoupon', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ couponCode: couponCode }),
+            });
+            if (response.ok) {
+                const data = await response.json();
+                // Update the total price displayed on the frontend with the discounted price
+                document.getElementById('totalPrice').textContent = `Total Price: ₹ ${data.totalPrice}`;
+                console.log(data);
+            } else {
+                console.error('Failed to apply coupon:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error applying coupon:', error);
+        }
     });
-  })
-    </script>
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const continueToCheckoutBtn = document.querySelector('button[type="submit"]');
+    const walletRadio = document.querySelector('input[value="Wallet"]');
+    const totalPrice = <%= totalPrice %>;
+    const walletAmount = <%= walletAmount %>;
+
+    // Function to handle button click
+    function handleButtonClick(event) {
+        // Check if wallet payment method is selected and the button is clicked
+        if (walletRadio.checked) {
+            // Check if wallet balance is insufficient
+            if (walletAmount < totalPrice) {
+                // Display Swal message for insufficient wallet balance
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Insufficient Wallet Balance',
+                    text: 'Please choose another payment method or add funds to your wallet.',
+                });
+                event.preventDefault(); // Prevent form submission
+            }
+        } else {
+            // Check if no address is selected
+            const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+            if (!selectedAddress) {
+                // Display Swal message for no address selected
+                Swal.fire({
+                    icon: 'error',
+                    title: 'No Address Selected',
+                    text: 'Please select a shipping address or add a new address before proceeding to checkout.',
+                });
+                event.preventDefault(); // Prevent form submission
+            }
+        }
+    }
+    
+    // Event listener for button click
+    continueToCheckoutBtn.addEventListener('click', handleButtonClick);
+});
+
+
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const cashOnDeliveryRadio = document.querySelector('input[value="Cash On Delivery"]');
+        const totalPrice = <%= totalPrice %>;
+
+        // Function to handle button state based on total price
+        function handleButtonState() {
+            // Disable the Cash On Delivery button if total price is greater than 1000
+            if (totalPrice > 1000) {
+                cashOnDeliveryRadio.disabled = true;
+            } else {
+                cashOnDeliveryRadio.disabled = false;
+            }
+        }
+
+        // Call the function to set initial button state
+        handleButtonState();
+
+        // Add event listener for change in total price
+        document.getElementById('totalPrice').addEventListener('change', handleButtonState);
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+ 

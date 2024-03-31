@@ -19,7 +19,7 @@ dotenv.config()
 app.use(session({
   secret: 'your-secret-key', // Change this to a secret key for session encryption
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
 }));
 app.use(logger("dev"));
 app.use(urlencoded({ extended: true }));
@@ -42,6 +42,8 @@ connectdb();
  
 
 app.use('/magnific-popup', express.static(path.join(__dirname, 'node_modules/magnific-popup/dist')));
+
+
 
 app.use('/',userRouter.router)
 app.use('/admin',adminRouter.admin)

@@ -89,6 +89,18 @@ isNewTrends:{
   default:false,
   type:Boolean
 },
+productoffer:{
+  type:Number
+
+},
+productofferPrice:{
+  type:Number
+},
+reviews: [{
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'Review'
+}]
+
 
 
 

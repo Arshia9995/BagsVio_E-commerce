@@ -1,9 +1,5 @@
 <%- include('header')-%>
-<!-- 
-<div class="top-right-content">
-    <p>Welcome Neha Sony</p>
-    
-  </div> -->
+
 </div>
     <!-- The sidebar -->
 <div class="sidebar">
@@ -14,227 +10,246 @@
   <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Customers</a>
   <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Brand</a>
   <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Orders</a>
+  <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Coupons</a>
+  <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Banners</a>
+  <a href="/admin/productoffer"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>ProductOffer</a>
   <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;" aria-hidden="true"></i>Sales</a>
-  <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>Logout</a>
+  <a href="/admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>Logout</a>
 </div>
 
-<!-- Page content -->
-<!-- <div class="content"> -->
-  <!-- <h2>Responsive Sidebar Example</h2>
-  <p>This example use media queries to transform the sidebar to a top navigation bar when the screen size is 700px or less.</p>
-  <p>We have also added a media query for screens that are 400px or less, which will vertically stack and center the navigation links.</p>
-  <h3>Resize the browser window to see the effect.</h3> -->
-<!-- </div> -->
+
 
 <div class="content">
   <div class="box">
     <h3>Customers</h3>
+    <p>Total Customers: <%= totalCustomers %></p>
    
   </div>
 
   <div class="box">
     <h3>products</h3>
+    <p>Total Products: <%= totalProducts %></p>
     
   </div>
 
   <div class="box">
     <h3>Orders</h3>
+    <p>Total Orders: <%= totalOrders %></p>
  
   </div>
+  
 </div>
+<!-- Generate PDF Button -->
+<!-- <div class="container mt-4"> -->
+    <div class="row">
+        <div class="col-lg-6 text-center">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#salesReportModal" >generate PDF</button>
+      </div>
+    </div>
+  <!-- </div> -->
 
-<!-- <header>
-      
-    
-    <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
-      <div class="position-sticky">
-        <div class="list-group list-group-flush mx-3 mt-4">
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple" aria-current="true">
-            <i class="fa fa-home" style="margin-right: 10px;"></i><span>Dashboard</span>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple ">
-            <i class="fa fa-product-hunt" style="margin-right: 10px;" aria-hidden="true"></i></i><span>Product</span>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fa fa-list" style="margin-right: 10px;" aria-hidden="true"></i><span>Categories</span></a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i><span>Orders</span></a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i><span>Customers</span>
-          </a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fa fa-line-chart" style="margin-right: 10px;" aria-hidden="true"></i></i><span>Sales</span></a>
-          <a href="#" class="list-group-item list-group-item-action py-2 ripple">
-            <i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i><span>Logout</span></a>
-         
+
+  <!-- Sales Report Modal -->
+<div class="modal" id="salesReportModal" tabindex="-1" role="dialog" aria-labelledby="salesReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="salesReportModalLabel">Sales Report</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="salesReport" method="post" action="/admin/download-sales-report">
+            <div class="form-group">
+              <label for="startDate">Start Date:</label>
+              <input type="date" name="startDate" class="form-control" id="startDate" required>
+            </div>
+            <div class="form-group">
+              <label for="endDate">End Date:</label>
+              <input type="date" name="endDate" class="form-control" id="endDate" required>
+            </div>
+            <div class="form-group">
+              <label>File Format:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="fileFormat" id="pdf" value="pdf" checked>
+                <label class="form-check-label" for="pdf">PDF</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="fileFormat" id="excel" value="excel">
+                <label class="form-check-label" for="excel">Excel</label>
+              </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Download</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-12">
+        <div class="card mb-4" style="background: linear-gradient(to right, rgba(255,0,0,0), rgb(229, 255, 251));">
+          <h2 class="card-header">Sales Analysis</h2>
+          <div class="card-body">
+            <div class="row">
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="timeIntervalDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                      By Day
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="timeIntervalDropdown">
+                      <li><a class="dropdown-item" id="byDayOption">By Day</a></li>
+                      <li><a class="dropdown-item" id="byMonthOption">By Month</a></li>
+                      <li><a class="dropdown-item" id="byYearOption">By Year</a></li>
+                    </ul>
+                  </div>
+              <div class="col-lg-6">
+                <canvas id="salesGraphAmount"></canvas>
+              </div>
+              <div class="col-lg-6">
+                <canvas id="salesGraphCount"></canvas>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </nav>
-    
-
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-      <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
-              aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-              <i class="fas fa-bars"></i>
-          </button>
-
-          <a class="navbar-brand d-flex justify-content-start align-items-center" href="#">
-              <img src="/images/copy-removebg-preview.png" height="60px" alt="MDB Logo" />
-              <h5 class="d-none d-lg-block ml-3">Welcome Neha</h5>
-          </a>
       </div>
-  </nav> -->
-    <!-- <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-     
-      <div class="container-fluid">
-        
-        <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#sidebarMenu"
-          aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-          <i class="fas fa-bars"></i>
-        </button>
-   -->
-      
-        <!-- <a class="navbar-brand" href="#">
-          <img src="/images/copy-removebg-preview.png" height="60px" alt="MDB Logo"
-             />
-             <h4 style="margin-left: 1000px;">Welcome Neha</h4>
-        </a> -->
-        <!-- <a class="navbar-brand d-flex justify-content-between align-items-center" href="#">
-          <img src="/images/copy-removebg-preview.png" height="60px" alt="MDB Logo" />
-          <h5 style=" margin-left: 1000px;">Welcome Neha</h5>
-      </a>
-       -->
-       
-        <!-- <div class="dashboard-box">
-    
-            <h2>Dashboard</h2>
-            <p>Welcome to your dashboard!</p>
-           
-        </div> -->
-
-
-
-        <!-- <div class="dashboard-box">
-    
-            <h2>Dashboard</h2>
-            <p>Welcome to your dashboard!</p>
-           
-        </div> -->
-
-
-        <!-- <form class="d-none d-md-flex input-group w-auto my-auto">
-          <input autocomplete="off" type="search" class="form-control rounded"
-            placeholder='Search (ctrl + "/" to focus)' style="min-width: 225px;" />
-          <span class="input-group-text border-0"><i class="fas fa-search"></i></span>
-        </form> -->
-  
-<!--       
-        <ul class="navbar-nav ms-auto d-flex flex-row">
-          
-          <li class="nav-item dropdown">
-            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
-              role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <i class="fas fa-bell"></i>
-              <span class="badge rounded-pill badge-notification bg-danger">1</span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a class="dropdown-item" href="#">Some news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Another news</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Something else here</a>
-              </li>
-            </ul>
-          </li>
-  
-          
-          <li class="nav-item">
-            <a class="nav-link me-3 me-lg-0" href="#">
-              <i class="fas fa-fill-drip"></i>
-            </a>
-          </li>
-          
-          <li class="nav-item me-3 me-lg-0">
-            <a class="nav-link" href="#">
-              <i class="fab fa-github"></i>
-            </a>
-          </li>
-  
-         
-          <li class="nav-item dropdown">
-            <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow" href="#" id="navbarDropdown"
-              role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <i class="united kingdom flag m-0"></i>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <li>
-                <a class="dropdown-item" href="#"><i class="united kingdom flag"></i>English
-                  <i class="fa fa-check text-success ms-2"></i></a>
-              </li>
-              <li>
-                <hr class="dropdown-divider" />
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-poland flag"></i>Polski</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-china flag"></i>中文</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-japan flag"></i>日本語</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-germany flag"></i>Deutsch</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-france flag"></i>Français</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-spain flag"></i>Español</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-russia flag"></i>Русский</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#"><i class="flag-portugal flag"></i>Português</a>
-              </li>
-            </ul>
-          </li>
-  
-       
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle hidden-arrow d-flex align-items-center" href="#"
-              id="navbarDropdownMenuLink" role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-              <img src="https://mdbcdn.b-cdn.net/img/Photos/Avatars/img (31).webp" class="rounded-circle"
-                height="22" alt="Avatar" loading="lazy" />
-            </a>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
-              <li>
-                <a class="dropdown-item" href="#">My profile</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Settings</a>
-              </li>
-              <li>
-                <a class="dropdown-item" href="#">Logout</a>
-              </li>
-            </ul>
-          </li>
-        </ul>
       </div>
       
-    </nav> -->
+
+
    
   </header>
- 
-  <!-- <main style="margin-top: 58px;">
-    <div class="container pt-4"></div>
-  </main> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+        updateSalesGraph("day");
+document.getElementById("byDayOption").addEventListener("click", function() {
+    document.getElementById("timeIntervalDropdown").textContent = "By Day";
+    updateSalesGraph("day");
+});
+
+document.getElementById("byMonthOption").addEventListener("click", function() {
+    document.getElementById("timeIntervalDropdown").textContent = "By Month";
+    updateSalesGraph("month");
+});
+
+document.getElementById("byYearOption").addEventListener("click", function() {
+    document.getElementById("timeIntervalDropdown").textContent = "By Year";
+    updateSalesGraph("year");
+});
 
 
+
+async function fetchSalesData(timeInterval) {
+    try {
+        let response;
+        if (timeInterval === "day") {
+            console.log("daysss");
+            response = await fetch("/admin/count-orders-by-day");
+        } else if (timeInterval === "month") {
+            console.log("monthsss");
+            response = await fetch("/admin/count-orders-by-month");
+        } else if (timeInterval === "year") {
+            console.log("yearssss");
+            response = await fetch("/admin/count-orders-by-year");
+        } else {
+            return false;
+        }
+
+        console.log("its response", response);
+
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}
+
+
+
+
+
+async function updateSalesGraph(timeInterval) {
+    const salesData = await fetchSalesData(timeInterval);
+    console.log(salesData, "hereee");
+
+    // Get the canvas element
+    const Amount = document.getElementById("salesGraphAmount").getContext("2d");
+    const Count = document.getElementById("salesGraphCount").getContext("2d");
+
+    // If a chart already exists, destroy it
+    if (window.myChart1) {
+        window.myChart1.destroy();
+    }
+    if (window.myChart2) {
+        window.myChart2.destroy();
+    }
+    const barColors = ["red", "green","blue","orange","brown"]
+
+    window.myChart1 = new Chart(Amount, {
+        type: "bar",
+        data: {
+            labels: salesData.labelsByCount,
+            datasets: [
+                {
+                    label: "Sales",
+                    data: salesData.dataByCount,
+                    backgroundColor: "green",
+                    borderColor: "rgba(0, 0, 0, 0)",
+                    borderWidth: 3,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: [{
+                    grid: {
+                        display: true
+                    }
+                }],
+                y: [{
+                    beginAtZero: true,
+                    maxTicksLimit: 5
+                }]
+            }
+        },
+    });
+    window.myChart2 = new Chart(Count, {
+        type: "bar",
+        data: {
+            labels: salesData.labelsByAmount,
+            datasets: [
+                {
+                    label: "Sales",
+                    data: salesData.dataByAmount,
+                    backgroundColor: "blue",
+                    borderColor: "rgba(0, 0, 0, 0)",
+                    borderWidth: 3,
+                },
+            ],
+        },
+        options: {
+            scales: {
+                x: [{
+                    grid: {
+                        display: true
+                    }
+                }],
+                y: [{
+                    beginAtZero: true,
+                    maxTicksLimit: 5
+                }]
+            }
+        },
+    });
+}
+  </script>
 
   <%- include('footer')-%> 

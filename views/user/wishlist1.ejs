@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <style>
+    .img-account-profile {
+        max-width: 100%;
+    }
+
+    .cart-wrap {
+	padding: 40px 0;
+	font-family: 'Open Sans', sans-serif;
+}
+.main-heading {
+	font-size: 19px;
+	margin-bottom: 20px;
+}
+.table-wishlist table {
+    width: 100%;
+}
+.table-wishlist thead {
+    border-bottom: 1px solid #e5e5e5;
+    margin-bottom: 5px;
+}
+.table-wishlist thead tr th {
+    padding: 8px 0 18px;
+    color: #484848;
+    font-size: 15px;
+    font-weight: 400;
+}
+.table-wishlist tr td {
+    padding: 25px 0;
+    vertical-align: middle;
+}
+.table-wishlist tr td .img-product {
+    width: 72px;
+    float: left;
+    margin-left: 8px;
+    margin-right: 31px;
+    line-height: 63px;
+}
+.table-wishlist tr td .img-product img {
+	width: 100%;
+}
+.table-wishlist tr td .name-product {
+    font-size: 15px;
+    color: #484848;
+    padding-top: 8px;
+    line-height: 24px;
+    width: 50%;
+}
+.table-wishlist tr td.price {
+    font-weight: 600;
+}
+.table-wishlist tr td .quanlity {
+    position: relative;
+}
+
+.total {
+	font-size: 24px;
+	font-weight: 600;
+	color: #8660e9;
+}
+.display-flex {
+	display: flex;
+}
+.align-center {
+	align-items: center;
+}
+.round-black-btn {
+	border-radius: 25px;
+    background: #212529;
+    color: #fff;
+    padding: 5px 20px;
+    display: inline-block;
+    border: solid 2px #212529; 
+    transition: all 0.5s ease-in-out 0s;
+    cursor: pointer;
+    font-size: 14px;
+}
+.round-black-btn:hover,
+.round-black-btn:focus {
+	background: transparent;
+	color: #212529;
+	text-decoration: none;
+}
+.mb-10 {
+    margin-bottom: 10px !important;
+}
+.mt-30 {
+    margin-top: 30px !important;
+}
+.d-block {
+    display: block;
+}
+.custom-form label {
+    font-size: 14px;
+    line-height: 14px;
+}
+.pretty.p-default {
+    margin-bottom: 15px;
+}
+.pretty input:checked~.state.p-primary-o label:before, 
+.pretty.p-toggle .state.p-primary-o label:before {
+    border-color: #8660e9;
+}
+.pretty.p-default:not(.p-fill) input:checked~.state.p-primary-o label:after {
+    background-color: #8660e9 !important;
+}
+.main-heading.border-b {
+    border-bottom: solid 1px #ededed;
+    padding-bottom: 15px;
+    margin-bottom: 20px !important;
+}
+.custom-form .pretty .state label {
+    padding-left: 6px;
+}
+.custom-form .pretty .state label:before {
+    top: 1px;
+}
+.custom-form .pretty .state label:after {
+    top: 1px;
+}
+.custom-form .form-control {
+    font-size: 14px;
+    height: 38px;
+}
+.custom-form .form-control:focus {
+    box-shadow: none;
+}
+.custom-form textarea.form-control {
+    height: auto;
+}
+.mt-40 {
+    margin-top: 40px !important; 
+}
+.in-stock-box {
+	background: #ff0000;
+	font-size: 12px;
+	text-align: center;
+	border-radius: 25px;
+	padding: 4px 15px;
+	display: inline-block;  
+    color: #fff;
+}
+.trash-icon {
+    font-size: 20px;
+    color: #212529;
+}
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- Navbar/Header (Assuming the header is included using an external file) -->
+  <div style="height: 40px;"></div>
+
+  <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">
+        <img src="/assets/images/logo.png" alt="Logo" height="40">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Category
+            </a>
+            <% console.log(categories); %>
+            <ul class="dropdown-menu">
+              
+              <% categories.forEach(category => { %>
+                <% if (!category.isBlocked) { %>
+                <li><a class="dropdown-item" href="/products/<%= category.categoryName %>"><%= category.categoryName %></a></li>
+                <% } %>
+                <% }); %> 
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Contacts</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search" style="margin-right: 10px;">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+        <div class="icons">
+          <a href="/profile">
+            <i class="fa fa-user text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="/cart">
+            <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
+          </a>
+          <a href="#">
+            <i class="fa fa-heart text-dark" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+
+  <div class="cart-wrap">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="main-heading mb-4">My wishlist</div>
+                <div class="table-wishlist">
+                    <table class="table border-0">
+                        <thead>
+                            <tr>
+                                <th width="45%">Product Name</th>
+                                <th width="15%">Unit Price</th>
+                                <th width="15%">Stock Status</th>
+                                <th width="15%"></th>
+                                <th width="10%"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% wishlistItems.forEach(wishlist => { %>
+                                <% wishlist.items.forEach(item => { %>
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="img-product me-3">
+                                            <% if (item.productId && item.productId.images && item.productId.images.length > 0) { %>
+                                            <img src="/uploads/<%= item.productId.images[0] %>" alt="<%= item.productId.ProductName %>" class="img-fluid">
+                                            <% } else { %>
+                                                <p>No image available</p>
+                                            <% } %>
+                                        </div>
+                                        <div class="name-product">
+                                            <%= item.productId ? item.productId.ProductName : 'Product Name Not Available' %>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="price">
+                                    <% if (item.productId && item.productId.Price) { %>
+                                        ₹<%= item.productId.Price %>
+                                    <% } else { %>
+                                        Price Not Available
+                                    <% } %>  
+                                </td>
+                                <td><span class="in-stock-box">
+                                    <% if (item.productId && item.productId.AvailableQuantity > 0) { %>
+                                        In Stock
+                                    <% } else { %>
+                                        Out of Stock
+                                    <% } %>  
+                                </span></td>
+                                <td>
+                                <button class="btn btn-primary add-to-cart-btn" onclick="wishlistcart('<%= item.productId._id %>')" data-product-id="<%= item.productId._id %>">Add to Cart</button>
+                            </td>
+
+                                <td class="text-center"><a href="/deleteFromWishlist/<%= item.productId._id %>" class="trash-icon"><i class="far fa-trash-alt"></i></a></td>
+                                
+                            </tr>
+                            <% }); %>
+                            <% }); %>
+                            <!-- Repeat similar rows for other wishlist items -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // JavaScript function to handle adding wishlist item to cart using fetch
+    
+        console.log('looooo');
+      async function addToCart(productId) {
+        await fetch('/wishlistcart', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ productId: productId }),
+        })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Failed to add wishlist item to cart');
+          }
+          return response.json();
+        })
+        .then(data => {
+          alert('Wishlist item added to cart successfully!');
+          // Reload the page to update the wishlist after adding to cart
+          location.reload();
+        })
+        .catch(error => {
+          alert('Error adding wishlist item to cart: ' + error.message);
+        });
+      }
+  
+      function wishlistcart (productId)  {
+        console.log(productId,'----------------');
+        addToCart(productId)
+      }
+      // Add event listeners to "Add to Cart" buttons
+    //   const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    //   addToCartButtons.forEach(button => {
+    //     button.addEventListener('click', function() {
+    //       // Get the product ID from the button's data-product-id attribute
+    //       const productId = this.dataset.productId;
+    //       addToCart(productId);
+    //     });
+    //   });
+  </script>
+  
+
+ <!-- <script>
+ function addToCart(productId) {
+    const quantity = 1; // or specify the desired quantity
+    fetch('/wishlistcart', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId: productId, quantity: quantity }),
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Failed to add wishlist item to cart');
+      }
+      return response.json();
+    })
+    .then(data => {
+      alert('Wishlist item added to cart successfully!');
+      // Reload the page to update the wishlist after adding to cart
+      location.reload();
+    })
+    .catch(error => {
+      alert('Error adding wishlist item to cart: ' + error.message);
+    });
+  }
+</script> -->
+</body>
+</html>
+
+  
+

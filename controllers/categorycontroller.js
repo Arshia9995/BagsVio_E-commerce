@@ -27,16 +27,23 @@ const categoryModel=require("../models/categorySchema")
         }
     },
 
-    postaddcategory:async (req,res)=>{
+    postaddcategory: async (req, res) => {
         try {
-            console.log(req.body,'.......................................................................');
-            const savecategory=await categoryModel.create(req.body)
+            console.log(req.body, '.......................................................................');
+            const existingCategory = await categoryModel.findOne({ categoryName: req.body.categoryName });
+            if (existingCategory) {
+                return res.render('./admin/addcategory', { error: 'Category already exists' });
+            }
+            const savecategory = await categoryModel.create(req.body);
             console.log("test");
-            res.redirect("/admin/category")
+            res.redirect("/admin/category");
         } catch (error) {
-            console.log(error);            
+            console.log(error);
+            // Optionally, handle other errors
+            res.render('./admin/addcategory', { error: 'An error occurred' });
         }
     },
+    
     editCategory: async(req,res)=>{
         const {id}= req.params
         console.log(req.body);

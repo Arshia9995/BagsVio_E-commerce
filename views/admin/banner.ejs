@@ -1,0 +1,212 @@
+<%- include('header')-%>
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/admindashboard">
+        <i class="fa fa-home"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/adminproduct">
+        <i class="fa fa-product-hunt"></i> Products
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/category">
+        <i class="fa fa-list"></i> Category
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/customers">
+        <i class="fa fa-users"></i> Customers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/brand">
+        <i class="fa fa-users"></i> Brand
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/order">
+        <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/coupon">
+        <i class="fa fa-bars"></i> Coupons
+      </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/admin/banner">
+          <i class="fa fa-bars"></i> Banners
+        </a>
+      </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/productoffer">
+        <i class="fa fa-bars"></i> ProductOffer
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/logout">
+        <i class="fa fa-sign-out"></i> Logout
+      </a>
+    </li>
+   
+  </ul>
+</div>
+
+
+
+<!-- Main Content -->
+<div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
+    <!-- Button to trigger modal -->
+    <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addBannerModal">
+        <i class="fa fa-plus"></i> Add Banner
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addBannerModal" tabindex="-1" aria-labelledby="addBannerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBannerModalLabel">Add Banner</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Category selection dropdown -->
+                    <div class="mb-3">
+                        <label for="categorySelect" class="form-label">Select Category:</label>
+                        <select class="form-select" id="categorySelect">
+                            <% categories.forEach(category => { %>
+                                <option value="<%= category._id %>"><%= category.categoryName %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <!-- Upload banner button -->
+                    <div class="mb-3">
+                        <input type="file" name="image" id="bannerInput" accept="image/*" style="display: none">
+                        <button type="button" class="btn btn-primary" onclick="chooseFile()">
+                            Upload Banner
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="uploadBanner()">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Display uploaded banners dynamically -->
+    <div id="bannerContainer" style="margin-top: 50px;">
+        <% banners.forEach(banner => { %>
+            <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
+                <!-- Adjust width and height of the image here -->
+                <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+                <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
+            </div>
+        <% }); %>
+    </div>
+  </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      function chooseFile() {
+          document.getElementById('bannerInput').click();
+      }
+  
+      document.getElementById('bannerInput').addEventListener('change', function () {
+          // Automatically trigger upload when file is selected
+          uploadBanner();
+      });
+  
+      async function uploadBanner() {
+          const category = document.getElementById('categorySelect').value;
+          const fileInput = document.getElementById('bannerInput');
+          const file = fileInput.files[0];
+          if (!file) {
+              return alert('Please select a file');
+          }
+  
+          const formData = new FormData();
+          formData.append('image', file);
+          formData.append('category', category);
+  
+          try {
+              const response = await fetch('/admin/addBanner', {
+                  method: 'POST',
+                  body: formData,
+              });
+              const data = await response.json();
+              // console.log('this is the data',data)
+              if (data.success) {
+                // alert(JSON.stringify(data))
+                  // Append the new banner to the banner container
+                  const bannerContainer = document.getElementById('bannerContainer');
+                  const bannerItem = document.createElement('div');
+                  bannerItem.classList.add('banner-item');
+                  bannerItem.setAttribute('data-banner-id', data.banner._id);
+                  bannerItem.innerHTML = `
+                      <img src="/uploads/${data.banner.image}" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+                      <button onclick="deleteBanner('${data.banner._id}')" class="btn btn-danger">Delete</button>
+                  `;
+                  bannerContainer.appendChild(bannerItem);
+  
+                  // Close modal
+                  $('#addBannerModal').modal('hide');
+                  // alert('set')
+              } else {
+                  alert('Error uploading banner');
+              }
+          } catch (error) {
+              console.error('Error uploading banner:', error);
+              alert('Error uploading banner');
+          }
+      }
+  
+      function deleteBanner(bannerId) {
+    // Show SweetAlert confirmation message
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'Once deleted, you will not be able to recover this banner!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If user confirms deletion, send delete request
+        fetch(`/admin/deleteBanner/${bannerId}`, {
+          method: 'DELETE',
+        })
+        .then(response => {
+          if (response.ok) {
+            // Remove the deleted banner item from the page
+            const bannerItem = document.querySelector(`.banner-item[data-banner-id="${bannerId}"]`);
+            bannerItem.remove();
+            // Show success message
+            Swal.fire('Deleted!', 'Your banner has been deleted.', 'success');
+          } else {
+            throw new Error('Failed to delete banner');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Show error message or handle the error accordingly
+          Swal.fire('Error!', 'Failed to delete banner.', 'error');
+        });
+      }
+    });
+  }
+  </script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  

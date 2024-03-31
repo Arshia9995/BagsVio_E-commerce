@@ -2,13 +2,16 @@ const express = require('express');
 const admin = express.Router();
 const bcrypt = require('bcryptjs');
 const adminContoller = require('../controllers/admincontroller');
-const categorycontroller=require("../controllers/categorycontroller")
-const brandcontroller=require("../controllers/brandcontroller")
-const productcontroller=require("../controllers/productcontroller");
+const categorycontroller = require("../controllers/categorycontroller")
+const brandcontroller = require("../controllers/brandcontroller")
+const productcontroller = require("../controllers/productcontroller");
 const customercontroller = require('../controllers/customercontroller');
-const upload=require('../middleware/multer')
+const upload = require('../middleware/multer')
 const adminAuth = require('../middleware/adminAuth');
 const ordercontroller = require('../controllers/ordercontroller');
+const couponcontroller = require("../controllers/couponcontroller")
+const offercontroller = require("../controllers/offercontroller")
+const bannerController = require("../controllers/bannercontroller");
 
 
 
@@ -98,6 +101,41 @@ admin.get('/order',ordercontroller.adminOrderPage)
 admin.get('/orderview/:orderId',ordercontroller.adminOrderViewPage)
 
 admin.post("/updateOrderStatus/:orderId",ordercontroller.updateOrderStatus)
+
+//coupons
+
+admin.get('/coupon',couponcontroller.getCouponPage)
+
+admin.post('/addcoupon',couponcontroller.postAddCoupon)
+admin.post("/editcoupon/:couponId",couponcontroller.postEditCoupon)
+
+admin.delete("/deletecoupon/:couponId",couponcontroller.postdeletecoupon)
+
+//offers
+
+admin.get("/productoffer",offercontroller.getProductOfferPage)
+admin.get("/products",offercontroller.getProduct)
+admin.post("/addOffer",offercontroller.postProductOffer)
+
+
+admin.post("/editoffer/:offerId",offercontroller.posteditProductOffer)
+
+//sales
+
+admin.get("/sales",adminContoller.getSalesPage)
+admin.get('/count-orders-by-day',adminContoller.getCount)
+admin.get('/count-orders-by-month',adminContoller.getCount)
+admin.get('/count-orders-by-year',adminContoller.getCount)
+
+
+
+admin.post('/download-sales-report',adminContoller.getDownloadSalesReport)
+
+//banner
+
+admin.get('/banner',bannerController.getBannerPage)
+admin.post('/addbanner',  bannerController.addBanner);
+admin.delete('/deletebanner/:bannerId', bannerController.deleteBanner);
 
 
 

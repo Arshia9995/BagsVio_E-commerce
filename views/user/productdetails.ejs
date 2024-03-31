@@ -1,5 +1,62 @@
 <%- include('header')-%>
 
+<style>
+  /* Style for Product Reviews */
+  .mt-4 {
+    margin-top: 20px; /* Adjust as needed */
+  }
+
+  .mt-4 h5 {
+    margin-bottom: 15px;
+  }
+
+  .card {
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+  }
+
+  .card-body {
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+  }
+
+  .card-title {
+    margin-bottom: 0.75rem;
+    font-size: 1.25rem;
+    font-weight: 500;
+  }
+
+  .card-text {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  .card-footer {
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+    border-bottom-right-radius: calc(0.25rem - 1px);
+    border-bottom-left-radius: calc(0.25rem - 1px);
+  }
+
+  .text-muted {
+    color: #6c757d !important;
+  }
+
+  /* Style for yellow stars */
+  .rating-stars {
+    color: #f1c40f; /* Yellow color code */
+  }
+</style>
 <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="#">
@@ -12,7 +69,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Home</a>
+          <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">About</a>
@@ -41,13 +98,13 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
       </form>
       <div class="icons">
-        <a href="#">
+        <a href="/profile">
           <i class="fa fa-user text-dark" aria-hidden="true"></i>
         </a>
         <a href="/cart">
           <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
         </a>
-        <a href="#">
+        <a href="/wishlist">
           <i class="fa fa-heart text-dark" aria-hidden="true"></i>
         </a>
       </div>
@@ -103,7 +160,7 @@
             </dd>
 
             <dt class="col-3">Stock:</dt>
-            <dd class="col-9">
+            <dd id="stock" class="col-9">
               <%= products.AvailableQuantity %>
             </dd>
           </div>
@@ -154,18 +211,57 @@
           </div>
 
           <a href="#" class="btn btn-warning shadow-0"> Buy now </a>
-          <a href="#" class="btn btn-primary shadow-0" onclick="addToCart('<%= products._id %>',document.getElementById('quantityInput').value)">
+          <a href="#" class="btn btn-primary shadow-0" onclick="addToCart('<%= products._id %>',document.getElementById('quantityInput').value),'<%= products.AvailableQuantity %> '">
             <i class="me-1 fa fa-shopping-basket"></i> Add to cart
           </a>
           
-          <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3"> <i
-              class="me-1 fa fa-heart fa-lg"></i>Add to Wishlist </a>
+          <a href="#" class="btn btn-light border border-secondary py-2 icon-hover px-3" onclick="addToWishlist('<%= products._id %>')">
+            <i class="me-1 fa fa-heart fa-lg"></i>Add to Wishlist
+          </a>
+
+         <!-- Product Reviews Section -->
+<div class="mt-4" id="productReviewsContainer">
+  <h5 class="mb-3">Product Reviews</h5>
+  <!-- Reviews will be dynamically added here -->
+  <% if (productReviews && productReviews.length > 0) { %>
+    <% productReviews.forEach(review => { %>
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="card-title">Rating:</h6>
+          <div class="rating-stars" style="font-size: 30px;">
+            <% for (let i = 0; i < review.rating; i++) { %>
+              ★
+            <% } %>
+          </div>
+          <p class="card-text">Review: <%= review.reviewText %></p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Submitted on <%= review.createdAt.toDateString() %></small>
+        </div>
+      </div>
+    <% }); %>
+  <% } else { %>
+    <p>No reviews available for this product.</p>
+  <% } %>
+</div>
+
+
+          
         </div>
       </main>
+
+
+      
 
     </div>
   </div>
 </section>
+
+
+
+<!-- Include SweetAlert library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
 
 <script>
   const container = document.getElementById("container");
@@ -198,6 +294,11 @@ async function addToCart(productId, quantity) {
     const quantityInput = document.getElementById("quantityInput");
     const quantity = parseInt(quantityInput.value); // Parse the value as an integer
     const existingQuantity = parseInt(quantityInput.getAttribute("data-quantity") || 0);
+    const stock = document.getElementById('stock').innerHTML
+    if(stock <= 0) {
+      alert('out of stock. Cannot be added to cart')
+      return
+    }
 
     const totalQuantity = quantity + existingQuantity;
 
@@ -206,25 +307,37 @@ async function addToCart(productId, quantity) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ productId,quantity: totalQuantity }),
+      body: JSON.stringify({ productId, quantity: totalQuantity }),
     });
 
     const data = await response.json();
 
     if (data.success) {
-     
-
-      alert('Product added to cart successfully!');
+      // Use SweetAlert for success message
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Product added to cart successfully!',
+      });
     } else {
-      alert('Failed to add product to cart.');
-      
-     
+      // Use SweetAlert for failure message
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Failed to add product to cart.',
+      });
     }
   } catch (error) {
     console.error('Error:', error);
-    alert('An error occurred while adding the product to the cart.');
+    // Use SweetAlert for error message
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred while adding the product to the cart.',
+    });
   }
 }
+
 
 // Increment quantity
 document.getElementById("button-addon2").addEventListener("click", function() {
@@ -241,18 +354,48 @@ document.getElementById("button-addon1").addEventListener("click", function() {
 });
 
 
+
+
+async function addToWishlist(productId) {
+  try {
+    const response = await fetch('/addToWishlist', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      // Product added successfully, show success message
+      Swal.fire({
+        icon: 'success',
+        title: 'Success',
+        text: 'Product added to wishlist successfully!',
+      });
+    } else {
+      // Show error message
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: data.error || 'Failed to add product to wishlist.',
+      });
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    // Show error message
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: 'An error occurred while adding the product to the wishlist.',
+    });
+  }
+}
+
+
 </script>
-
-
-
-
-
-
-
-
-
-
-
 
 
 

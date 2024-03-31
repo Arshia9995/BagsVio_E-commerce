@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Banner</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .file-upload {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        #bannerImage {
+            max-width: 100%;
+            margin-top: 20px;
+            display: none; /* Hide initially */
+        }
+        .btn-add-banner {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Add Banner</h1>
+        <div class="file-upload">
+            <input type="file" id="bannerInput" style="display: none;">
+            <label for="bannerInput" class="btn btn-primary">Select Banner</label>
+            <button id="addBannerBtn" class="btn btn-success btn-add-banner">Add Banner</button>
+            <img src="" alt="Banner" id="bannerImage">
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('addBannerBtn').addEventListener('click', function() {
+            // Open file input dialog
+            document.getElementById('bannerInput').click();
+        });
+
+        // Handle file selection
+        document.getElementById('bannerInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const formData = new FormData();
+            formData.append('bannerImage', file);
+
+            // Send POST request to server to upload the file
+            fetch('/admin/add-banner', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the uploaded banner
+                document.getElementById('bannerImage').src = data.filePath;
+                document.getElementById('bannerImage').style.display = 'block'; // Show the image
+            })
+            .catch(error => {
+                console.error('Error uploading banner:', error);
+            });
+        });
+    </script>
+</body>
+</html>

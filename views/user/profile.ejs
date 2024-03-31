@@ -30,7 +30,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
@@ -85,7 +85,7 @@
               <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
               <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
               <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
-              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+              <li><a href="/coupon" class="list-group-item list-group-item-action">Coupons</a></li>
             </ul>
             <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
             <ul class="pl-4">
@@ -158,6 +158,19 @@
               </div>
           </div>
       </div>
+      <a class="btn text-dark d-flex-column  border-0">
+        <div class="wallet-header"> 
+          Refer to your friends and earn Rs:100  in each.
+        </div>
+          <div>
+          <h6>Your referral link : </h6>
+          <h6 class="text-primary" id="referral-link">localhost:8474/signup/<%=user._id%> </h6>
+          </div>
+          <div class="p-4">
+          <button id="copyButton" class=" border-0">copy</button>
+          </div>
+        <span id="copySuccessMessage" class="d-none fw-bold text-success"> Text copied to clipboard! </span>
+      </a> 
     </div>
   </div>
   <!-- Bootstrap JS -->
@@ -165,7 +178,28 @@
   <script src="
 https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js
 "></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+<script>
+  document.getElementById("copyButton").addEventListener("click", function () {
+  const referralLink = document.getElementById("referral-link").textContent;
 
+  const tempInput = document.createElement("input");
+  tempInput.value = referralLink;
+  document.body.appendChild(tempInput);
+
+  tempInput.select();
+  document.execCommand("copy");
+
+  document.body.removeChild(tempInput);
+
+  const successMessage = document.getElementById("copySuccessMessage");
+  successMessage.classList.remove("d-none");
+
+  setTimeout(function () {
+    successMessage.classList.add("d-none");
+  }, 3000);
+});
+</script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       document.getElementById('profileform1').addEventListener('submit', function (e) {

@@ -7,6 +7,13 @@ const sendOTP = require('./otpcontroller');
 const Otp=require('../models/otpSchema');
 const Users = require('../models/user');
 const flash=require('express-flash')
+const Wallet=require('../models/wallet');
+const session = require('express-session');
+const Orders = require('../models/order')
+const invoice = require("../utility/invoice");
+const Banner = require("../models/banner")
+const Review = require("../models/review")
+const generateOtp =  require('../utility/generateOtp')
 
 module.exports = 
 {
@@ -66,12 +73,17 @@ module.exports =
         },
     showUserProductDetails:async (req, res) => {
         try {
+          //  const userData = await Users.findOne({email:req.session.email})
+          //  console.log('userid is',userData)
             const productId=req.params.productId
+            console.log(productId,"product id");
           
             const categories = await category.find({});
             const products= await Product.findOne({_id:productId}).populate('BrandName').populate('Category')
-            // console.log(products);
-            res.render('user/productdetails',{categories,products})
+            // const productReviews = await Review.find({productId: productId})
+            const productReviews = await Review.find({productId: productId})
+            console.log(productReviews,'productReviews');
+            res.render('user/productdetails',{categories,products,productReviews})
         } catch (e) {
             console.log(e)
         }
@@ -85,25 +97,196 @@ module.exports =
    
     showSignupPage: (req, res) => {
       console.log('user session in signuop page',req.session)
+      console.log('user session in signuop page',req.session._id)
         res.render('user/usersignup', { messages: req.flash('error') });
     },
     showForgetPassword: (req, res) => {
         res.render('user/forgetpassword')
     },
-    showResetPassword:(req,res)=>{
-
-     
-        res.render('user/resetpassword')
+    showReqOtpPage:(req,res)=>{
+      res.render('user/reqotp')
     },
+    requestOtp:async(req,res)=>{
+      try {
+
+          
+        const {email} =req.body;
+        const userExist = await Users.findOne({email:email})
+
+
+        if(!userExist){
+          res.render('user/usersignup',{err:"user not found"})
+       }
+
+       const createdOTP= await sendOTP(email);
+       console.log(createdOTP,'otp created');
+       req.session.email=email;
+       res.render('user/reqotp')
+        
+      } catch (error) {
+        
+      }
+    },
+    validatereqOtp:async(req,res)=>{
+
+      try {
+      const email=req.session.email
+      const { otp1, otp2, otp3, otp4 } = req.body;
+      const enteredOtp = otp1 + otp2 + otp3 + otp4;
+
+      console.log("entered otp", enteredOtp);
+      const createdOTPrecord = await Otp.findOne({ email, otp: enteredOtp });
+
+      if (!createdOTPrecord) {
+        console.log('Invalid OTP Rendering user/Otp...')
+        return res.render('user/reqotp', { error: 'Invalid OTP' });
+      }
+        // req.session.email=null
+
+       res.render('user/resetpassword')
+        
+      } catch (error) {
+        console.error('Error in OTP verification:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+        
+      }
+
+      
+
+
+    },
+
+    resendOTP: async (req, res) => {
+      try {
+        console.log('backend reached',req.session)
+          const { email } = req.session.signupDetails; 
+          console.log('this is the email',email)
+          
+        
+          delete req.session.signupDetails.otp;
+  
+     
+          const newOtp = generateOtp();
+          
+         
+          req.session.signupDetails.otp = newOtp;
+  
+         
+          await sendOTP(email, newOtp);
+  
+          console.log('resend otp send ')
+          res.redirect('/otp');
+      } catch (error) {
+          console.error('Error resending OTP:', error);
+          res.status(500).json({ error: 'Internal Server Error' });
+      }
+  },
+
+    showResetPassword:(req,res)=>{
+      res.render('user/resetpassword')
+    },
+
+
+    resetPassword:async(req,res)=>{
+      try {
+        const email=req.session.email ;
+        const{newPassword, confirmPassword}=req.body
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        const user = await Users.findOneAndUpdate({ email },{ $set: { password: hashedPassword } },{ new: true });
+      
+        // if (newPassword !== confirmPassword) {
+        //   return res.render('user/resetpassword', { error: 'Passwords do not match' });
+        // }
+       const error=''
+        // user.password = newPassword;
+        // await user.save();
+        console.log('password changed successfully.....')
+        return res.render('user/userlog',{error})
+
+      } catch (error) {
+        
+      }
+     },
+     showChangePassword:async(req,res)=>{
+      
+        const categories=await category.find()
+        const email = req.session.email; 
+
+        const user = await Users.findOne({ email: email }); 
+         res.render('user/changepassword',{categories,user})
+        
+      
+     },
+
+     postChangePassword:async (req, res) => {
+      // Retrieve the form data from the request body
+      const { currentPassword, newPassword, confirmPassword } = req.body;
+      console.log(req.body,"qqqqqqqqqq")
+      const user = req.session.user
+      console.log(user.password);
+      console.log(user,"uuuuuuu");
+  
+      // Check if the current password matches the user's actual password
+      // if (currentPassword !== user.password) {
+      //     return res.status(400).send('Current password is incorrect');
+      // }
+
+      const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+      if (!isPasswordValid) {
+        return res.status(400).send('Current password is incorrect');
+    }
+  
+      // Check if the new password matches the confirm password
+      if (newPassword !== confirmPassword) {
+          return res.status(400).send('New password and confirm password do not match');
+      }
+      try {
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // Update the user's password in the database
+        await Users.findByIdAndUpdate(user._id, { password: hashedPassword });
+
+        // Password updated successfully
+        res.redirect('/profile'); // Redirect to the profile page or any other appropriate page
+    } catch (err) {
+        console.error('Error updating password:', err);
+        return res.status(500).send('An error occurred while updating the password');
+    }
+  },
+  
+     
     showUserHomePage:async (req, res) => {
         // console.log('email of the user',req.session.email)
         console.log('user home reached')
+
+        const banners = await Banner.find().sort({ createdAt: 1 }).populate('category');;
         const categories=await category.find()
         const newarrival = await Product.find({ isNewArrival: true, isBlocked: false })
         const newtrends = await Product.find({ isNewTrends: true, isBlocked: false })
+        
         // console.log(categories+"00000000000000000000000")
-        res.render('user/userhome',{categories,newarrival,newtrends})
+        res.render('user/userhome',{categories,newarrival,newtrends,banners})
     },
+
+    getUserSignupWithReferralCode: async (req, res) => {
+      try {
+        const _id = req.params._id;
+        req.session.refid = _id
+        // localStorage.setItem('userId', _id);
+        // await User.findOneAndUpdate(
+        //   { _id: _id },
+        //   { $inc: { WalletAmount: 100 } }
+        // );
+        res.redirect("/signup");
+      } catch (error) {
+        console.log(error);
+      }
+    },
+
+
     signupPost: async (req,res)=>{
 
         try{
@@ -111,10 +294,7 @@ module.exports =
           
         const {name,email,password,confirmPassword} =req.body;
         const userExist = await user.findOne({email:email})
-        // const categories=await category.find()
-
-        // const newarrival = await Product.find({ isNewArrival: true, isBlocked: false })
-        // const newtrends = await Product.find({ isNewTrends: true, isBlocked: false })
+       
          
 
          if(userExist){
@@ -123,6 +303,7 @@ module.exports =
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
          req.session.signupDetails={name,email,password}
+         console.log('this is the signupdetails',req.session.signupDetails)
         // const newUser = new user({
         //     name:name,
         //     email:email,
@@ -203,6 +384,13 @@ module.exports =
      validateOtp: async (req, res) => {
         try {
         //   const brands = await Brands.find({});
+        
+        console.log(req.session.refid,'======')
+        let referrerUsedUser;
+    
+
+
+
           const categories = await category.find({});
           console.log('verifying otp..');
           const { otp1, otp2, otp3, otp4 } = req.body;
@@ -217,7 +405,7 @@ module.exports =
           console.log('Email', email);
           console.log("entered otp", enteredOtp);
           const createdOTPrecord = await Otp.findOne({ email, otp: enteredOtp });
-
+          const banners = await Banner.find().sort({ createdAt: 1 }).populate('category');;
           const newarrival = await Product.find({ isNewArrival: true, isBlocked: false })
           const newtrends = await Product.find({ isNewTrends: true, isBlocked: false })
     
@@ -235,8 +423,41 @@ module.exports =
         })
        
         const savedUser= await newUser.save()
+        referrerUsedUser = savedUser._id
+         // Create a new wallet for the user
+      const newWallet = new Wallet({
+      userId: savedUser._id, // Set the userId to the newly created user's ID
+      balance: 0, // Optionally set an initial balance
+      transactions: [], // Initialize transactions array
+    });
+
+      // Save the wallet to the database
+      await newWallet.save();
+      if(req.session.refid){
+        let userId = req.session.refid
+        const incremented = await Wallet.findOneAndUpdate(
+          { userId }, // Find the wallet document with the given userId
+          {
+            $inc: { balance: 100 }, // Increment the balance by 100
+            $push: {
+              transactions: {
+                transactionType: 'referral',
+                amount: 100,
+                from: referrerUsedUser
+              }
+            }
+          },
+          { new: true })
+          console.log(incremented,'=-----=------=');
+      }
+      req.session.refid = null;
+      req.session.userLogged = true;
+      req.session.email = email;
+      req.session.user= savedUser;
+      req.session.userIsLoged = email;
+      req.session.userId=savedUser
         req.session.userLogged=savedUser
-          return res.render('user/userhome', {  categories,newarrival,newtrends });
+          return res.render('user/userhome', {  categories,newarrival,newtrends,banners });
         }
         catch (error) {
           console.error('Error in OTP verification:', error);
@@ -298,7 +519,7 @@ module.exports =
       const categories=await category.find()
       const email = req.session.email; 
       const user = await Users.findOne({ email: email }).populate('addresses');
-      console.log(user.addresses.addresses,'////////////////////////////')
+      console.log(user?.addresses?.addresses,'////////////////////////////')
      
 
       res.render('user/addressbook',{categories,addresses: user.addresses})
@@ -431,8 +652,39 @@ editAddress:async(req,res)=>{
     console.error('Error removing address:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
-}
+},
+Logout: (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error('Error destroying session:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.redirect('/login');
+    }
+  }); 
+},
+downloadInvoice: async (req, res) => {
+  try {
 
+    const orderId = req.body.orderId;
+    const orderData = await Orders.findById(orderId)
+    .populate("userId") // Populate the userId field
+    .populate("products.productId"); 
+
+    console.log("order data ====", orderData);
+    const filePath = await invoice.order(orderData);
+    // const orderId = orderData._id;
+    res.json({ orderId });
+  } catch (error) {
+    console.error("Error in downloadInvoice:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+},
+downloadfile: async (req, res) => {
+  const id = req.params._id;
+  const filePath = `C:/Users/arshi/OneDrive/Desktop/project week1/public/pdf/${id}.pdf`;
+  res.download(filePath, `invoice.pdf`);
+},
 
 }
  

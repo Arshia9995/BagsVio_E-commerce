@@ -1,0 +1,147 @@
+<%- include('header')-%>
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/admindashboard">
+        <i class="fa fa-home"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/adminproduct">
+        <i class="fa fa-product-hunt"></i> Products
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/category">
+        <i class="fa fa-list"></i> Category
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/customers">
+        <i class="fa fa-users"></i> Customers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/brand">
+        <i class="fa fa-users"></i> Brand
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/order">
+        <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/coupon">
+        <i class="fa fa-bars"></i> Coupons
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/productoffer">
+        <i class="fa fa-bars"></i> ProductOffer
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/logout">
+        <i class="fa fa-sign-out"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="container mt-5 ml-3">
+    <!-- Separate cards for total income and total quantity sold -->
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Total Income</strong></h5>
+                    <p class="card-text"><strong><%= totalIncome %></strong></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Total Quantity Sold</strong></h5>
+                    <p class="card-text"><strong><%= totalQuantitySold %></strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+      <div class="col-md-12">
+          <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
+      </div>
+  </div>
+    <!-- Sales report card -->
+     <!-- Sales report card -->
+     <div class="row">
+      <div class="col-md-12">
+          <h2>Sales Report</h2>
+          <!-- Filter form -->
+          <!-- <form action="/admin/salesreport" method="GET" class="mb-3">
+              <div class="form-row">
+                  <div class="col">
+                      <input type="date" class="form-control" name="startDate" placeholder="Start Date" required>
+                  </div>
+                  <div class="col">
+                      <input type="date" class="form-control" name="endDate" placeholder="End Date" required>
+                  </div>
+                  <div class="col">
+                      <button type="submit" class="btn btn-primary">Filter</button>
+                  </div>
+              </div>
+          </form> -->
+
+          <!-- Sales report table -->
+          <table class="table">
+              <thead>
+                  <tr>
+                      <th>Customer Name</th>
+                      <th>Total Price</th>
+                      <th>Order Status</th>
+                      <th>Product Name</th>
+                      <th>Price</th>
+                      <th>Quantity</th>
+                      <th>Date</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Iterate over filtered orders and display sales report data -->
+                
+                  <% orders.forEach(order => { %>
+                      <% if (order.status === 'Delivered') { %>
+                          <% order.products.forEach(product => { %>
+                              <tr>
+                                  <td><%= order.userId.name %></td> <!-- Display customer name -->
+                                  <td><%= order.totalPrice %></td> <!-- Display total price -->
+                                  <td><%= order.status %></td> <!-- Display order status -->
+                                  <td><%= product.productId.ProductName %></td> <!-- Display product name -->
+                                  <td><%= product.price %></td> <!-- Display product price -->
+                                  <td><%= product.quantity %></td> <!-- Display product quantity -->
+                                  <td><%= order.orderDate.toDateString() %></td> <!-- Display order date -->
+                              </tr>
+                            
+                          <% }) %>
+                      <% } %>
+                  <% }) %>
+                 
+              </tbody>
+          </table>
+      </div>
+  </div>
+</div>
+
+<%- include('footer')-%>
+
+

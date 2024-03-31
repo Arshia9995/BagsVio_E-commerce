@@ -48,7 +48,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
@@ -106,7 +106,7 @@
               <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
               <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
               <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
-              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+              <li><a href="/coupon" class="list-group-item list-group-item-action">Coupons</a></li>
             </ul>
             <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
             <ul class="pl-4">
@@ -143,7 +143,7 @@
                                                     <div class="media-body">
                                                         <p><%= product.productId.ProductName %></p>
                                                         <h6 class="mb-1">Quantity: <%= product.quantity %></h6>
-                                                        <p class="text-dark">Total Price: ₹<%= product.productId.Price * product.quantity %></p>
+                                                        <p class="text-dark">Total Price: ₹<%= orderItem.totalPrice %></p>
                                                     </div>
                                                 </div>
                                             </div>

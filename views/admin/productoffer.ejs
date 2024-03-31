@@ -1,0 +1,272 @@
+<%- include('header')-%>
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/admindashboard">
+        <i class="fa fa-home"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/adminproduct">
+        <i class="fa fa-product-hunt"></i> Products
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/category">
+        <i class="fa fa-list"></i> Category
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/customers">
+        <i class="fa fa-users"></i> Customers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/brand">
+        <i class="fa fa-users"></i> Brand
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/orders">
+        <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/coupon">
+        <i class="fa fa-bars"></i> Coupons
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/productoffer">
+        <i class="fa fa-bars"></i> ProductOffer
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/logout">
+        <i class="fa fa-sign-out"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<!-- Main Content -->
+<div class="container mt-5 ml-3">
+  <div class="mb-3">
+    <button
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#addOfferModal"
+    >
+      <i class="fa fa-plus"></i> Add Offer
+    </button>
+  </div>
+<!-- Display the product offers -->
+<div class="row">
+    <% productOffers.forEach(productOffer => { %>
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Product Name: <%= productOffer.productName %>
+            </h5>
+            <p class="card-text">
+              Discount Percentage: <%= productOffer.discountPercentage %>
+            </p>
+            <!-- Edit and Delete Buttons -->
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editOfferModal<%= productOffer._id %>">Edit</button>
+              <button type="button" class="btn btn-danger">Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade" id="editOfferModal<%= productOffer._id %>" tabindex="-1" aria-labelledby="editOfferModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editOfferModalLabel">Edit Product Offer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add form for editing the product offer -->
+                <form id="editOfferForm" action="/admin/editOffer" method="POST">
+                    <div class="mb-3">
+                        <label for="editProductName" class="form-label">Product Name</label>
+                        <select class="form-select" id="editProductName" name="editProductName">
+                            <%console.log(productOffer.productName,'-----------')%>
+                            <option value="<%=productOffer.productName%>"><%=productOffer.productName%></option>
+                            <!-- Product names will be populated dynamically here -->                      
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editDiscountPercentage" class="form-label">Discount Percentage</label>
+                        <input type="number" class="form-control" id="editDiscountPercentage" name="editDiscountPercentage" min="0" max="100" value="<%= productOffer.discountPercentage || '' %>" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+    <% }) %>
+</div>
+  
+      <!-- Edit Offer Modal -->
+
+
+ 
+  
+<div
+  class="modal fade"
+  id="addOfferModal"
+  tabindex="-1"
+  aria-labelledby="addOfferModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addOfferModalLabel">Add Product Offer</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form id="addOfferForm" action="/admin/addOffer" method="POST">
+          <div class="mb-3">
+            <label for="productName" class="form-label">Product Name</label>
+            <select class="form-select" id="productName" name="productName">
+              <!-- Populate product names dynamically here -->
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="discountPercentage" class="form-label"
+              >Discount Percentage</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="discountPercentage"
+              name="discountPercentage"
+              min="0"
+              max="100"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('footer')-%>
+
+<!-- JavaScript to fetch product names and populate the dropdown -->
+<script>
+  // Function to fetch product names and populate the dropdown
+  async function fetchProductNames() {
+    try {
+      // Fetch product names from the backend
+      const response = await fetch("/admin/products");
+      if (!response.ok) {
+        throw new Error("Failed to fetch product names");
+      }
+      const data = await response.json();
+      const productNames = data.productNames;
+
+      // Populate the dropdown with product names
+      const productNameDropdown = document.getElementById("productName");
+      productNames.forEach((productName) => {
+        const option = document.createElement("option");
+        option.text = productName;
+        productNameDropdown.add(option);
+      });
+    } catch (error) {
+      console.error("Error fetching product names:", error);
+    }
+  }
+
+  // Call the fetchProductNames function when the page is loaded
+  document.addEventListener("DOMContentLoaded", fetchProductNames);
+</script>
+
+
+
+
+<!-- JavaScript to fetch product names and populate the dropdown -->
+<script>
+    // Function to fetch product names and populate the dropdown
+    async function fetchProductNamesForEditModal(modal) {
+    try {
+        // Fetch product names from the backend
+        const response = await fetch("/admin/products");
+        if (!response.ok) {
+            throw new Error("Failed to fetch product names");
+        }
+        const data = await response.json();
+        const productNames = data.productNames;
+
+        // Populate the dropdown with product names
+        const editProductNameDropdown = modal.querySelector("#editProductName");
+        editProductNameDropdown.innerHTML = ''; // Clear previous options
+        productNames.forEach((productName) => {
+            const option = document.createElement("option");
+            option.text = productName;
+            editProductNameDropdown.add(option);
+        });
+
+        // Set the selected product name in the dropdown
+        var button = event.relatedTarget;
+        var productName = button.getAttribute('data-product-name');
+        editProductNameDropdown.value = productName;
+    } catch (error) {
+        console.error("Error fetching product names for edit modal:", error);
+    }
+}
+
+    // Call the fetchProductNamesForEditModal function when the modal is shown
+    document.querySelectorAll('.modal').forEach(function(modal) {
+    modal.addEventListener('show.bs.modal', function(event) {
+        // Call the function to fetch product names for edit modal
+        fetchProductNamesForEditModal(modal);
+    });
+});
+
+</script>
+<script>
+document.querySelectorAll('.modal').forEach(function(modal) {
+    modal.addEventListener('show.bs.modal', function(event) {
+        // Get the modal ID from the data attribute
+        var modalId = modal.getAttribute('data-modal-id');
+
+        // Get the button that triggered the modal
+        var button = event.relatedTarget;
+
+        // Extract productOffer data from the button
+        var productName = button.getAttribute('data-product-name');
+        var discountPercentage = button.getAttribute('data-discount-percentage');
+
+        // Set the values in the modal form
+        var editProductNameDropdown = modal.querySelector('#editProductName');
+        editProductNameDropdown.value = productName;
+
+        // var editDiscountPercentageInput = modal.querySelector('#editDiscountPercentage');
+        // console.log(editDiscountPercentageInput,'=========');
+        // editDiscountPercentageInput.value = discountPercentage;
+    });
+});
+
+
+</script>
+

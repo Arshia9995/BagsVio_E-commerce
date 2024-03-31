@@ -14,8 +14,6 @@ const mongoose = require('mongoose')
       .catch((error)=>{
         console.log('not connected',error)
       }
-    
-      
       )
 
 

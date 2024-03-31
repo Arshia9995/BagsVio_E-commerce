@@ -6,6 +6,11 @@ const nodemailer=require('nodemailer');
 const usercontroller = require('../controllers/usercontroller');
 const cartcontroller = require('../controllers/cartcontroller');
 const ordercontroller = require('../controllers/ordercontroller');
+// let wishlistDatas = require('../controllers/wishlistcontroller')
+const demoWishlist = require('../controllers/wishlistcontroller');
+const wishlistcontroller = require('../controllers/wishlistcontroller');
+const couponcontroller = require('../controllers/couponcontroller')
+const reviewController = require('../controllers/reviewcontroller')
 
 
 
@@ -22,10 +27,31 @@ router.post('/login',userController.userLogin)
 router.get('/signup',userAuth.userExist,userController.showSignupPage);
 router.post('/signup',userAuth.userExist,userController.signupPost)
 router.get('/otp',userAuth.userExist,userController.getOtpPage)
+router.post('/otpvalidate',userAuth.userExist, userController.validateOtp)
 
+router.get('/signup/:_id',userAuth.userExist,userController.getUserSignupWithReferralCode)
+
+//resend OTP
+router.post('/resendOtp', userController.resendOTP);
+
+//forgot password
+
+router.get('/forgetpassword', userController.showForgetPassword);
+router.post('/forgetpassword',userController.requestOtp)
+
+router.get('/reqotp',userController.showReqOtpPage)
+router.post('/reqotpvalidate', userController.validatereqOtp)
+
+//reset password
 
 router.get('/resetpassword', userController.showResetPassword);
-router.get('/forgetpassword', userController.showForgetPassword);
+router.post('/newpassword',usercontroller.resetPassword)
+
+
+//change password
+
+router.get('/changepassword',userController.showChangePassword)
+router.post('/changepassword',userController.postChangePassword)
 
 //home afterlogin
 router.get('/userhome', userController.showUserHomePage);
@@ -40,7 +66,6 @@ router.get('/products/:categoryName', userController.showUserProductList);
 router.get('/productdetails/:productId', userController.showUserProductDetails);
 
 
-router.post('/otpvalidate',userAuth.userExist, userController.validateOtp)
 
 //profile
 
@@ -56,8 +81,8 @@ router.post('/editaddress',userController.editAddress)
 router.delete('/deleteaddress/:addressId',userController.deleteAddress)
 
 //cart
-router.get('/cart',cartcontroller.getCartPage)
-router.post('/addToCart',cartcontroller.addToCart)
+router.get('/cart',userAuth.verifyUser,cartcontroller.getCartPage)
+router.post('/addToCart',userAuth.verifyUser,cartcontroller.addToCart)
 router.post('/removeFromCart',cartcontroller.removeFromCart)
 router.post('/updateQuantity',cartcontroller.updateCartItemQuantity)
 
@@ -71,12 +96,59 @@ router.post("/placeorder",cartcontroller.continueCheckOut)
 router.post('/confirmorder', ordercontroller.placeOrder);
 
 router.get("/paymentsuccess",cartcontroller.getPaymentSuccessPage)
+router.post("/checkoutaddaddress",cartcontroller.postCheckoutaddAddress)
+
+router.get("/makePayment",ordercontroller.makePayment)
+
+router.post('/verifyPayment',ordercontroller.getVerifyPayment)
+
+// router.get('/wishlist',ordercontroller.getVerifyPayment)
+
+
 
 //orders
 router.get("/orders",ordercontroller.showOrdersPage)
 router.get('/orderdetails/:orderId',ordercontroller.showOrderDetailsPage)
 
 router.post('/cancelorder/:orderId',ordercontroller.cancelOrder)
+
+router.post('/returnorder/:orderId',ordercontroller.returnOrder)
+
+
+//wishlist
+
+
+router.get("/wishlist", wishlistcontroller.showWishlistPage)
+router.post("/addToWishlist",wishlistcontroller.addToWishlist)
+router.post("/wishlistcart",wishlistcontroller.WishlistItemToCart)
+router.get("/deleteFromWishlist/:id",wishlistcontroller.getDeleteWishlist)
+
+//wallet
+router.get("/wallet",ordercontroller.showWalletPage)
+
+//coupons
+
+
+router.get("/coupon",couponcontroller.getuserCouponPage)
+router.post("/applycoupon",couponcontroller.postApplyCoupon)
+
+//logout
+router.get('/logout',userController.Logout)
+
+
+//download invoice
+
+router.post('/download-invoice',userController.downloadInvoice)
+router.get('/download-invoice/:_id',userController.downloadfile)
+
+//Review and Rating
+
+router.post('/submit-review', reviewController.submitReview);
+
+
+
+
+
 
 
 module.exports = {router};

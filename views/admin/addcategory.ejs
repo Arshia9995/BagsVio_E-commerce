@@ -30,8 +30,23 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/admin/orders">
+      <a class="nav-link" href="/admin/order">
         <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/coupon">
+        <i class="fa fa-bars"></i> Coupons
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/productoffer">
+        <i class="fa fa-bars"></i> ProductOffer
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
       </a>
     </li>
     <li class="nav-item">
@@ -50,6 +65,13 @@
 <!-- Main Content -->
 <div class="container mt-5 ml-3">
   <h2 class="mb-4">Add Category</h2>
+
+
+  <% if (typeof error !== 'undefined') { %>
+    <div class="alert alert-danger" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
 
   <!-- Add Category Form -->
   <form action="/admin/addcategory" method="POST" >

@@ -12,6 +12,22 @@
 
     <style>
         /* Add custom styles here if needed */
+        .review-form-container {
+            padding-left: 25px; /* Adjust as needed */
+        }
+
+        .star-outline {
+            color: #000; /* Black color for the outline */
+        }
+
+        .star-yellow {
+            color: #ffc107; /* Yellow color for the selected stars */
+        }
+
+        /* Change cursor style when hovering over stars */
+        .star {
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -41,9 +57,13 @@
                         </div>
                     </div>
                 </div>
+                </div>
+
+
+              
+               
             </div>
         </div>
-    </div>
 
     <div class="container mt-3">
         <div class="row">
@@ -60,10 +80,50 @@
                                 </div>
                                 <div class="col-md-10">
                                     <p><strong>Product Name:</strong><%= product.productId.ProductName %></p>
-                                    <p><strong>Price:</strong> ₹<%= product.productId.Price %></p>
+                                    <p><strong>Price:</strong> ₹<%= product.price %></p>
                                     <p><strong>Quantity:</strong> <%= product.quantity %></p>
-                                    <p><strong>Total Price:</strong> ₹<%= order.totalPrice %></p>
+                                    <p><strong>Total Price:</strong> ₹<%=  product.price *product.quantity  %></p>
+                                  
+                                    <% if (order.status === "Delivered" || order.status === "Returned") { %>
+                                        <button class="btn btn-warning add-review-btn" data-bs-toggle="modal" data-bs-target="#addReviewModal" data-product-id="<%= product.productId._id %>">Add Review</button>
+                                    <% } %>
                                 </div>
+
+
+                                <!-- Add Review Modal -->
+<div class="modal fade" id="addReviewModal" tabindex="-1" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addReviewModalLabel">Add Review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Rating input -->
+                <div class="mb-3">
+                    <label for="rating" class="form-label">Rating:</label>
+                    <div id="ratingStars" style="font-size: 30px;">
+                        <span class="star" data-value="1">★</span>
+                        <span class="star" data-value="2">★</span>
+                        <span class="star" data-value="3">★</span>
+                        <span class="star" data-value="4">★</span>
+                        <span class="star" data-value="5">★</span>
+                    </div>
+                    <input type="hidden" id="rating" name="rating" value="0">
+                </div>
+                <!-- Review text input -->
+                <div class="mb-3">
+                    <label for="reviewText" class="form-label">Review:</label>
+                    <textarea class="form-control" id="reviewText" name="reviewText" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="submitReviewBtn">Submit Review</button>
+            </div>
+        </div>
+    </div>
+</div>
                             </div>
                             <% }); %>
                             <!-- Add more product details as needed -->
@@ -94,6 +154,11 @@
                             <%=order.shippingAddress.mobile %>
                             <!-- Add more address details as needed -->
                         </div>
+
+                        <!-- Button for downloading invoice -->
+                        <% if (order.status === "Delivered" || order.status === "Returned") { %>
+                            <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice </button>
+                        <% } %>
                     </div>
                 </div>
             </div>
@@ -105,12 +170,20 @@
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="text-end">
+                    <% if(order.status == "Pending" || order.status == "Processing") {%>
                     <button id="cancelOrderBtn" class="btn btn-danger">Cancel Order</button>
-
+                   <% } else if (order.status =="Delivered") { %>
+                    <button id="returnOrderBtn" class="btn btn-danger">Return Order</button>
+                   <% } %>
                 </div>
             </div>
         </div>
     </div>
+
+
+
+    
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -121,31 +194,238 @@
 
 <script>
     document.getElementById("cancelOrderBtn").addEventListener("click", async function() {
-      try {
-        // Send an AJAX request to update the order status
-        const response = await fetch('/cancelorder/<%= order._id %>', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+        // Show a confirmation dialog using SweetAlert before proceeding
+        swal({
+            title: "Are you sure?",
+            text: "Are you sure you want to cancel this order?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((confirmed) => {
+            if (confirmed) {
+                // If the user confirms, proceed with the cancel order action
+                try {
+                    // Send an AJAX request to update the order status
+                    fetch('/cancelorder/<%= order._id %>', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ orderId: '<%= order._id %>',paymentMethod: '<%= order.paymentMethod %>' }), // Send the order ID
+                    })
+                    .then(response => {
+                        console.log(response,'========');
+                        if (response.ok) {
+                            // If the request was successful, display a SweetAlert message
+                            swal("Success!", "Order cancelled successfully.", "success")
+                            .then(() => {
+                                // Reload the page after the user clicks "OK"
+                                // window.location.reload();
+                                document.querySelector('.badge.bg-success').textContent = 'Cancelled';
+                            });
+                        } else {
+                            // If there was an error, display a SweetAlert error message
+                            swal("Success!", "Order cancelled successfully.", "success")
+                            // window.location.href = '/orders'
+                            // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // If there was an error, display a SweetAlert error message
+                        swal("Success!", "Order cancelled successfully.", "success")
+                        // window.location.href = '/orders'
+                        // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                    // If there was an error, display a SweetAlert error message
+                    swal("Success!", "Order cancelled successfully.", "success")
+                    // window.location.href = '/orders'
+                    // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+                }
+            } else {
+                // If the user cancels, do nothing
+                return;
+            }
         });
-  
-        if (response.ok) {
-          // If the request was successful, display a SweetAlert message
-          swal("Success!", "Order cancelled successfully.", "success");
-          // Update the order status displayed on the page
-          document.querySelector('.badge.bg-success').textContent = 'Cancelled';
-        } else {
-          // If there was an error, display a SweetAlert error message
-          swal("Error!", "Failed to cancel order. Please try again later.", "error");
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        // If there was an error, display a SweetAlert error message
-        swal("Error!", "Failed to cancel order. Please try again later.", "error");
-      }
     });
-  </script>
-  
+</script>
+
+
+<script>
+    document.getElementById("returnOrderBtn").addEventListener("click", function() {
+        // Show a confirmation dialog before proceeding
+        // Show a confirmation dialog using SweetAlert before proceeding
+swal({
+    title: "Are you sure?",
+    text: "Are you sure you want to return this order?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+})
+.then((confirmed) => {
+    if (confirmed) {
+        // If the user confirms, proceed with the return order action
+        try {
+            // Send an AJAX request to update the order status
+            fetch('/returnorder/<%= order._id %>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If the request was successful, display a SweetAlert message
+                    swal("Success!", "Order returned successfully.", "success")
+                    .then(() => {
+                        // Reload the page after the user clicks "OK"
+                        window.location.reload();
+                        document.querySelector('.badge.bg-success').textContent = 'Returned';
+                    });
+                } else {
+                    // If there was an error, display a SweetAlert error message
+                    swal("Success!", "Order returned successfully.", "success")
+                    window.location.href = '/orders'
+                    // swal("Error!", "Failed to return order. Please try again later.", "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // If there was an error, display a SweetAlert error message
+                swal("Success!", "Order returned successfully.", "success")
+                window.location.href = '/orders'
+                // swal("Error!", "Failed to return order. Please try again later.", "error");
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            // If there was an error, display a SweetAlert error message
+            swal("Success!", "Order returned successfully.", "success")
+            window.location.href = '/orders'
+            // swal("Error!", "Failed to return order. Please try again later.", "error");
+        }
+    } else {
+        // If the user cancels, do nothing
+        return;
+    }
+});
+    })
+</script>
+<script>
+
+async function downloadInvoice(orderId) {
+                  try {
+                    const response = await fetch('/download-invoice', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ orderId }),
+                    })
+                    if (response.ok) {
+
+                      console.log("response inside", response)
+                      window.location.href = `/download-invoice/${orderId}`;
+                    }
+                  } catch (err) {
+                    console.error("error in order History", err)
+                  } finally {
+                    // loadingSpinner.style.display = 'none';
+                  }
+                }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('.star');
+        const ratingInput = document.getElementById('rating');
+
+        // Add click event listener to each star
+        stars.forEach(star => {
+            star.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default form submission
+                const value = parseInt(star.getAttribute('data-value'));
+                ratingInput.value = value; // Set the rating value
+                highlightStars(value); // Highlight the selected stars
+            });
+        });
+
+        // Highlight stars up to the selected value
+        function highlightStars(value) {
+            stars.forEach(star => {
+                const starValue = parseInt(star.getAttribute('data-value'));
+                if (starValue <= value) {
+                    star.classList.remove('star-outline');
+                    star.classList.add('star-yellow');
+                } else {
+                    star.classList.remove('star-yellow');
+                    star.classList.add('star-outline');
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+    const addReviewBtns = document.querySelectorAll('.add-review-btn');
+
+    addReviewBtns.forEach(btn => {
+        btn.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default form submission
+            const productId = btn.getAttribute('data-product-id');
+            // Set the product ID as a data attribute of the modal submit button
+            document.getElementById('submitReviewBtn').setAttribute('data-product-id', productId);
+        });
+    });
+
+    // Add event listener to the modal submit button
+    const submitReviewBtn = document.getElementById('submitReviewBtn');
+    submitReviewBtn.addEventListener('click', async function () {
+        // Retrieve the rating and review text values
+        const rating = document.getElementById('rating').value;
+        const reviewText = document.getElementById('reviewText').value;
+        const productId = submitReviewBtn.getAttribute('data-product-id'); // Retrieve the product ID from the modal submit button
+
+        // Perform AJAX request to submit the review
+        try {
+            const response = await fetch('/submit-review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    productId: productId,
+                    rating: rating,
+                    reviewText: reviewText
+                }),
+            });
+
+            if (response.ok) {
+                // Display success message using SweetAlert
+                swal("Success!", "Review submitted successfully!", "success")
+                    .then(() => {
+                        // Close the modal after the user clicks "OK"
+                        $('#addReviewModal').modal('hide');
+                    });
+            } else {
+                // Display error message using SweetAlert
+                swal("Error!", "Failed to submit review. Please try again later.", "error");
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            // Display error message using SweetAlert
+            swal("Error!", "Failed to submit review. Please try again later.", "error");
+        }
+    });
+});
+
+</script>
+
+
+
+
 

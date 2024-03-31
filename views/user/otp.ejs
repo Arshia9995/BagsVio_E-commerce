@@ -65,14 +65,29 @@
                                                         id="validateButton"
                                                         style="margin-left: 250px;">Validate</button>
                                                 </div>
-                                                <div
+
+                                                <!-- Countdown timer and Resend OTP button -->
+<!-- <div class="content d-flex justify-content-center align-items-center mb-5">
+    <span id="countdownText">OTP will expire in <span id="countdown">60</span> seconds</span>
+    <button id="resendOTPButton" onclick="resendOTP()">Resend OTP</button>
+</div> -->
+                                                <!-- <div
                                                     class="content d-flex justify-content-center align-items-center mb-5">
                                                     <span id="countdownText">otp will expire in <span
-                                                            id="countdown">120</span>
+                                                            id="countdown">60</span>
                                                         seconds</span>
-                                                    <a href="/resendOtp" class="text-decoration-none ms-3"
-                                                        id="resend-otp"></a>
+                                                        <a href="#" onclick="resendOTP()" class="text-decoration-none ms-3" id="resend-otp">Resend OTP</a>
+                                                </div> -->
+                                                <div class="content d-flex justify-content-center align-items-center mb-5">
+                                                    <span id="countdownText">OTP will expire in <span id="countdown">60</span> seconds</span>
+                                                    <span id="resendOtpContainer"></span>
                                                 </div>
+
+                                                <div id="successMessage" class="content d-flex justify-content-center align-items-center mb-3" style="display: none;">
+                                                    <span id="successText" class="text-success">OTP has been successfully sent.</span>
+                                                </div>
+                                                
+                                                
 
                                 </div>
                             </form>
@@ -92,19 +107,18 @@
                 const countdownText = document.getElementById('countdownText');
                 const countdown = document.getElementById('countdown');
                 const resend = document.getElementById('resend-otp')
-                let timer = 120; // 2 minutes (2 * 60 seconds)
+                let timer = 60; // 1 minutes ( 60 seconds)
     
                 function updateCountdown() {
-                    countdown.textContent = timer;
-                    if (timer <= 0) {
-                        clearInterval(countdownInterval);
-                        countdownText.style.display = 'none';
-                        resend.innerHTML = "resend otp "
-                        // Hide the countdown text
-                        // Show the "Didn't get the OTP? Resend OTP" link here
-                    }
-                    timer--;
+                countdown.textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownText.style.display = 'none';
+                    const resendOtpContainer = document.getElementById('resendOtpContainer');
+                    resendOtpContainer.innerHTML = '<a href="#" onclick="resendOTP()" class="text-decoration-none ms-3">Resend OTP</a>';
                 }
+                timer--;
+            }
     
                 // Initialize the countdown
                 updateCountdown();
@@ -168,5 +182,46 @@
             });
         });
     </script>
+   
+   <script>
+    // Function to handle OTP resend
+    async function resendOTP() {
+    try {
+        const response = await fetch('/resendOtp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        });
+        const data = await response.json();
+        if (data.success) {
+            clearInterval(countdownInterval);
+            let timer = 60;
+            const countdownText = document.getElementById('countdownText');
+            const countdown = document.getElementById('countdown');
+            const updateCountdown = function () {
+                countdown.textContent = timer;
+                if (timer <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownText.style.display = 'none';
+                    const resendOtpContainer = document.getElementById('resendOtpContainer');
+                    resendOtpContainer.innerHTML = '<a href="#" onclick="resendOTP()" class="text-decoration-none ms-3">Resend OTP</a>';
+                }
+                timer--;
+            };
+            updateCountdown();
+            const countdownInterval = setInterval(updateCountdown, 1000);
 
+            // Show success message
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block'; // Display the success message
+        } else {
+            console.error('Error resending OTP:', data.error);
+        }
+    } catch (error) {
+        console.error('Error resending OTP:', error);
+    }
+}
+        
+</script>
     </body>

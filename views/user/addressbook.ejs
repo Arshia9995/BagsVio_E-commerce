@@ -48,7 +48,7 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
+            <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">About</a>
@@ -107,7 +107,7 @@
               <li><a href="/addressbook" class="list-group-item list-group-item-action">Address Book</a></li>
               <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
               <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
-              <li><a href="/coupons" class="list-group-item list-group-item-action">Coupons</a></li>
+              <li><a href="/coupon" class="list-group-item list-group-item-action">Coupons</a></li>
             </ul>
             <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
             <ul class="pl-4">
@@ -140,8 +140,8 @@
             <!-- Saved Addresses -->
             <!-- Addresses will be dynamically added here using JavaScript -->
 
-            <% if (addresses.addresses && addresses.addresses.length> 0) { %>
-              <% addresses.addresses.forEach(data=> { %>
+            <% if (addresses?.addresses?.length > 0) { %>
+              <% addresses?.addresses.forEach(data=> { %>
                 <div class="col-md-4 mb-3">
                   <div class="card">
                     <div class="card-body">
@@ -214,23 +214,27 @@
                     </div>
                     <form id="addressForm" action="/addaddress" method="POST">
                       <div class="modal-body">
+
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="name" class="form-label">Name:</label>
-                            <input type="text" class="form-control" id="name" name="name" placeholder="">
+                            <input type="text" class="form-control" id="username" oninput="validateUserName()" name="name" placeholder="Name">
+                            <div id="nameCheck" class="text-danger"></div>
                           </div>
                         </div>
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="address" class="form-label">Address Line 1:</label>
-                            <input type="text" class="form-control" id="address" name="addressline" placeholder="">
+                            <input type="text" class="form-control" id="address" oninput="validateUserAddress()" name="addressline" placeholder="">
+                            <div id="addressCheck" class="text-danger"></div>
                           </div>
                         </div>
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="pincode" class="form-label">Pin Code</label>
-                            <input type="text" class="form-control" id="pincode" name="pincode"
+                            <input type="text" class="form-control" id="pincode" oninput="validatePincode()" name="pincode"
                               placeholder="Enter your pincode">
+                              <div id="pincodeMsg" class="text-danger"></div>
                           </div>
                         </div>
                         <div class="row mb-3">
@@ -238,26 +242,30 @@
                             <label for="state" class="form-label">Street</label>
                             <input type="text" class="form-control" id="street" name="street"
                               placeholder="Enter Street name">
+                              <div id="nameCheck" class="text-danger"></div>
                           </div>
                         </div>
 
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="city" class="form-label">City</label>
-                            <input type="text" class="form-control" id="city" name="city" placeholder="Enter City">
+                            <input type="text" class="form-control" id="city" name="city" oninput="validateUserCity()" placeholder="Enter City">
+                            <div id="cityCheck" class="text-danger"></div>
                           </div>
                         </div>
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="state" class="form-label">State</label>
-                            <input type="text" class="form-control" id="state" name="state" placeholder="Enter State">
+                            <input type="text" class="form-control" id="state" name="state" oninput="validateUserState()" placeholder="Enter State">
+                            <div id="stateCheck" class="text-danger"></div>
                           </div>
                         </div>
                         <div class="row mb-3">
                           <div class="col-md-12">
                             <label for="mobile" class="form-label">Mobile</label>
-                            <input type="text" class="form-control" id="mobile" name="mobile"
+                            <input type="text" class="form-control" id="mobile" oninput="validateMobileNumber()" name="mobile"
                               placeholder="Enter your mobile number">
+                              <div id="mobileMsg" class="text-danger"></div>
                           </div>
                         </div>
 
@@ -451,7 +459,6 @@
 
   </script>
 
-
-
+<script src="/js/address.js"></script>
 
   <%- include('../partials/user-footer') %>
