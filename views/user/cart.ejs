@@ -147,7 +147,11 @@
   <% } else { %>
     <button class="btn btn-dark btn-sm" type="button" onclick="updateCartQuantity('<%= item._id %>', -1)" id="decrementButton">-</button>
   <% } %>
+<<<<<<< HEAD
   <input type="number" class="form-control allQuantity" value="<%= item.quantity %>" id="cartQuantity<%= item._id %>" min="1" max="<%= item.productId?.AvailableQuantity || 1 %>" onchange="updateCartQuantity('<%= item._id %>', this.value)">
+=======
+  <input type="number" class="form-control allQuantity" value="<%= item.quantity %>" id="cartQuantity<%= item._id %>" min="1" max="<%= item.productId?.AvailableQuantity || 0 %>" onchange="updateCartQuantity('<%= item._id %>', this.value)">
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
   <% if (item.quantity >= item.productId?.AvailableQuantity) { %>
     <button disabled class="btn btn-dark btn-sm" type="button" onclick="updateCartQuantity('<%= item._id %>', 1)">+</button>
   <% } else { %>
@@ -155,9 +159,15 @@
   <% } %>
 </div>
 
+<<<<<<< HEAD
 <% if (item.productId?.AvailableQuantity == 0) { %>
     <p class="text-danger">Out of Stock</p>
   <% } %>
+=======
+<% if(item.productId?.AvailableQuantity == 0){ %>
+    <p style="color: red;">Out of Stock</p>
+<% } %>
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
 
                         
                         </td>
@@ -305,7 +315,11 @@
       alert("Some items in your cart have a quantity exceeding the available stock." );
       return
     } else {
+<<<<<<< HEAD
       window.location.href = "/checkout";
+=======
+      // window.location.href = "/checkout";
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
     }
   });
 </script>

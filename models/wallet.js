@@ -2,7 +2,7 @@ const { ObjectId } = require("bson");
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
-  transactionType: { type: String, enum: ['debit', 'credit','referral'] }, // 'Credit' or 'Debit'
+  transactionType: { type: String, enum: ['debit', 'credit'] }, // 'Credit' or 'Debit'
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now },
   from: { type: String }, 

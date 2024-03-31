@@ -128,6 +128,10 @@
                             <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Wallet" required>
                             <label class="custom-control-label" for="debit">Wallet</label>
                           </div>
+                          <div class="custom-control custom-radio">
+                            <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Wallet" required>
+                            <label class="custom-control-label" for="debit">Wallet</label>
+                          </div>
                     </div>
 
                     <!-- Your Cart Column -->
@@ -153,6 +157,7 @@
                                 </div>
                             </li>
                         <% }); %>
+<<<<<<< HEAD
 
                          <!-- Delivery charge (if applicable) -->
  <% if (totalPrice < 1000) { %>
@@ -170,6 +175,20 @@
                 <% totalPrice += deliveryCharge %>
                 <% } %>
             <strong>₹ <%= totalPrice  %></strong>
+=======
+                    
+                    <!-- <li class="list-group-item d-flex justify-content-between bg-light" style="margin-top: 10px;">
+                       <div class="text-success">
+                        <h6 class="my-0">Promo code</h6>
+                         <small>EXAMPLECODE</small> 
+                      </div> -->
+                      <!-- <span class="text-success">-$5</span> 
+                    </li> -->
+                     <!-- Total Price -->
+        <li id="totalPrice" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
+            <span>Total Price:</span>
+            <strong>₹ <%= totalPrice %></strong>
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
         </li>
 
 
@@ -181,9 +200,27 @@
                 <button class="btn btn-outline-secondary" type="button" id="applyCouponBtn">Apply</button>
             </div>
         </li>
+<<<<<<< HEAD
            </ul>
                        
                         <form class="card p-2">              
+=======
+
+
+
+        <!-- Show Available Coupons Button -->
+<!-- <div class="mb-3">
+    <button type="button" class="btn btn-primary" id="showCouponsBtn">Show Available Coupons</button>
+</div> -->
+
+
+                        </ul>
+                        <!-- Cart summary and form -->
+                        <form class="card p-2">
+                            <!-- Cart summary, promo code input, etc. -->
+                            <!-- Add your cart summary, promo code input, etc. here -->
+                        
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                     </div>
                 </div>
                 <!-- Continue to checkout button -->
@@ -238,7 +275,10 @@
                  // Address added successfully
                  document.getElementById('newAddressForm').style.display = 'none'; // Hide the form
                  // Fetch and update the address list dynamically
+<<<<<<< HEAD
                  location.reload();
+=======
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                  await updateAddressList();
              } else {
                  console.error('Failed to add address:', response.statusText);
@@ -371,6 +411,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
+<<<<<<< HEAD
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const continueToCheckoutBtn = document.querySelector('button[type="submit"]');
@@ -446,5 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+=======
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
 
  

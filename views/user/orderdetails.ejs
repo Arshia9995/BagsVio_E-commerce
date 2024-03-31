@@ -212,38 +212,60 @@
                         headers: {
                             'Content-Type': 'application/json',
                         },
+<<<<<<< HEAD
                         body: JSON.stringify({ orderId: '<%= order._id %>',paymentMethod: '<%= order.paymentMethod %>' }), // Send the order ID
                     })
                     .then(response => {
                         console.log(response,'========');
+=======
+                        body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+                    })
+                    .then(response => {
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                         if (response.ok) {
                             // If the request was successful, display a SweetAlert message
                             swal("Success!", "Order cancelled successfully.", "success")
                             .then(() => {
                                 // Reload the page after the user clicks "OK"
+<<<<<<< HEAD
                                 // window.location.reload();
+=======
+                                window.location.reload();
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                                 document.querySelector('.badge.bg-success').textContent = 'Cancelled';
                             });
                         } else {
                             // If there was an error, display a SweetAlert error message
+<<<<<<< HEAD
                             swal("Success!", "Order cancelled successfully.", "success")
                             // window.location.href = '/orders'
                             // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+=======
+                            swal("Error!", "Failed to cancel order. Please try again later.", "error");
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
                         // If there was an error, display a SweetAlert error message
+<<<<<<< HEAD
                         swal("Success!", "Order cancelled successfully.", "success")
                         // window.location.href = '/orders'
                         // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+=======
+                        swal("Error!", "Failed to cancel order. Please try again later.", "error");
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                     });
                 } catch (error) {
                     console.error('Error:', error);
                     // If there was an error, display a SweetAlert error message
+<<<<<<< HEAD
                     swal("Success!", "Order cancelled successfully.", "success")
                     // window.location.href = '/orders'
                     // swal("Error!", "Failed to cancel order. Please try again later.", "error");
+=======
+                    swal("Error!", "Failed to cancel order. Please try again later.", "error");
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
                 }
             } else {
                 // If the user cancels, do nothing
@@ -252,6 +274,7 @@
         });
     });
 </script>
+<<<<<<< HEAD
 
 
 <script>
@@ -428,4 +451,61 @@ async function downloadInvoice(orderId) {
 
 
 
+=======
+>>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
 
+
+<script>
+    document.getElementById("returnOrderBtn").addEventListener("click", function() {
+        // Show a confirmation dialog before proceeding
+        // Show a confirmation dialog using SweetAlert before proceeding
+swal({
+    title: "Are you sure?",
+    text: "Are you sure you want to return this order?",
+    icon: "warning",
+    buttons: true,
+    dangerMode: true,
+})
+.then((confirmed) => {
+    if (confirmed) {
+        // If the user confirms, proceed with the return order action
+        try {
+            // Send an AJAX request to update the order status
+            fetch('/returnorder/<%= order._id %>', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId: '<%= order._id %>' }), // Send the order ID
+            })
+            .then(response => {
+                if (response.ok) {
+                    // If the request was successful, display a SweetAlert message
+                    swal("Success!", "Order returned successfully.", "success")
+                    .then(() => {
+                        // Reload the page after the user clicks "OK"
+                        window.location.reload();
+                        document.querySelector('.badge.bg-success').textContent = 'Returned';
+                    });
+                } else {
+                    // If there was an error, display a SweetAlert error message
+                    swal("Error!", "Failed to return order. Please try again later.", "error");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // If there was an error, display a SweetAlert error message
+                swal("Error!", "Failed to return order. Please try again later.", "error");
+            });
+        } catch (error) {
+            console.error('Error:', error);
+            // If there was an error, display a SweetAlert error message
+            swal("Error!", "Failed to return order. Please try again later.", "error");
+        }
+    } else {
+        // If the user cancels, do nothing
+        return;
+    }
+});
+    })
+</script>
