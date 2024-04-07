@@ -99,6 +99,7 @@ module.exports = {
         }
       } else if (paymentMethod === "Wallet") {
         const userWallet = await Wallet.findOne({ userId });
+        console.log('this is the user wallet',userWallet)
 
         if (!userWallet) {
           return res
@@ -133,19 +134,22 @@ module.exports = {
 
         // Create transaction record
         const transaction = {
-          transactionType: "debit",
+          transactionType:'debit',
           amount: totalPrice,
           date: new Date(),
           from: "Wallet",
           orderId: orderId, // Assign the order ID here
         };
+        console.log('this is the transaction',transaction)
 
         // Add transaction to user's wallet
         userWallet.transactions.push(transaction);
+        console.log('transacction added to wallet')
 
         // Save updated wallet
         await userWallet.save();
-        res.redirect("/paymentsuccess");
+        console.log('wallet saved')
+        return res.redirect("/paymentsuccess");
       } else {
         // Handle insufficient balance or non-wallet payment method
         // For example, redirect to a payment gateway or show an error message

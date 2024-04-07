@@ -39,14 +39,11 @@
             </a>
         </li>
         <li class="nav-item">
-<<<<<<< HEAD
             <a class="nav-link" href="/admin/productoffer">
                 <i class="fa fa-bars"></i> ProductOffer
             </a>
         </li>
         <li class="nav-item">
-=======
->>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
             <a class="nav-link" href="/admin/sales">
                 <i class="fa fa-line-chart"></i> Sales
             </a>
@@ -95,6 +92,14 @@
                             <input type="number" class="form-control" id="discountPercentage" name="discountPercentage" min="0" max="100" required>
                         </div>
                         <div class="mb-3">
+                            <label for="maximumDiscountAmount" class="form-label">Maximum Discount Amount</label>
+                            <input type="number" class="form-control" id="maximumDiscountAmount" name="maximumDiscountAmount" min="0"  required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="minimumPurchaseAmount" class="form-label">Minimum Purchase Amount</label>
+                            <input type="number" class="form-control" id="minimumPurchaseAmount" name="minimumPurchaseAmount" min="0"  required>
+                        </div>
+                        <div class="mb-3">
                             <label for="startDate" class="form-label">Start Date</label>
                             <input type="date" class="form-control" id="startDate" name="startDate" required>
                         </div>
@@ -118,6 +123,8 @@
                     <h5 class="card-title"><%= coupon.couponName %></h5>
                     <p class="card-text">Coupon Code: <%= coupon.couponCode %></p>
                     <p class="card-text">Discount: <%= coupon.discountPercentage %>%</p>
+                    <p class="card-text">Maximum Discount Amount: <%= coupon.maximumDiscountAmount %></p>
+                    <p class="card-text">Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %></p>
                     <p class="card-text">Start Date: <%= coupon.startDate.toLocaleDateString() %></p>
                     <p class="card-text">Expiration Date: <%= coupon.expirationDate.toLocaleDateString() %></p>
                     <!-- Edit and Delete Buttons -->
@@ -151,6 +158,14 @@
                     <div class="mb-3">
                         <label for="discountPercentage<%=coupon._id %>" class="form-label">Discount Percentage</label>
                         <input type="number" class="form-control" id="discountPercentage<%=coupon._id %>" name="discountPercentage" min="0" max="100" value="<%= coupon.discountPercentage %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="maximumDiscountAmount<%=coupon._id %>" class="form-label">Maximum Discount Amount</label>
+                        <input type="number" class="form-control" id="maximumDiscountAmount<%=coupon._id %>" name="maximumDiscountAmount" min="0"  value="<%= coupon.maximumDiscountAmount %>" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="minimumPurchaseAmount<%=coupon._id %>" class="form-label">Minimum Purchase Amount</label>
+                        <input type="number" class="form-control" id="minimumPurchaseAmount<%=coupon._id %>" name="minimumPurchaseAmount" min="0"  value="<%= coupon.minimumPurchaseAmount %>" required>
                     </div>
                     <div class="mb-3">
                         <label for="startDate<%=coupon._id %>" class="form-label">Start Date</label>

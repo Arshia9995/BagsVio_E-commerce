@@ -184,6 +184,7 @@ getCheckOutPage: async (req, res) => {
       const { userId } = req.session;
       const email = req.session.email;
       const user = await Users.findOne({ email }).populate("addresses");
+      const categories = await categoryModel.find();
       console.log(user,'=-=---=-=-==================');
 
       // Retrieve user's wallet amount
@@ -218,7 +219,7 @@ getCheckOutPage: async (req, res) => {
           userCart,
           addresses: user?.addresses?.addresses,
           walletAmount,
-          totalPrice,
+          totalPrice,categories
       });
   } catch (err) {
       console.error(err);

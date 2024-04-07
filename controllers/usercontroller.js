@@ -14,6 +14,7 @@ const invoice = require("../utility/invoice");
 const Banner = require("../models/banner")
 const Review = require("../models/review")
 const generateOtp =  require('../utility/generateOtp')
+const Brands = require("../models/brandSchema")
 
 module.exports = 
 {
@@ -51,6 +52,7 @@ module.exports =
     showUserProductList:async (req, res) => {
         try {
             const categories = await category.find({});
+            const brands = await Brands.find();
             const selectedCategoryName = req.params.categoryName;
         
             // Find the Category ObjectId for the selected category name
@@ -60,12 +62,37 @@ module.exports =
               // Handle the case where the category is not found
               return res.status(404).send('Category not found');
             }
-        
+
+            let sortOption = {};
+            // console.log(req.query.sortOptions,"kkkkkkkkkkkkkkkkkkkkkkkkk");
+
+            if (req.query.sortOptions) {
+                switch (req.query.sortOptions) {
+                    case 'priceAsc':
+                        sortOption = { Price: 1 };
+                        break;
+                    case 'priceDesc':
+                        sortOption = { Price: -1 };
+                        break;
+                }
+            }
+            console.log("Sort option:", sortOption);
+
+
+            // Parse selected brands from query parameters
+    const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
+
+    // Construct filter options
+    let filterOptions = { Category: selectedCategory._id, isBlocked: false };
+    if (selectedBrands.length > 0) {
+      filterOptions.BrandName = { $in: selectedBrands };
+    }
             // Use the found Category ObjectId to query products
-            const products = await Product.find({ Category: selectedCategory._id ,isBlocked:false});
+            const products = await Product.find({ Category: selectedCategory._id ,isBlocked:false}).sort(sortOption);
+            console.log('sorted data',products)
             // console.log('products>>>>>new',products)
         
-            res.render('user/productlist', { categories, products, selectedCategory: selectedCategoryName });
+            res.render('user/productlist', { categories, products, selectedCategory: selectedCategoryName,brands });
           } catch (e) {
             console.error(e);
             res.status(500).send('Internal Server Error');
@@ -88,20 +115,44 @@ module.exports =
             console.log(e)
         }
     },
+    sortOrder:async (req, res) => {
+      const sortOrder = req.params.order; // 'asc' for ascending, 'desc' for descending
+      try {
+        // Query the database to retrieve products sorted by price
+        const sortedProducts = await Product.find().sort({ Price: sortOrder });
+        res.json(sortedProducts);
+      } catch (error) {
+        console.error('Error fetching sorted products:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    },
 
 
 
-
+    filterProductsByBrand : async (req, res) => {
+      const selectedBrands = req.query.brands.split(','); // Get selected brand IDs from query parameters
+      try {
+        // Fetch products based on selected brand IDs
+        const filteredProducts = await Product.find({ BrandName: { $in: selectedBrands } });
+        console.log(filteredProducts,"ffffffffffffffff");
     
-
+        // Send filtered products as response
+        res.json(filteredProducts);
+      } catch (error) {
+        console.error('Error filtering products:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    },
+   
    
     showSignupPage: (req, res) => {
       console.log('user session in signuop page',req.session)
       console.log('user session in signuop page',req.session._id)
         res.render('user/usersignup', { messages: req.flash('error') });
     },
-    showForgetPassword: (req, res) => {
-        res.render('user/forgetpassword')
+    showForgetPassword: async(req, res) => {
+      const categories = await category.find({});
+        res.render('user/forgetpassword',{categories})
     },
     showReqOtpPage:(req,res)=>{
       res.render('user/reqotp')
@@ -175,7 +226,8 @@ module.exports =
           await sendOTP(email, newOtp);
   
           console.log('resend otp send ')
-          res.redirect('/otp');
+          // res.redirect('/otp');
+          res.json({success:true})
       } catch (error) {
           console.error('Error resending OTP:', error);
           res.status(500).json({ error: 'Internal Server Error' });
@@ -349,7 +401,7 @@ module.exports =
           const { email, password } = req.body;
           const userfound = await user.findOne({ email: email });
           console.log(email)
-      
+     
           if (!userfound) {
             return res.render('user/userlog', { err: 'User not found' });
           }
@@ -359,6 +411,7 @@ module.exports =
           }
       
           const passwordMatch = await bcrypt.compare(password, userfound.password);
+        
       
           if (!passwordMatch) {
             return res.render('user/userlog', { err: 'Invalid Credentials' });

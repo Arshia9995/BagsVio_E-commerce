@@ -1,6 +1,31 @@
 <%- include('header')-%>
 
-</div>
+<style>
+.box {
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.box h3 {
+  color: #333;
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.box ul {
+  list-style: none;
+  padding: 0;
+}
+
+.box li {
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+</style>
+
     <!-- The sidebar -->
 <div class="sidebar">
   <a href="/admin/admindashboard">  <i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
@@ -11,11 +36,8 @@
   <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Brand</a>
   <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Orders</a>
   <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Coupons</a>
-<<<<<<< HEAD
   <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Banners</a>
   <a href="/admin/productoffer"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>ProductOffer</a>
-=======
->>>>>>> a27cfdea6c9310c516530ca75cdd89da63a7b324
   <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;" aria-hidden="true"></i>Sales</a>
   <a href="/admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>Logout</a>
 </div>
@@ -40,6 +62,8 @@
     <p>Total Orders: <%= totalOrders %></p>
  
   </div>
+
+
   
 </div>
 <!-- Generate PDF Button -->
@@ -117,10 +141,59 @@
             </div>
           </div>
         </div>
+
+        
       </div>
-      </div>
+
+      
+
       </div>
       
+      <div class="col-lg-6">
+        <div class="box">
+            <h2>Best Selling Products</h2>
+            <ul id="bestSellingProductsList">
+                <% topProducts.forEach(product => { %>
+                    <li><%= product.productDetails.ProductName %> - <%= product.totalQuantitySold %> sold</li>
+                <% }); %>
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+      <!-- Top Selling Categories -->
+      <div class="box">
+          <h2>Top Selling Categories</h2>
+          <ul id="topSellingCategoriesList">
+              <% topCategories.forEach(category => { %>
+                  <li><%= category._id %> - <%= category.totalQuantitySold %> sold</li>
+              <% }); %>
+          </ul>
+      </div>
+  </div>
+
+
+  <div class="col-lg-6">
+    <!-- Top Selling Brands -->
+    <div class="box">
+        <h2>Top Selling Brands</h2>
+        <ul id="topSellingBrandsList">
+            <% topBrands.forEach(brand => { %>
+                <li><%= brand._id %> - <%= brand.totalQuantitySold %> sold</li>
+            <% }); %>
+        </ul>
+    </div>
+</div>
+
+  
+  
+
+      </div>
+
+      </div>
+
+
+
 
 
    

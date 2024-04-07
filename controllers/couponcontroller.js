@@ -99,8 +99,22 @@ module.exports = {
                   totalPrice += productPrice * item.quantity;
               }
           }
+          if(totalPrice < 1000){
+            totalPrice = totalPrice + 50
+          }
+
+
+          if (totalPrice < coupon.minimumPurchaseAmount) {
+            return res.status(400).json({ error: `Minimum purchase amount required: $${coupon.minimumPurchaseAmount}` });
+        }
           
-            const discountAmount = (totalPrice * coupon.discountPercentage) / 100;
+
+            let discountAmount = (totalPrice * coupon.discountPercentage) / 100;
+
+            if ( discountAmount > coupon.maximumDiscountAmount) {
+                discountAmount = coupon.maximumDiscountAmount;
+            }
+
             const updatedTotalPrice = totalPrice - discountAmount;
             console.log(updatedTotalPrice,"update");
             console.log(totalPrice,"total");
@@ -116,9 +130,43 @@ module.exports = {
             return res.status(500).json({ error: 'Internal server error' });
         }
     },
+
+    removeCoupon: async (req, res) => {
+        try {
+            // Retrieve user's cart data from the database based on their user ID
+            const userId = req.session.userId._id;
+            const userCart = await Cart.findOne({ userId }).populate("items.productId");
+    
+            // Check if the user's cart exists and is not empty
+            if (!userCart || userCart.items.length === 0) {
+                return res.status(400).json({ error: 'User cart not found or empty' });
+            }
+    
+            // Remove discount applied to the total price
+            let totalPrice = 0;
+    
+            if (userCart && userCart.items.length > 0) {
+                for (const item of userCart.items) {
+                    const productPrice = item.productId.Price;
+                    totalPrice += productPrice * item.quantity;
+                }
+            }
+    
+            // Reset total price and discount session variables
+            req.session.discount = 0;
+            req.session.couponApplied = false;
+    
+            // Return the updated total price with discount removed
+            return res.status(200).json({ totalPrice: totalPrice });
+        } catch (error) {
+            console.error('Error removing coupon:', error);
+            return res.status(500).json({ error: 'Internal server error' });
+        }
+    },
+    
     postEditCoupon:async (req, res) => {
         const couponId = req.params.couponId;
-        const { couponName, couponCode, discountPercentage, startDate, expirationDate } = req.body;
+        const { couponName, couponCode, discountPercentage, startDate, expirationDate,maximumDiscountAmount,minimumPurchaseAmount } = req.body;
     
         try {
             // Find the coupon by ID
@@ -131,6 +179,8 @@ module.exports = {
             coupon.couponName = couponName;
             coupon.couponCode = couponCode;
             coupon.discountPercentage = discountPercentage;
+            coupon.maximumDiscountAmount = maximumDiscountAmount;
+            coupon.minimumPurchaseAmount = minimumPurchaseAmount;
             coupon.startDate = new Date(startDate); // Convert string to Date object
             coupon.expirationDate = new Date(expirationDate); // Convert string to Date object
     

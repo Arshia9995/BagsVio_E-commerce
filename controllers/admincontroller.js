@@ -29,11 +29,65 @@ const admindashboard = async (req, res) => {
         const totalOrders = await Orders.countDocuments();
         const totalProducts = await Product.countDocuments();
 
+         // Fetch top 10 best-selling products
+        const topProducts = await Orders.aggregate([
+            { $unwind: '$products' },
+            {
+                $group: {
+                    _id: '$products.productId',
+                    totalQuantitySold: { $sum: '$products.quantity' }
+                }
+            },
+            { $sort: { totalQuantitySold: -1 } },
+            { $limit: 10 },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: '_id',
+                    foreignField: '_id',
+                    as: 'productDetails'
+                }
+            },
+            { $unwind: '$productDetails' },
+            { $project: { _id: 0, productDetails: 1, totalQuantitySold: 1 } }
+        ]);
+        console.log(topProducts,"toppppppppppppppppppp");
+
+       // Fetch top 10 best-selling categories
+const topCategories = await Orders.aggregate([
+  { $unwind: '$products' },
+  { $lookup: { from: 'products', localField: 'products.productId', foreignField: '_id', as: 'productDetails' } },
+  { $unwind: '$productDetails' },
+  { $lookup: { from: 'categories', localField: 'productDetails.Category', foreignField: '_id', as: 'categoryDetails' } },
+  { $unwind: '$categoryDetails' },
+  { $group: { _id: '$categoryDetails.categoryName', totalQuantitySold: { $sum: '$products.quantity' } } },
+  { $sort: { totalQuantitySold: -1 } },
+  { $limit: 10 }
+]);
+
+
+      console.log(topCategories, "topCategories");
+
+      const topBrands = await Orders.aggregate([
+        { $unwind: '$products' },
+        { $lookup: { from: 'products', localField: 'products.productId', foreignField: '_id', as: 'productDetails' } },
+        { $unwind: '$productDetails' },
+        { $lookup: { from: 'brands', localField: 'productDetails.BrandName', foreignField: '_id', as: 'brandDetails' } },
+        { $unwind: '$brandDetails' },
+        { $group: { _id: '$brandDetails.brandName', totalQuantitySold: { $sum: '$products.quantity' } } },
+        { $sort: { totalQuantitySold: -1 } },
+        { $limit: 10 }
+    ]);
+    
+    console.log(topBrands, "topBrands");
        
         res.render('admin/admindashboard', {
             totalCustomers,
             totalOrders,
             totalProducts,
+            topProducts,
+            topCategories,
+            topBrands
             
         });
     } catch (error) {

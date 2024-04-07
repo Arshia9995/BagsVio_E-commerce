@@ -58,14 +58,19 @@ router.get('/userhome', userController.showUserHomePage);
 
 router.get('/userhomeafterlogin', userController.showUserHomeafterLogin);
 
-
+//products
 
 router.get('/products/:categoryName', userController.showUserProductList);
 // router.get('/userhome1', userController.showUserHomePage1);
 // router.get('/productlist', userController.showUserProductList);
 router.get('/productdetails/:productId', userController.showUserProductDetails);
 
+//sort
+router.get('/products/sort/:order',userController.sortOrder );
 
+//filter
+
+router.get('/products/filterByBrand', userController.filterProductsByBrand);
 
 //profile
 
@@ -131,6 +136,7 @@ router.get("/wallet",ordercontroller.showWalletPage)
 
 router.get("/coupon",couponcontroller.getuserCouponPage)
 router.post("/applycoupon",couponcontroller.postApplyCoupon)
+router.post("/removecoupon",couponcontroller.removeCoupon)
 
 //logout
 router.get('/logout',userController.Logout)
