@@ -17,7 +17,7 @@ dotenv.config()
 
 
 app.use(session({
-  secret: 'your-secret-key', // Change this to a secret key for session encryption
+  secret: 'Aerwthgjwertyufdghj', // Change this to a secret key for session encryption
   resave: false,
   saveUninitialized: true,
 }));

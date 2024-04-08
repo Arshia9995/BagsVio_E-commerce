@@ -25,12 +25,12 @@ const toLogin = (req,res)=>{
 const admindashboard = async (req, res) => {
     try {
       
-        const totalCustomers = await Users.countDocuments();
-        const totalOrders = await Orders.countDocuments();
-        const totalProducts = await Product.countDocuments();
+        const totalCustomers = await Users?.countDocuments();
+        const totalOrders = await Orders?.countDocuments();
+        const totalProducts = await Product?.countDocuments();
 
          // Fetch top 10 best-selling products
-        const topProducts = await Orders.aggregate([
+        const topProducts = await Orders?.aggregate([
             { $unwind: '$products' },
             {
                 $group: {
@@ -54,7 +54,7 @@ const admindashboard = async (req, res) => {
         console.log(topProducts,"toppppppppppppppppppp");
 
        // Fetch top 10 best-selling categories
-const topCategories = await Orders.aggregate([
+const topCategories = await Orders?.aggregate([
   { $unwind: '$products' },
   { $lookup: { from: 'products', localField: 'products.productId', foreignField: '_id', as: 'productDetails' } },
   { $unwind: '$productDetails' },
@@ -68,7 +68,7 @@ const topCategories = await Orders.aggregate([
 
       console.log(topCategories, "topCategories");
 
-      const topBrands = await Orders.aggregate([
+      const topBrands = await Orders?.aggregate([
         { $unwind: '$products' },
         { $lookup: { from: 'products', localField: 'products.productId', foreignField: '_id', as: 'productDetails' } },
         { $unwind: '$productDetails' },
