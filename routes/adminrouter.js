@@ -137,7 +137,9 @@ admin.get('/banner',bannerController.getBannerPage)
 admin.post('/addbanner',  bannerController.addBanner);
 admin.delete('/deletebanner/:bannerId', bannerController.deleteBanner);
 
+//logout
 
+admin.get('/logout',adminContoller.logout)
 
 
 module.exports = {admin};

@@ -21,9 +21,9 @@ module.exports = {
       console.log("selected id from", req.body);
       const { selectedAddress, paymentMethod } = req.session;
       console.log(paymentMethod);
-      console.log("Selected address ID:", selectedAddress); // Ensure selectedAddress contains the ID
+      console.log("Selected address ID:", selectedAddress); 
       const discount = req.session.discount;
-      // Fetch user's cart
+     
       const userCart = await Cart.findOne({ userId }).populate(
         "items.productId"
       );
@@ -130,6 +130,19 @@ module.exports = {
         });
 
         await newOrder.save();
+        userCart.items = [];
+        await userCart.save();
+        for (const product of productsToUpdate) {
+          const existingProduct = await productModel.findById(
+            product.productId
+          );
+          console.log(existingProduct, "existinggggggggggggggggg");
+          if (existingProduct) {
+            existingProduct.AvailableQuantity -= product.quantity;
+            await existingProduct.save();
+          }
+        }
+        
         const orderId = newOrder._id; // Capture the order ID
 
         // Create transaction record
@@ -184,6 +197,7 @@ module.exports = {
     const discount = req.session.discount;
 
     try {
+      const categories = await categoryModel.find();
       const user = await Users.findOne({ _id: userId });
       console.log("now my user", user);
       const order = await Order.findOne({ _id: orderId, userId }).populate(
@@ -194,7 +208,7 @@ module.exports = {
 
       // Check if the order exists
       if (order) {
-        res.render("user/orderdetails", { order });
+        res.render("user/orderdetails", { order ,categories});
       } else {
         res.status(404).json({ error: "Order not found" });
       }

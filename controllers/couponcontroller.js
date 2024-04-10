@@ -105,7 +105,7 @@ module.exports = {
 
 
           if (totalPrice < coupon.minimumPurchaseAmount) {
-            return res.status(400).json({ error: `Minimum purchase amount required: $${coupon.minimumPurchaseAmount}` });
+            return res.status(400).json({ error: `Minimum purchase amount required: ₹${coupon.minimumPurchaseAmount}` });
         }
           
 

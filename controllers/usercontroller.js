@@ -29,13 +29,13 @@ module.exports =
             console.log(e)
         }
     },
-    showLoginPage: (req, res) => {
-       
+    showLoginPage: async(req, res) => {
+       const categories = await category.find();
         try {
             if(req.session.userIsLoged != null){
                   res.redirect('/userhome')
               }else{
-                  res.render('user/userlog')
+                  res.render('user/userlog',{categories})
               }
         } catch (e) {
             console.log(e)
@@ -54,12 +54,11 @@ module.exports =
             const categories = await category.find({});
             const brands = await Brands.find();
             const selectedCategoryName = req.params.categoryName;
-        
-            // Find the Category ObjectId for the selected category name
+      
             const selectedCategory = await category.findOne({ categoryName: selectedCategoryName });
         
             if (!selectedCategory) {
-              // Handle the case where the category is not found
+              
               return res.status(404).send('Category not found');
             }
 
@@ -78,8 +77,6 @@ module.exports =
             }
             console.log("Sort option:", sortOption);
 
-
-            // Parse selected brands from query parameters
     const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
 
     // Construct filter options
@@ -87,8 +84,14 @@ module.exports =
     if (selectedBrands.length > 0) {
       filterOptions.BrandName = { $in: selectedBrands };
     }
-            // Use the found Category ObjectId to query products
-            const products = await Product.find({ Category: selectedCategory._id ,isBlocked:false}).sort(sortOption);
+
+    // Handle search query
+    // const searchQuery = req.query.search;
+    // if (searchQuery) {
+    //     filterOptions.ProductName = { $regex: searchQuery, $options: 'i' };
+    // }
+           
+            const products = await Product.find(filterOptions).sort(sortOption);
             console.log('sorted data',products)
             // console.log('products>>>>>new',products)
         
@@ -143,12 +146,31 @@ module.exports =
         res.status(500).json({ error: 'Internal Server Error' });
       }
     },
+    searchResults:async (req, res) => {
+      // const query = req.query.q; 
+
+      try {
+          const query = req.query.q; // Retrieve the search query from the URL parameters
+       
+          const categories = await category.find({});
+          const brands = await Brands.find();
+          const products = await Product.find({ ProductName: { $regex: new RegExp(query, 'i') } });
+;
+          console.log(products,"dfghjfghjfghj"); 
+          res.render('user/searchresults', { products, query,categories,brands });
+          
+      } catch (error) {
+          console.error('Error searching for products:', error);
+          res.status(500).send('Internal Server Error');
+      }
+  },
    
    
-    showSignupPage: (req, res) => {
+    showSignupPage: async(req, res) => {
       console.log('user session in signuop page',req.session)
       console.log('user session in signuop page',req.session._id)
-        res.render('user/usersignup', { messages: req.flash('error') });
+      const categories = await category.find();
+        res.render('user/usersignup', { messages: req.flash('error') ,categories});
     },
     showForgetPassword: async(req, res) => {
       const categories = await category.find({});
@@ -235,6 +257,7 @@ module.exports =
   },
 
     showResetPassword:(req,res)=>{
+    
       res.render('user/resetpassword')
     },
 
@@ -243,6 +266,7 @@ module.exports =
       try {
         const email=req.session.email ;
         const{newPassword, confirmPassword}=req.body
+        const categories = await category.find();
 
         const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -255,7 +279,7 @@ module.exports =
         // user.password = newPassword;
         // await user.save();
         console.log('password changed successfully.....')
-        return res.render('user/userlog',{error})
+        return res.render('user/userlog',{error,categories})
 
       } catch (error) {
         
@@ -644,6 +668,7 @@ editAddress:async(req,res)=>{
   try {
    
     const {  name, addressline, pincode, street, city, state, mobile } = req.body;
+    const categories=await category.find()
 
 
   

@@ -10,7 +10,7 @@ module.exports = {
     getBannerPage:async(req,res)=>{
         try {
             const categories = await Category.find();
-            const banners = await Banner.find(); // Fetch banners from the database
+            const banners = await Banner.find().populate('category'); // Fetch banners from the database
             res.render('./admin/banner', { categories, banners });
           } catch (error) {
             console.error('Error fetching categories and banners:', error);
@@ -39,7 +39,6 @@ module.exports = {
                     }
     
                     
-    
                     // Create a new banner object with the resized image and associated category
                     const newBanner = new Banner({
                         image: req.file.filename,

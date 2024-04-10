@@ -18,8 +18,9 @@ module.exports = {
   getCartPage: async (req, res) => {
     try {
       const { userId } = req.session; // Use user instead of userId
+      
       console.log(userId);
-
+     
       let userCart = await Cart.findOne({ userId: userId }).populate(
         "items.productId"
       );
@@ -184,6 +185,7 @@ getCheckOutPage: async (req, res) => {
       const { userId } = req.session;
       const email = req.session.email;
       const user = await Users.findOne({ email }).populate("addresses");
+     
       const categories = await categoryModel.find();
       console.log(user,'=-=---=-=-==================');
 
@@ -278,6 +280,7 @@ getCheckOutPage: async (req, res) => {
       // const selectedAddress = await Address.findById(selectedAddressId);
       let discount=req.session.discount
       let couponApplied
+      const categories = await categoryModel.find();
       const userCart = await Cart.findOne({ userId }).populate(
         "items.productId"
       );
@@ -300,7 +303,8 @@ getCheckOutPage: async (req, res) => {
         totalPrice,
         paymentMethod,
         discount,
-        couponApplied
+        couponApplied,
+        categories
       });
     } catch (error) {
       console.error(error);

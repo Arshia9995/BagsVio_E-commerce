@@ -65,6 +65,8 @@ router.get('/products/:categoryName', userController.showUserProductList);
 // router.get('/productlist', userController.showUserProductList);
 router.get('/productdetails/:productId', userController.showUserProductDetails);
 
+//search
+router.get('/search',usercontroller.searchResults)
 //sort
 router.get('/products/sort/:order',userController.sortOrder );
 

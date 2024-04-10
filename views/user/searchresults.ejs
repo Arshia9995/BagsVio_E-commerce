@@ -3,11 +3,11 @@
 
 
   <div style="height: 50px;"></div>
-  <h1 style="margin-left: 80px; margin-top: 20px;">Products in: <%= selectedCategory %></h1>
+
 
   <div class="container mt-5 ml-3">
     <div class="row">
-        <div class="col-lg-3">
+        <!-- <div class="col-lg-3">
 
   <div class="sidebar-section">
     <h5>Sort by</h5>
@@ -37,11 +37,11 @@
 <div class="sidebar-section" style="margin-top: 30px;">
   <button onclick="applyFilter()" class="btn btn-primary">Filter</button>
 </div>
-        </div>
+        </div> -->
 
         <div class="col-lg-9">
   
-    <section class="row mb-4">
+    <section class="row mb-4 d-flex justify-content-center">
       <% if (products.length > 0) { %>
         <% products.forEach(product => { %>
           <div class="col-lg-4">
@@ -53,8 +53,7 @@
 
               <div class="card-body">
                 <h5 class="card-title text-dark"><%= product.ProductName %></h5>
-                <!-- <p class="card-text"><%= product.Description %></p>
-                <p class="card-text">Brand: <%= product.BrandName.brandName %></p> -->
+               
                 <p class="card-text text-dark">Price: <%= product.Price %></p></a>
               </div>
             </a>
@@ -89,40 +88,5 @@
   }
 </script> -->
 
-<script>
-  function applySort() {
 
-   const selectedSortOption = document.getElementById('sortOptions').value;
-   if ( selectedSortOption === 'Select') {
-      return;
-   }
-
-
-   const queryParams = new URLSearchParams(window.location.search);
-
-   if (selectedSortOption !== 'Select') {
-       queryParams.set('sortOptions', selectedSortOption);
-   }
-
-   const selectedCategory = '<%= selectedCategory %>';
-
-  window.location.href = '/products/' + selectedCategory + '?' + queryParams.toString();
-}
-
-
-</script>
-<script>
-function applyFilter() {
-  const selectedBrands = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(checkbox => checkbox.value);
-  const queryParams = new URLSearchParams(window.location.search);
-
-  if (selectedBrands.length > 0) {
-    queryParams.set('brands', selectedBrands.join(','));
-  }
-
-  const selectedCategory = '<%= selectedCategory %>';
-
-  window.location.href = '/products/' + selectedCategory + '?' + queryParams.toString();
-}
-</script>
 <%- include('../partials/user-footer') %>

@@ -28,6 +28,9 @@
         .star {
             cursor: pointer;
         }
+        .extra-margin {
+        margin-top: 100px; /* Adjust the value as needed */
+    }
     </style>
 </head>
 
@@ -39,7 +42,7 @@
         <!-- Include your header here -->
     </header>
 
-    <div class="container mt-5">
+    <div class="container extra-margin">
         <div class="row">
             <div class="col-md-8 offset-md-2">
                 <div class="card">
@@ -181,7 +184,7 @@
         </div>
     </div>
 
-
+    <%- include('../partials/user-footer') %>
 
     
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
