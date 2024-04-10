@@ -760,7 +760,8 @@ downloadInvoice: async (req, res) => {
 },
 downloadfile: async (req, res) => {
   const id = req.params._id;
-  const filePath = `C:/Users/arshi/OneDrive/Desktop/project week1/public/pdf/${id}.pdf`;
+  // const filePath = `C:/Users/arshi/OneDrive/Desktop/project week1/public/pdf/${id}.pdf`;
+  const filePath = `/public/pdf/${id}.pdf`;
   res.download(filePath, `invoice.pdf`);
 },
 
