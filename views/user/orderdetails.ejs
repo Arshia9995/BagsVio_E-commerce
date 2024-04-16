@@ -92,6 +92,10 @@
                                         <button class="btn btn-warning add-review-btn" data-bs-toggle="modal" data-bs-target="#addReviewModal" data-product-id="<%= product.productId._id %>">Add Review</button>
                                     <% } %>
                                 </div>
+                                <%if(order.discount) {  %>
+                                <p><strong> Discount: ₹ <%= order.discount  %></strong></p>
+                                <% } %>
+                                <p><strong>Total : ₹ <%= order.totalPrice %></strong></p>
 
 
                                 <!-- Add Review Modal -->

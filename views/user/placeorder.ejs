@@ -103,19 +103,8 @@
                   <div class="col-md-3">
                     <hr class="my-3" />
                     <p class="text-muted mb-0 fw-bold text-end">
-                      <% let deliveryCharge = 50 %>
-
-                      <% if (totalPrice < 1000) { %>
-                        <% if (couponApplied === false) { %>
-                          <% deliveryCharge = 50 %>
-                          <% } else { %>
-                            <% deliveryCharge = 0 %>
-                        <% } %>
-                      <% } else { %>
-                          <% deliveryCharge = 0 %>
-                      <% } %>
-                      <% totalPrice += deliveryCharge %>
-                      Delivery charge: ₹<%= deliveryCharge %> <br>
+                    
+                     <br>
                       Total: ₹<%= totalPrice %>
                       
                     </p>

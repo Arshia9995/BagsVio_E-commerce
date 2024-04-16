@@ -99,9 +99,7 @@ module.exports = {
                   totalPrice += productPrice * item.quantity;
               }
           }
-          if(totalPrice < 1000){
-            totalPrice = totalPrice + 50
-          }
+         
 
 
           if (totalPrice < coupon.minimumPurchaseAmount) {
@@ -124,7 +122,7 @@ module.exports = {
             req.session.discount=discountAmount
             // Return the updated total price with discount applied
             req.session.couponApplied = true
-            return res.status(200).json({ totalPrice: updatedTotalPrice });
+            return res.status(200).json({ totalPrice: updatedTotalPrice,discountAmount });
         } catch (error) {
             console.error('Error applying coupon:', error);
             return res.status(500).json({ error: 'Internal server error' });
@@ -155,7 +153,7 @@ module.exports = {
             // Reset total price and discount session variables
             req.session.discount = 0;
             req.session.couponApplied = false;
-    
+    console.log(req.session.discount,"dissssssssssssssssssssss");
             // Return the updated total price with discount removed
             return res.status(200).json({ totalPrice: totalPrice });
         } catch (error) {

@@ -41,6 +41,11 @@
     .transaction-history .list-group-item:last-child {
       border-bottom: none;
     }
+    .text-highlight {
+    /* background-color: #007bff; */
+    color: #e91818; /* Change to the desired text color */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
   </style>
 </head>
 <body>
@@ -122,7 +127,41 @@
       </div>
     </div>
   </div>
-
+  <script>
+    // Get all the list items in the sidebar
+    const sidebarItems = document.querySelectorAll('.list-group-item');
+  
+    // Add click event listener to each list item
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove 'text-highlight' class from all items
+            sidebarItems.forEach(item => {
+                item.classList.remove('text-highlight');
+            });
+            // Add 'text-highlight' class to the clicked item
+            this.classList.add('text-highlight');
+        });
+    });
+  
+    // Check if there is a highlighted item in local storage
+    const highlightedItem = localStorage.getItem('highlightedItem');
+    if (highlightedItem) {
+        // Remove 'text-highlight' class from all items
+        sidebarItems.forEach(item => {
+            item.classList.remove('text-highlight');
+        });
+        // Add 'text-highlight' class to the item stored in local storage
+        document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
+    }
+  
+    // Save the highlighted item to local storage when clicked
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', function() {
+            localStorage.setItem('highlightedItem', this.getAttribute('href'));
+        });
+    });
+  </script>
+  
   <!-- Footer -->
   <%- include('../partials/user-footer') %>
 

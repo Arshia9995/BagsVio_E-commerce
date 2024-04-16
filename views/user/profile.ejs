@@ -14,12 +14,18 @@
     .img-account-profile {
         max-width: 100%;
     }
+    .text-highlight {
+    /* background-color: #007bff; */
+    color: #e91818; /* Change to the desired text color */
+    font-weight: bold; /* Optionally, make the text bold */
+  }
+
   </style>
 </head>
 <body>
   <%- include('../partials/navbar') %>
   <!-- Navbar/Header (Assuming the header is included using an external file) -->
-  <div style="height: 40px;"></div>
+  <div style="height: 75px;"></div>
 <!-- 
   <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
     <div class="container-fluid">
@@ -238,7 +244,41 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js
       });
     });
   </script>
-  
+
+<script>
+  // Get all the list items in the sidebar
+  const sidebarItems = document.querySelectorAll('.list-group-item');
+
+  // Add click event listener to each list item
+  sidebarItems.forEach(item => {
+      item.addEventListener('click', function() {
+          // Remove 'text-highlight' class from all items
+          sidebarItems.forEach(item => {
+              item.classList.remove('text-highlight');
+          });
+          // Add 'text-highlight' class to the clicked item
+          this.classList.add('text-highlight');
+      });
+  });
+
+  // Check if there is a highlighted item in local storage
+  const highlightedItem = localStorage.getItem('highlightedItem');
+  if (highlightedItem) {
+      // Remove 'text-highlight' class from all items
+      sidebarItems.forEach(item => {
+          item.classList.remove('text-highlight');
+      });
+      // Add 'text-highlight' class to the item stored in local storage
+      document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
+  }
+
+  // Save the highlighted item to local storage when clicked
+  sidebarItems.forEach(item => {
+      item.addEventListener('click', function() {
+          localStorage.setItem('highlightedItem', this.getAttribute('href'));
+      });
+  });
+</script>
 
 
 <%- include('../partials/user-footer') %>

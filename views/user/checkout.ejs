@@ -132,7 +132,7 @@
                        
 
                             <% let totalPrice = 0; %>
-                            <% let deliveryCharge = 50; %>
+                            
     <% userCart.items.forEach(item => { %>
         <% let itemPrice = item.productId.Price * item.quantity; %>
         <% totalPrice += itemPrice; %>
@@ -210,23 +210,25 @@
                             </li>
                         <% }); %>
 
-                         <!-- Delivery charge (if applicable) -->
- <% if (totalPrice < 1000) { %>
-    <li class="list-group-item d-flex justify-content-between">
-        <span>Delivery Charge:</span>
-        <strong>₹ <%= deliveryCharge  %> </strong> <!-- Example delivery charge -->
+ 
+            <li id="discountAmount" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
+          
+           
+            <span>Discount Amount:</span>
 
-    </li>
-<% } %>
-                 
+            <strong id="discountAmount">0.00</strong>
+                            
+           
+                
                      <!-- Total Price -->
         <li id="totalPrice" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
+          
+           
             <span>Total Price:</span>
-            <% if (totalPrice < 1000) { %> 
-                <% totalPrice += deliveryCharge %>
-                <% } %>
+            
             <strong>₹ <%= totalPrice  %></strong>
         </li>
+        
 
 
 
@@ -424,6 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                
                 document.getElementById('totalPrice').textContent = `Total Price: ₹ ${data.totalPrice}`;
+                document.getElementById('discountAmount').textContent = `Discount Amount ₹ ${data.discountAmount}`;
                 applyCouponBtn.style.display = 'none';
                     removeCouponBtn.style.display = 'block';
                 console.log(data);

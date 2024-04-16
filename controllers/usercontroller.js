@@ -101,6 +101,58 @@ module.exports =
             res.status(500).send('Internal Server Error');
           }
         },
+        showAllProducts: async (req,res)=> {
+          const categories = await category.find();
+          const brands = await Brands.find();
+
+          let sortOption = {};
+          // console.log(req.query.sortOptions,"kkkkkkkkkkkkkkkkkkkkkkkkk");
+
+          if (req.query.sortOptions) {
+              switch (req.query.sortOptions) {
+                  case 'priceAsc':
+                      sortOption = { Price: 1 };
+                      break;
+                  case 'priceDesc':
+                      sortOption = { Price: -1 };
+                      break;
+              }
+          }
+          console.log("Sort option:", sortOption);
+
+          const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
+
+          let filterOptions = {  isBlocked: false };
+          if (selectedBrands.length > 0) {
+          filterOptions.BrandName = { $in: selectedBrands };
+        } 
+
+          const PAGE_SIZE = 6;
+          const currentPage = parseInt(req.query.page) || 1;
+
+          const totalProductsCount = await Product.countDocuments(filterOptions);
+          const totalPages = Math.ceil(totalProductsCount / PAGE_SIZE);
+
+
+          const products = await Product.find(filterOptions)
+          .sort(sortOption)
+          .skip((currentPage - 1) * PAGE_SIZE)
+          .limit(PAGE_SIZE)
+          .populate('Category')
+          .populate('BrandName');
+
+          
+ res.render('user/seeallproducts', {
+            categories,
+            brands,
+            products,
+            totalPages,
+            currentPage,
+            sortOptions: req.query.sortOptions, // Pass sortOptions to the template
+            brandsQuery: req.query.brands // Pass brands to the template
+        })
+        },
+
     showUserProductDetails:async (req, res) => {
         try {
           //  const userData = await Users.findOne({email:req.session.email})

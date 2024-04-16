@@ -61,9 +61,10 @@ router.get('/userhomeafterlogin', userController.showUserHomeafterLogin);
 //products
 
 router.get('/products/:categoryName', userController.showUserProductList);
-// router.get('/userhome1', userController.showUserHomePage1);
-// router.get('/productlist', userController.showUserProductList);
 router.get('/productdetails/:productId', userController.showUserProductDetails);
+
+//see all products
+router.get('/seeallproducts',usercontroller.showAllProducts)
 
 //search
 router.get('/search',usercontroller.searchResults)

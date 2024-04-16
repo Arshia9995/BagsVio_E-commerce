@@ -111,16 +111,72 @@
             <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
                 <!-- Adjust width and height of the image here -->
                 <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+                <button onclick="editBanner('<%= banner._id %>')" class="btn btn-primary"   data-bs-toggle="modal"   data-bs-target="#editBannerModal<%= banner._id %>">Edit</button>
                 <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
             </div>
         <% }); %>
     </div>
   </div>
 
+
+
+
+
+  <!-- Edit Banner Modal -->
+  <% banners.forEach(banner => { %>
+<div class="modal fade" id="editBannerModal<%= banner._id %>" tabindex="-1" aria-labelledby="editBannerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="editBannerModalLabel">Edit Banner</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <!-- Form for editing banner -->
+              <form id="editBannerForm">
+                  <div class="mb-3">
+                      <label for="categorySelect" class="form-label">Select Category:</label>
+                      <select class="form-select" id="editCategorySelect">
+                          
+                          
+                          <% categories.forEach(function (category) { %>
+                            <option value="<%= category._id %>" <%= banner.category.equals(category._id) ? 'selected' : '' %>>
+                              <%= category.categoryName %>
+                            </option>
+                          <% }); %>
+
+
+                          
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                    <input type="file" name="image" id="editBannerInput" accept="image/*" style="display: none">
+                    <button type="button" class="btn btn-primary" onclick="updateFile()">
+                        Upload Ban
+                    </button>
+                  </div>
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary" onclick="updateBanner('<%= banner._id %>')">Save </button>
+          </div>
+      </div>
+  </div>
+</div>
+        <% }); %>
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
       function chooseFile() {
           document.getElementById('bannerInput').click();
+      }
+
+      function updateFile() {
+          document.getElementById('editBannerInput').click();
       }
   
       document.getElementById('bannerInput').addEventListener('change', function () {
@@ -132,6 +188,7 @@
           const category = document.getElementById('categorySelect').value;
           const fileInput = document.getElementById('bannerInput');
           const file = fileInput.files[0];
+          console.log('--------------->',file);
           if (!file) {
               return alert('Please select a file');
           }
@@ -208,5 +265,81 @@
     });
   }
   </script>
+
+
+<script>
+  // Function to handle edit banner action
+  function editBanner(bannerId) {
+        fetch(`/admin/getBannerDetails/${bannerId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Populate the form fields with the banner details
+                document.getElementById('editCategorySelect').value = data.banner.category;
+                // Display the edit banner modal
+                const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
+                modal.show();
+            })
+            .catch(error => {
+                console.error('Error fetching banner details:', error);
+            });
+    }
+
+  // Function to update the banner
+  function updateBanner(bannerId) {
+    const category = document.getElementById('editCategorySelect').value;
+    const fileInput = document.getElementById('editBannerInput');
+    console.log(fileInput,'fileInput---')
+    const file = fileInput.files[0];
+    console.log(file,'file---')
+    // if (!file) {
+    //     return alert('Please select a file');
+    // }
+    const formData = new FormData();
+    if(file) {
+      formData.append('image', file);
+    }
+    formData.append('category', category);
+
+
+    fetch(`/admin/updateBanner/${bannerId}`, {
+        method: 'post',
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            // Update the banner image
+            // const bannerImage = document.querySelector(`.banner-item[data-banner-id="${bannerId}"] .banner-image`);
+            // bannerImage.src = `/uploads/${data.banner.image}`;
+            // Update the category
+            // const bannerCategory = document.querySelector(`.banner-item[data-banner-id="${bannerId}"] .banner-category`);
+            // bannerCategory.innerText = category;
+            // Close the modal
+            // const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
+            // modal.hide();
+            location.reload()
+        } else {
+            alert('Error updating banner');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating banner:', error);
+        alert('Error updating banner');
+    });
+}
+
+</script>
+
+
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   

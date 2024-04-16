@@ -35,7 +35,7 @@
     "nodemailer": "^6.9.7",
     "parser": "^0.1.4",
     "razorpay": "^2.9.2",
-    "sharp": "^0.33.2"
+    "sharp": "^0.33.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

@@ -80,6 +80,48 @@ module.exports = {
         }
     },
 
+    updateBanner: async (req, res) => {
+
+        upload.single('image')(req, res, async (err) => {
+            // if (err) {
+            //     console.error('Multer error:', err);
+            //     return res.status(400).send('Error uploading file');
+            // }
+
+
+        const bannerId = req.params.bannerId; 
+        // console.log('inside banner',req.file)
+        
+    
+        try {
+          
+            const banner = await Banner.findById(bannerId);
+
+            console.log('category',req.body.category)
+            
+          
+            if (!banner) {
+                return res.status(404).json({ success: false, message: 'Banner not found' });
+            }
+    
+           
+            banner.category = req.body.category; 
+            if(req.file){
+                banner.image = req.file.filename; 
+            }
+    
+           
+            const updatedBanner = await banner.save();
+    
+            
+            res.status(200).json({ success: true, banner: updatedBanner });
+        } catch (error) {
+            console.error('Error updating banner:', error);
+            res.status(500).json({ success: false, message: 'Error updating banner' });
+        }
+    })
+}
+
 
 
 

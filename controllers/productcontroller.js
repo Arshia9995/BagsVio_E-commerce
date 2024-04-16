@@ -2,6 +2,7 @@
 const productModel = require("../models/productSchema")
 const brandModel = require("../models/brandSchema")
 const categoryModel = require("../models/categorySchema")
+const cropImage = require("../utility/imageCrop")
 
 
 
@@ -133,6 +134,8 @@ module.exports = {
       } else {
         status = 'In Stock';
       }
+
+      cropImage(images)
 
       // Create a new product instance
       const newProduct = new productModel({

@@ -1,0 +1,131 @@
+<%- include('header')-%>
+<%- include('../partials/navbar') %>
+
+<div style="height: 50px;"></div>
+
+<div class="container mt-5 ml-3">
+  <div class="row">
+    <div class="col-lg-3">
+
+        <div class="sidebar-section">
+            <h5>Sort by</h5>
+            <select id="sortOptions" name="sortOptions" class="form-select">
+                <option value="priceAsc">Price: Low to High</option>
+                <option value="priceDesc">Price: High to Low</option>
+            </select>
+        </div>
+        <div class="sidebar-section" style="margin-top: 30px;">
+            <button onclick="applySort()" class="btn btn-primary">Apply</button>
+          </div>
+          <br>
+ 
+
+          
+<div class="sidebar-section">
+    <h5>Filter by Brand</h5>
+    <form id="brandFilterForm">
+      <% brands.forEach(brand => { %>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="<%= brand._id %>" id="<%= brand.brandName %>">
+          <label class="form-check-label" for="<%= brand.brandName %>">
+            <%= brand.brandName %>
+          </label>
+        </div>
+      <% }); %>
+    </form>
+  </div>
+  <div class="sidebar-section" style="margin-top: 30px;">
+    <button onclick="applyFilter()" class="btn btn-primary">Filter</button>
+  </div>
+          </div>
+          <div class="col-lg-9">
+  
+    <section class="row mb-4">
+     <% if (products.length > 0) { %>
+      <% products.forEach(product => { %>
+      <div class="col-lg-4">
+        <div class="card">
+          <a href="/productdetails/<%= product._id %>">
+            <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
+          </a>
+          <div class="card-body">
+            <h5 class="card-title text-dark"><%= product.ProductName %></h5>
+            <p class="card-text text-dark">Price: <%= product.Price %></p>
+            <!-- Add more product details as needed -->
+          </div>
+        </div>
+      </div>
+    <% }); %>
+    <% } else { %>
+        <div class="col-12">
+            <p>No products available </p>
+          </div>
+          <% } %>
+        </section>
+
+
+        <!-- Pagination -->
+    <nav aria-label="Page navigation">
+      <ul class="pagination justify-content-center">
+          <% if (currentPage > 1) { %>
+              <li class="page-item">
+                <a class="page-link" href="/seeallproducts?page=<%= currentPage - 1 %>&sortOptions=<%= sortOptions %>&brands=<%= brandsQuery %>">Previous</a>
+              </li>
+          <% } %>
+          <% for (let i = 1; i <= totalPages; i++) { %>
+              <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                <a class="page-link" href="/seeallproducts?page=<%= i %>&sortOptions=<%= sortOptions %>&brands=<%= brandsQuery %>"><%= i %></a>
+              </li>
+          <% } %>
+          <% if (currentPage < totalPages) { %>
+              <li class="page-item">
+                <a class="page-link" href="/seeallproducts?page=<%= currentPage + 1 %>&sortOptions=<%= sortOptions %>&brands=<%= brandsQuery %>">Next</a>
+              </li>
+          <% } %>
+      </ul>
+  </nav>
+</div>
+
+  </div>
+</div>
+</div>
+
+
+<script>
+    function applySort() {
+  
+     const selectedSortOption = document.getElementById('sortOptions').value;
+     if ( selectedSortOption === 'Select') {
+        return;
+     }
+  
+  
+     const queryParams = new URLSearchParams(window.location.search);
+  
+     if (selectedSortOption !== 'Select') {
+         queryParams.set('sortOptions', selectedSortOption);
+     }
+  
+   
+  
+    window.location.href = '/seeallproducts' + '?' + queryParams.toString();
+  }
+  
+  
+  </script>
+  <script>
+  function applyFilter() {
+    const selectedBrands = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(checkbox => checkbox.value);
+    const queryParams = new URLSearchParams(window.location.search);
+  
+    if (selectedBrands.length > 0) {
+      queryParams.set('brands', selectedBrands.join(','));
+    }
+  
+    
+  
+    window.location.href = '/seeallproducts' +  '?' + queryParams.toString();
+  }
+  </script>
+<%- include('footer')-%>
+<%- include('../partials/user-footer') %>
