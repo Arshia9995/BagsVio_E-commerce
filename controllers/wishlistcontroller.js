@@ -71,10 +71,24 @@ module.exports = {
         try {
           const user = await Users.findOne({ email: req.session.email });
             const productId = req.body.productId;
+
+               // Check if the item is already in the user's cart
+           const userCart = await Cart.findOne({ userId: user._id, 'items.productId': productId });
+             if (userCart) {
+            // Item is already in the cart, return an error response
+            return res.status(400).json({ error: 'Item is already in the cart' });
+        }
+
             const wishlistItem = await Wishlist.findOne({ 'items.productId': productId });
             if (!wishlistItem) {
                 return res.status(404).json({ error: 'Wishlist item not found' });
             }
+
+            // Check if the product is in stock
+        const product = await productModel.findById(productId);
+        if (!product || product.AvailableQuantity <= 0) {
+            return res.status(400).json({ error: 'Product is out of stock' });
+        }
             const userId = user._id
             const quantity = 1;
     
@@ -87,22 +101,22 @@ module.exports = {
             //     }))
             // });
 
-            let userCart = await Cart.findOne({ userId });
-            if (!userCart) {
+            let cart = await Cart.findOne({ userId });
+            if (!cart) {
               // If the user doesn't have a cart, create a new one
-              userCart = new Cart({ userId, items: [{ productId, quantity }] });
-              await userCart.save();
+              cart = new Cart({ userId, items: [{ productId, quantity }] });
+              await cart.save();
           } else {
               // If the user has a cart, update the existing one
-              const existingItem = userCart.items.find(item => item.productId.toString() === productId);
+              const existingItem = cart.items.find(item => item.productId.toString() === productId);
   
               if (existingItem) {
                   existingItem.quantity += quantity;
               } else {
-                  userCart.items.push({ productId, quantity });
+                  cart.items.push({ productId, quantity });
               }
   
-              await userCart.save();
+              await cart.save();
           }
     
             await Wishlist.findOneAndUpdate(

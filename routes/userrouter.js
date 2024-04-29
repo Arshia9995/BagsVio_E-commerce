@@ -64,7 +64,7 @@ router.get('/products/:categoryName', userController.showUserProductList);
 router.get('/productdetails/:productId', userController.showUserProductDetails);
 
 //see all products
-router.get('/seeallproducts',usercontroller.showAllProducts)
+router.get('/seeallproducts',usercontroller.showAllProducts) 
 
 //search
 router.get('/search',usercontroller.searchResults)
@@ -93,6 +93,7 @@ router.get('/cart',userAuth.verifyUser,cartcontroller.getCartPage)
 router.post('/addToCart',userAuth.verifyUser,cartcontroller.addToCart)
 router.post('/removeFromCart',cartcontroller.removeFromCart)
 router.post('/updateQuantity',cartcontroller.updateCartItemQuantity)
+router.post('/checkStock',cartcontroller.checkStock)
 
 
 //checkout

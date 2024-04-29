@@ -62,6 +62,15 @@ module.exports =
               return res.status(404).send('Category not found');
             }
 
+
+            // Pagination logic
+    const page = parseInt(req.query.page) || 1; // Current page number, default is 1
+    const perPage = 6; // Number of products per page
+    const skip = (page - 1) * perPage; // Calculate number of products to skip
+    const totalProducts = await Product.countDocuments({ Category: selectedCategory._id, isBlocked: false });
+    const totalPages = Math.ceil(totalProducts / perPage); // Calculate total number of pages
+
+
             let sortOption = {};
             // console.log(req.query.sortOptions,"kkkkkkkkkkkkkkkkkkkkkkkkk");
 
@@ -91,11 +100,11 @@ module.exports =
     //     filterOptions.ProductName = { $regex: searchQuery, $options: 'i' };
     // }
            
-            const products = await Product.find(filterOptions).sort(sortOption);
+            const products = await Product.find(filterOptions).sort(sortOption).skip(skip).limit(perPage);
             console.log('sorted data',products)
             // console.log('products>>>>>new',products)
         
-            res.render('user/productlist', { categories, products, selectedCategory: selectedCategoryName,brands });
+            res.render('user/productlist', { categories, products, selectedCategory: selectedCategoryName,brands,totalPages, currentPage: page });
           } catch (e) {
             console.error(e);
             res.status(500).send('Internal Server Error');
@@ -150,6 +159,7 @@ module.exports =
             currentPage,
             sortOptions: req.query.sortOptions, // Pass sortOptions to the template
             brandsQuery: req.query.brands // Pass brands to the template
+            
         })
         },
 
@@ -198,24 +208,102 @@ module.exports =
         res.status(500).json({ error: 'Internal Server Error' });
       }
     },
-    searchResults:async (req, res) => {
-      // const query = req.query.q; 
+  //   searchResults:async (req, res) => {
+  //     // const query = req.query.q; 
 
-      try {
-          const query = req.query.q; // Retrieve the search query from the URL parameters
+  //     try {
+  //         const query = req.query.q; // Retrieve the search query from the URL parameters
        
-          const categories = await category.find({});
-          const brands = await Brands.find();
-          const products = await Product.find({ ProductName: { $regex: new RegExp(query, 'i') } });
-;
-          console.log(products,"dfghjfghjfghj"); 
-          res.render('user/searchresults', { products, query,categories,brands });
+  //         const categories = await category.find({});
+  //         const brands = await Brands.find();
+  //         const products = await Product.find({ ProductName: { $regex: new RegExp(query, 'i') } });
+  //         console.log(products,"dfghjfghjfghj"); 
+
+
+  //         let sortOption = {};
+  //         // console.log(req.query.sortOptions,"kkkkkkkkkkkkkkkkkkkkkkkkk");
+
+  //         if (req.query.sortOptions) {
+  //             switch (req.query.sortOptions) {
+  //                 case 'priceAsc':
+  //                     sortOption = { Price: 1 };
+  //                     break;
+  //                 case 'priceDesc':
+  //                     sortOption = { Price: -1 };
+  //                     break;
+  //             }
+  //         }
+  //         console.log("Sort option:", sortOption);
+
+  //         const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
+
+  //         let filterOptions = {  isBlocked: false };
+  //         if (selectedBrands.length > 0) {
+  //         filterOptions.BrandName = { $in: selectedBrands };
+  //       } 
+
+
+  //         res.render('user/searchresults', { products, query,categories,brands });
           
-      } catch (error) {
-          console.error('Error searching for products:', error);
-          res.status(500).send('Internal Server Error');
-      }
-  },
+  //     } catch (error) {
+  //         console.error('Error searching for products:', error);
+  //         res.status(500).send('Internal Server Error');
+  //     }
+  // },
+
+
+  searchResults: async (req, res) => {
+    try {
+        const query = req.query.q; // Retrieve the search query from the URL parameters
+        const categories = await category.find({});
+        const brands = await Brands.find();
+
+        // Determine sort option
+        let sortOption = {};
+        if (req.query.sortOptions) {
+            switch (req.query.sortOptions) {
+                case 'priceAsc':
+                    sortOption = { Price: 1 };
+                    break;
+                case 'priceDesc':
+                    sortOption = { Price: -1 };
+                    break;
+            }
+        }
+
+        // Determine selected brands for filtering
+        const selectedBrands = req.query.brands ? req.query.brands.split(',') : [];
+        
+        // Define filter options
+        let filterOptions = { 
+            isBlocked: false
+        };
+
+        // Apply search query filtering
+        if (query) {
+            filterOptions.ProductName = { $regex: new RegExp(query, 'i') };
+        }
+
+        // Apply brand filter if any selected
+        if (selectedBrands.length > 0) {
+            filterOptions.BrandName = { $in: selectedBrands };
+        }
+
+        // Fetch products based on filter and sort options
+        const products = await Product.find(filterOptions)
+            .sort(sortOption)
+            .populate('Category')
+            .populate('BrandName');
+
+        // Render the search results page with products, query, categories, and brands
+        res.render('user/searchresults', { products, query, categories, brands });
+
+    } catch (error) {
+        console.error('Error searching for products:', error);
+        res.status(500).send('Internal Server Error');
+    }
+},
+
    
    
     showSignupPage: async(req, res) => {
@@ -475,22 +563,23 @@ module.exports =
         try {
           console.log(req.body)
           const { email, password } = req.body;
+          const categories = await category.find()
           const userfound = await user.findOne({ email: email });
           console.log(email)
      
           if (!userfound) {
-            return res.render('user/userlog', { err: 'User not found' });
+            return res.render('user/userlog', { err: 'User not found',categories });
           }
       
           if (userfound.isBlocked) {
-            return res.render('user/userlog', { err: 'User is blocked. Contact the administrator.' });
+            return res.render('user/userlog', { err: 'User is blocked. Contact the administrator.' ,categories});
           }
       
           const passwordMatch = await bcrypt.compare(password, userfound.password);
         
       
           if (!passwordMatch) {
-            return res.render('user/userlog', { err: 'Invalid Credentials' });
+            return res.render('user/userlog', { err: 'Invalid Credentials',categories });
           }
       
           req.session.userLogged = true;

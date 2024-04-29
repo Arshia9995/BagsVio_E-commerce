@@ -10,14 +10,14 @@ module.exports={
         const brands=await brandModel.find({})
         var i=0
         console.log(brands);
-        res.render('./admin/brand',{brands,i})
+        res.render('./admin/brand',{brands,i, title:"Admin Brand"})
        }catch(err){
         console.log(err)
        }
     },
     getaddBrand:async (req,res)=>{
         try {
-            res.render('./admin/addbrand')            
+            res.render('./admin/addbrand',{ title:"Admin AddBrand"})            
         } catch (error) {
             console.log(error);            
         }
@@ -55,7 +55,7 @@ module.exports={
         console.log(req.body);
         try {
            const editbrand= await brandModel.findById({_id :id})
-           res.render('admin/editbrand',{editbrand})
+           res.render('admin/editbrand',{editbrand, title:"Admin EditBrand"})
         } catch (error) {
             console.log(error);  
         }

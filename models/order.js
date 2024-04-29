@@ -61,6 +61,9 @@ const orderSchema = new mongoose.Schema({
     },
     discount: {
         type:Number
+    },
+    op:{
+        type:String,
     }
 
 });

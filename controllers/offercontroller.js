@@ -25,7 +25,7 @@ module.exports ={
 
             // const productOffer = await ProductOffer.findOne({ productName: productName, discountPercentage: discountPercentage });
             
-            res.render('./admin/productoffer',{ productOffers: productOffers, productOffer: {} });
+            res.render('./admin/productoffer',{ productOffers: productOffers, productOffer: {} , title:"Admin ProductOffer"});
         } catch (error) {
             console.error('Error fetching coupons:', error);
             res.status(500).send('Internal Server Error');

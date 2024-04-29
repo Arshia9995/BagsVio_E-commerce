@@ -7,7 +7,7 @@
 
   <div class="container mt-5 ml-3">
     <div class="row">
-        <!-- <div class="col-lg-3">
+        <div class="col-lg-3">
 
   <div class="sidebar-section">
     <h5>Sort by</h5>
@@ -20,7 +20,7 @@
   <button onclick="applySort()" class="btn btn-primary">Apply</button>
 </div>
 <br>
-
+  
 <div class="sidebar-section">
   <h5>Filter by Brand</h5>
   <form id="brandFilterForm">
@@ -37,18 +37,18 @@
 <div class="sidebar-section" style="margin-top: 30px;">
   <button onclick="applyFilter()" class="btn btn-primary">Filter</button>
 </div>
-        </div> -->
+        </div>
 
         <div class="col-lg-9">
   
-    <section class="row mb-4 d-flex justify-content-center">
+    <section class="row mb-4">
       <% if (products.length > 0) { %>
         <% products.forEach(product => { %>
           <div class="col-lg-4">
             <div class="card">
               <a href="/productdetails/<%= product._id %>">
               <!-- <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>"> -->
-              <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
+              <img src="/uploads/cropped_images/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
 
 
               <div class="card-body">
@@ -87,6 +87,44 @@
     }
   }
 </script> -->
+
+
+<script>
+  function applySort() {
+
+   const selectedSortOption = document.getElementById('sortOptions').value;
+   if ( selectedSortOption === 'Select') {
+      return;
+   }
+
+
+   const queryParams = new URLSearchParams(window.location.search);
+
+   if (selectedSortOption !== 'Select') {
+       queryParams.set('sortOptions', selectedSortOption);
+   }
+
+ 
+
+  window.location.href = '/search' + '?' + queryParams.toString();
+}
+
+
+</script>
+<script>
+function applyFilter() {
+  const selectedBrands = Array.from(document.querySelectorAll('input[type=checkbox]:checked')).map(checkbox => checkbox.value);
+  const queryParams = new URLSearchParams(window.location.search);
+
+  if (selectedBrands.length > 0) {
+    queryParams.set('brands', selectedBrands.join(','));
+  }
+
+  
+
+  window.location.href = '/search' +  '?' + queryParams.toString();
+}
+</script>
 
 
 <%- include('../partials/user-footer') %>

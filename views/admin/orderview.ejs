@@ -43,8 +43,8 @@
                                             <%= orders._id %>
                                         </p>
                                         <p><strong>Order Date:</strong>
-                                            <%=new Date(orders.orderDate).toLocaleString('en-US', {
-                                                timeZone: 'Asia/Kolkata' })%>
+                                            <%= orders.orderDate.toLocaleDateString() %>
+                                            
                                         </p>
                                         <p><strong>Order Status:</strong>
                                             <span class="badge bg-success" id="orderStatus">

@@ -54,7 +54,7 @@
                         <div class="mb-4">
                             <h6 class="text-uppercase">Order Information</h6>
                             <p><strong>Order ID:</strong> <%= order._id %></p>
-                            <p><strong>Order Date:</strong> <%= order.orderDate %></p>
+                            <p><strong>Order Date:</strong> <%= order.orderDate.toLocaleDateString() %></p>
                             <p><strong>Status:</strong> <span class="badge bg-success"><%= order.status%></span></p>
                             <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
                             <p><strong>Payment Status:</strong> <%= order.paymentStatus %></p>
@@ -189,6 +189,14 @@
     </div>
 
     <%- include('../partials/user-footer') %>
+
+    <!-- <script>
+        function formatDate(dateString) {
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const indianDate = new Date(dateString).toLocaleDateString('en-IN', options);
+            return indianDate;
+        }
+    </script> -->
 
     
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -492,3 +500,6 @@ swal({
 });
     })
 </script>
+
+
+

@@ -9,11 +9,23 @@ const cropImage = require("../utility/imageCrop")
 module.exports = {
   getProductPage: async (req, res) => {
     try {
-      const products = await productModel.find({}).populate('BrandName').populate('Category')
+
+      const page = parseInt(req.query.page) || 1; // Current page number
+        const perPage = 10; // Number of products per page
+        const productsCount = await productModel.countDocuments(); // Total number of products
+        const totalPages = Math.ceil(productsCount / perPage);
+
+        const products = await productModel
+        .find({})
+        .populate('BrandName')
+        .populate('Category')
+        .skip((page - 1) * perPage) // Skip products for previous pages
+        .limit(perPage); // Limit products for the current page
+
       console.log('products are>>>>>>', products);
       // console.log(products[9].BrandName,'products.BrandName');
       // console.log(products[9].Category,'category');
-      res.render('./admin/adminproduct', { products })
+      res.render('./admin/adminproduct', { products, title: 'Admin Product Page', currentPage: page, totalPages ,perPage})
 
     } catch (error) {
       console.error(`Error fetching categories: ${error.message}`);
@@ -27,7 +39,7 @@ module.exports = {
       const categories = await categoryModel.find()
       const brands = await brandModel.find()
 
-      res.render('./admin/addproduct', { categories, brands })
+      res.render('./admin/addproduct', { categories, brands, title:"Admin AddProduct" })
     } catch (error) {
       console.log(error);
     }
@@ -209,7 +221,7 @@ module.exports = {
       const categories = await categoryModel.find();
       const brands = await brandModel.find();
 
-      res.render('./admin/editproduct', { product, categories, brands });
+      res.render('./admin/editproduct', { product, categories, brands , title:"Admin EditProduct"});
     } catch (error) {
       console.error(`Error fetching product details: ${error.message}`);
       res.status(500).send('Internal Server Error');
@@ -279,6 +291,7 @@ module.exports = {
             update.images.push(existingImage);
           }
         }
+        cropImage(update.images)
       }
   
       // Update the product in the database

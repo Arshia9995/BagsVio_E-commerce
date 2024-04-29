@@ -219,9 +219,9 @@
                 <p class="card-text">Review: <%= review.reviewText %></p>
               </div>
               <div class="card-footer">
-                <small class="text-muted"
-                  >Submitted on <%= review.createdAt.toDateString() %></small
-                >
+                <small class="text-success">
+                  Submitted on <%= review.createdAt.toDateString() %></small>
+                
               </div>
             </div>
             <% }); %> <% } else { %>
@@ -274,8 +274,12 @@
       );
       const stock = document.getElementById("stock").innerHTML;
       if (stock <= 0) {
-        alert("out of stock. Cannot be added to cart");
-        return;
+        Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Out of stock. Cannot be added to cart.",
+            });
+            return;
       }
 
       const totalQuantity = quantity + existingQuantity;
@@ -302,7 +306,7 @@
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Failed to add product to cart.",
+          text: "Failed to add product to cart,Quantity exceeds",
         });
       }
     } catch (error) {
@@ -317,12 +321,32 @@
   }
 
   // Increment quantity
-  document
-    .getElementById("button-addon2")
-    .addEventListener("click", function () {
-      var quantityInput = document.getElementById("quantityInput");
-      quantityInput.value = parseInt(quantityInput.value) + 1;
+document.getElementById("button-addon2").addEventListener("click", function () {
+  var quantityInput = document.getElementById("quantityInput");
+  var currentQuantity = parseInt(quantityInput.value);
+  var maxQuantity = parseInt(quantityInput.getAttribute("max"));
+  var availableQuantity = parseInt(document.getElementById("stock").innerHTML);
+  
+  // Check if the current quantity plus 1 exceeds the maximum available quantity
+  if (currentQuantity + 1 > maxQuantity) {
+    // Show error message if quantity exceeds available stock
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Cannot exceed available stock.",
     });
+  } else if (currentQuantity + 1 > availableQuantity) {
+    // Show error message if quantity exceeds available stock
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Cannot exceed available stock.",
+    });
+  } else {
+    // Increment quantity if it doesn't exceed available stock
+    quantityInput.value = currentQuantity + 1;
+  }
+});
 
   // Decrement quantity
   document

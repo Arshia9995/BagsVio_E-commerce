@@ -74,7 +74,7 @@
                 <div class="col-md-8">
                   <h1 class="mt-2 text-white">Add Product</h1>
 
-                  <form action="/admin/addproduct" method="post" enctype="multipart/form-data"
+                  <form onsubmit="formSubmitted()" enctype="multipart/form-data"
                     class="card p-3 bg-light mb-3 text-dark text-shadow" id="myForm">
                     <% if (messages.success) { %>
                       <div class="alert alert-success">
@@ -162,12 +162,7 @@
                             </div>
 
                             <br>
-                            <!-- <div class="form-group">
-                              <label for="discountAmount">Discount Amount:</label>
-                              <input type="number" name="DiscountAmount" class="form-control bg-light"
-                                id="discountAmount" placeholder="Enter  After discount amount" />
-                              <div id="DiscountAmountError"></div>
-                            </div> -->
+                            
 
                           </div>
 
@@ -183,10 +178,6 @@
                             </div>
 
                           </div>
-
-
-
-                          
                 </div>
 
                 <div class="col-md-4 my-5 py-3">
@@ -221,13 +212,8 @@
                     </div>
 
                     <br>
-                    <!-- <div class="form-group">
-                                  <label for="tags">Tags:</label>
-                                  <input type="text" class="form-control bg-light" name="Tags" id="tags"
-                                      placeholder="Enter tags" required />
-                              </div> -->
                     <div class="d-flex justify-content-end">
-                      <button type="submit" class="btn btn-primary mt-3 mb-0">Add Product</button>
+                      <button type="submit" id="addproduct" class="btn btn-primary mt-3 mb-0">Add Product</button>
                     </div>
                   </div>
                 </div>
@@ -237,12 +223,18 @@
           </div>
         </div>
 
+       
         <script>
-          console.log('Script executed');
-          document.getElementById('myForm').addEventListener('submit', function (event) {
+          function formSubmitted(event) {
+    event.preventDefault(); // Prevent default form submission
 
-            var imageInputs = document.querySelectorAll('.imageInput');
+    // Get form data
+    const form = document.getElementById('myForm');
+    const formData = new FormData(form);
 
+
+    // validation
+    var imageInputs = document.querySelectorAll('.imageInput');
             var productNameInput = document.getElementById('productName');
             var productCategoryInput = document.getElementById('category');
             var productPriceInput = document.getElementById('basePrice');
@@ -251,9 +243,15 @@
             var productDescriptionInput = document.getElementById('productDescription');
             var productBrandInput = document.getElementById('brand');
 
-           
+            // console.log(productNameInput.value, 'productNameInput');
+            console.log(productCategoryInput, 'productCategoryInput');
+            console.log(productPriceInput, 'productPriceInput');
+            console.log(productStockInput, 'productStockInput');
+            console.log(productDiscountAmountInput, 'productDiscountAmountInput');
+            console.log(productDescriptionInput, 'productDescriptionInput');
+            console.log(productBrandInput, 'productBrandInput');
 
-
+        
             var nameError = document.getElementById('nameError');
             var categoryError = document.getElementById('categoryError');
             var priceError = document.getElementById('priceError');
@@ -261,139 +259,117 @@
             var discountAmountError = document.getElementById('DiscountAmountError');
             var descriptionError = document.getElementById('DescriptionError');
             var brandError = document.getElementById('BrandError');
-
             var fileError = document.getElementById('fileError');
-
-            var isValid = true;
-
-            // fileError.textContent = '';
-
-
-
-            // Check each image input
-            //         imageInputs.forEach(function(imageInput) {
-            //         var images = imageInput.files;
-
-            //         // Check if at least one image is selected
-            //         if (images.length === 0) {
-            //         fileError.textContent = 'Please upload at least one image.';
-            //         isValid = false;
-            //     }
-
-            //          // Check each selected image file
-            //         for (var i = 0; i < images.length; i++) {
-            //         var image = images[i];
-            //         var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
-
-            //         // Check file extension
-            //         if (!allowedExtensions.test(image.name)) {
-            //         fileError.textContent = 'Invalid file type. Please upload images with extensions: .jpg, .jpeg, .png, .gif';
-            //         isValid = false;
-            //     }
-
-            //          // Check file size (adjust the size limit as needed)
-            //         var maxSizeInBytes = 5 * 1024 * 1024; // 5 MB
-            //         if (image.size > maxSizeInBytes) {
-            //         fileError.textContent = 'File size exceeds the limit. Please upload images up to 5 MB.';
-            //         isValid = false;
-            //     }
-            //   }
-            // });
-
-
+            let isValid = []; // Store boolean values indicating input validity
             // Name 
             if (productNameInput.value.trim() === '') {
               nameError.textContent = 'Please enter a name.';
               nameError.style.display = 'block';
               nameError.style.color = 'red';
-              isValid = false;
+              isValid.push(false); // Push boolean value indicating invalid input
             } else {
               nameError.textContent = '';
               nameError.style.display = 'none';
+              isValid.push(true); // Push boolean value indicating valid input
             }
-
-
+        
+        
             // Description
             if (productDescriptionInput.value.trim() === '') {
               descriptionError.textContent = 'Please enter a description.';
               descriptionError.style.display = 'block';
               descriptionError.style.color = 'red';
-              isValid = false;
+              isValid.push(false);
             } else {
               descriptionError.textContent = '';
               descriptionError.style.display = 'none';
+              isValid.push(true);
             }
-
+        
             // Category
             if (productCategoryInput.value.trim() === '') {
               categoryError.textContent = 'Please enter a category.';
               categoryError.style.display = 'block';
               categoryError.style.color = 'red';
-              isValid = false;
+              isValid.push(false);
             } else {
               categoryError.textContent = '';
               categoryError.style.display = 'none';
+              isValid.push(true);
             }
-
+        
             // Brand
             if (productBrandInput.value.trim() === '') {
               brandError.textContent = 'Please enter a brand.';
               brandError.style.display = 'block';
               brandError.style.color = 'red';
-              isValid = false;
+              isValid.push(false);
             } else {
               brandError.textContent = '';
               brandError.style.display = 'none';
+              isValid.push(true);
             }
-
+        
             // Price
             var priceValue = parseFloat(productPriceInput.value);
             if (isNaN(priceValue) || priceValue <= 0) {
               priceError.textContent = 'Please enter a valid positive price.';
               priceError.style.color = 'red';
               priceError.style.display = 'block';
-              isValid = false;
+              isValid.push(false);
             } else {
               priceError.textContent = '';
               priceError.style.display = 'none';
+              isValid.push(true);
             }
-
+        
             // Stock
             var stockValue = parseFloat(productStockInput.value);
             if (isNaN(stockValue) || stockValue <= 0) {
               stockError.textContent = 'Please enter a valid positive number.';
               stockError.style.color = 'red';
               stockError.style.display = 'block';
-              isValid = false;
+              isValid.push(false);
             } else {
               stockError.textContent = '';
               stockError.style.display = 'none';
+              isValid.push(true);
             }
+        
+        for(let i = 0; i < isValid.length; i++){
+        if(isValid[i] === false){
+        return
+        }
+        }
+    fetch('/admin/addproduct', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => {
+        // Handle response
+        if (response.ok) {
+          // If the response is OK, do something (e.g., show success message)
+          console.log('Product added successfully');
+          window.location.href = '/admin/adminproduct'
+          // You can redirect or display a success message here
+        } else {
+          // If the response is not OK, handle errors
+          console.error('Failed to add product');
+          // You can display an error message here
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle any errors that occurred during the fetch
+        // You can display an error message here
+      });
+  }
 
-            // Discount Amount
-            var discountAmountValue = parseFloat(productDiscountAmountInput.value);
-            if (isNaN(discountAmountValue) || discountAmountValue <= 0) {
-              discountAmountError.textContent = 'Please enter a valid positive number.';
-              discountAmountError.style.color = 'red';
-              discountAmountError.style.display = 'block';
-              isValid = false;
-            } else {
-              discountAmountError.textContent = '';
-              discountAmountError.style.display = 'none';
-            }
+  // Attach event listener to the form submit event
+  const form = document.getElementById('myForm');
+  form.addEventListener('submit', formSubmitted);
 
-            // other validations 
-
-            if (!isValid) {
-              console.log('Form validation failed. Stopping submission.');
-              event.preventDefault();
-            } else {
-              console.log('Form is valid. Submitting...');
-            }
-
-
-          });
-        </script>
-
+  </script>
+        
 
         <%- include('footer')-%>

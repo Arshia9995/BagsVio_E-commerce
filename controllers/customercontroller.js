@@ -8,9 +8,21 @@ module.exports={
     Customers:async(req,res)=>{
         try {
 
-            const customers=await customerModel.find({})
+            const page = parseInt(req.query.page) || 1; // Current page number
+            const perPage = 10; // Number of customers per page
+    
+
+            const customers = await customerModel
+            .find({})
+            .skip((page - 1) * perPage) // Skip customers for previous pages
+            .limit(perPage); // Limit customers for the current page
+
             console.log(customers)
-            res.render('./admin/customers',{customers})
+
+            const customersCount = await customerModel.countDocuments();
+        const totalPages = Math.ceil(customersCount / perPage);
+
+            res.render('./admin/customers',{customers, title:"Admin Customers",currentPage: page, totalPages,perPage })
         } catch (error) {
             console.error(`Error fetching customers: ${error.message}`);
             res.status(500).send('Internal Server Error');

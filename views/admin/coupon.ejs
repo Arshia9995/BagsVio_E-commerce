@@ -87,10 +87,17 @@
                         <div class="mb-3">
                             <label for="couponName" class="form-label">Coupon Name</label>
                             <input type="text" class="form-control" id="couponName" name="couponName" required>
+                            <div id="couponNameError" class="invalid-feedback error-message" style="color: red;">
+                                <p class="text-danger" id="err1"></p>
+                            </div>
                         </div>
+                        
                         <div class="mb-3">
                             <label for="couponCode" class="form-label">Coupon Code</label>
                             <input type="text" class="form-control" id="couponCode" name="couponCode" required>
+                            <div id="couponCodeError" class="invalid-feedback error-message" style="color: red;">
+                                <p class="text-danger" id="err"></p>
+                            </div>
                         </div>
                         <div class="mb-3">
                             <label for="discountPercentage" class="form-label">Discount Percentage</label>
@@ -113,8 +120,9 @@
                             <input type="date" class="form-control" id="expirationDate" name="expirationDate" required>
                         </div>
                        
-                        <button type="submit" class="btn btn-primary">Add Coupon</button>
+                        <button type="submit" class="btn btn-primary" onclick="return validateCouponForm()">Add Coupon</button>
                     </form>
+                    
                 </div>
             </div>
         </div>
@@ -155,10 +163,13 @@
                     <div class="form-group">
                         <label for="couponName<%=coupon._id %>">Coupon Name</label>
                         <input type="text" class="form-control" id="couponName<%=coupon._id %>" name="couponName" value="<%= coupon.couponName %>" required>
+                       
                     </div>
+                
                     <div class="mb-3">
                         <label for="couponCode<%=coupon._id %>" class="form-label">Coupon Code</label>
                         <input type="text" class="form-control" id="couponCode<%=coupon._id %>" name="couponCode" value="<%= coupon.couponCode %>" required>
+                        
                     </div>
                     <div class="mb-3">
                         <label for="discountPercentage<%=coupon._id %>" class="form-label">Discount Percentage</label>
@@ -181,6 +192,7 @@
                         <input type="date" class="form-control" id="expirationDate<%=coupon._id %>" name="expirationDate" value="<%= coupon.expirationDate.toISOString().slice(0, 10) %>" required>
 
                     </div>
+               
                     <!-- Add other input fields as needed -->
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
@@ -191,6 +203,9 @@
 
     <% }) %>
 </div>
+
+
+
 
 
 
@@ -334,3 +349,66 @@
         });
     });
 </script> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function to validate coupon form
+    function validateCouponForm() {
+        const couponName = document.getElementById('couponName').value.trim();
+        const couponCode = document.getElementById('couponCode').value.trim();
+        const startDate = document.getElementById('startDate').value.trim();
+        const expirationDate = document.getElementById('expirationDate').value.trim();
+
+        let isValid = true;
+
+        // Validate coupon name
+        if (couponName === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Coupon name cannot be empty!'
+            });
+            isValid = false;
+            console.log('Coupon name is empty');
+        }
+
+        // Validate coupon code
+        if (couponCode === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Coupon code cannot be empty!'
+            });
+            isValid = false;
+            console.log('Coupon code is empty');
+        }
+
+        // Validate start date and expiration date
+        const startDateObj = new Date(startDate);
+        const expirationDateObj = new Date(expirationDate);
+
+        if (startDateObj >= expirationDateObj) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Start date must be before expiration date!'
+            });
+            isValid = false;
+            console.log('Start date must be before expiration date');
+        }
+
+        return isValid;
+    }
+
+    // Event listener for form submission
+    document.addEventListener('DOMContentLoaded', function() {
+        const addCouponModal = document.getElementById('addCouponModal');
+        const addCouponForm = addCouponModal.querySelector('form');
+
+        addCouponForm.addEventListener('submit', function(event) {
+            if (!validateCouponForm()) {
+                event.preventDefault();
+            }
+        });
+    });
+</script>

@@ -46,7 +46,7 @@
       <div class="col-lg-4">
         <div class="card">
           <a href="/productdetails/<%= product._id %>">
-            <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
+            <img src="/uploads/cropped_images/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
           </a>
           <div class="card-body">
             <h5 class="card-title text-dark"><%= product.ProductName %></h5>
@@ -84,7 +84,7 @@
           <% } %>
       </ul>
   </nav>
-</div>
+
 
   </div>
 </div>

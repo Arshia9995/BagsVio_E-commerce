@@ -58,7 +58,7 @@
                         <% } %>
                             <tr>
                                 <td>
-                                    <%= index + 1 %>
+                                    <%= (currentPage - 1) * perPage + index + 1 %>
                                 </td>
                                 <td><a href="/admin/viewproductdetails/<%=product._id%>" class="text-secondary">
                                         <%= product.ProductName %>
@@ -106,6 +106,25 @@
                         <% }); %>
                 </tbody>
             </table>
+
+
+            <!-- Pagination -->
+            <ul class="pagination justify-content-center">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a></li>
+                <% } %>
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %>"><%= i %></a>
+                    </li>
+                <% } %>
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
+                <% } %>
+            </ul>
+            <!-- End Pagination -->
+
+
         </div>
     </div>
         </div>

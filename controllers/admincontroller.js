@@ -20,7 +20,7 @@ const credentials ={
 
 
 const toLogin = (req,res)=>{
-    res.render('admin/adminlog')
+    res.render('admin/adminlog',{ title:"Admin login"})
 }
 const admindashboard = async (req, res) => {
     try {
@@ -87,7 +87,8 @@ const topCategories = await Orders?.aggregate([
             totalProducts,
             topProducts,
             topCategories,
-            topBrands
+            topBrands,
+            title:"Admin Dashboard"
             
         });
     } catch (error) {
@@ -134,7 +135,7 @@ const getSalesPage = async(req,res)=>{
 
 
      
-      res.render("admin/sales",{orders,totalIncome,totalQuantitySold })
+      res.render("admin/sales",{orders,totalIncome,totalQuantitySold, title:"Admin Sales Page" })
 
         
     } catch (error) {

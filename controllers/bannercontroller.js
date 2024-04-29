@@ -11,7 +11,7 @@ module.exports = {
         try {
             const categories = await Category.find();
             const banners = await Banner.find().populate('category'); // Fetch banners from the database
-            res.render('./admin/banner', { categories, banners });
+            res.render('./admin/banner', { categories, banners, title:"Admin Banner" });
           } catch (error) {
             console.error('Error fetching categories and banners:', error);
             res.status(500).send('Internal server error');

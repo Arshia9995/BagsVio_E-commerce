@@ -179,17 +179,32 @@ module.exports = {
   showOrdersPage: async (req, res) => {
     const { userId } = req.session;
     const categories = await categoryModel.find();
-    console.log(userId, "userid.........");
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = 3;
+    const skip = (page - 1) * limit;
+
     try {
-      const order = await Order.find({ userId })
-        .populate("products.productId")
-        .sort({ orderDate: -1 });
-      res.render("user/orders", { categories, order });
+        const totalOrders = await Order.countDocuments({ userId });
+        const totalPages = Math.ceil(totalOrders / limit);
+
+        const order = await Order.find({ userId, 
+          $or: [
+          { paymentMethod: { $ne: "Online Payment" } }, 
+          { op: { $ne: "Pending" } }
+      ] })
+            .populate("products.productId")
+            .sort({ orderDate: -1 })
+            .skip(skip)
+            .limit(limit);
+
+        res.render("user/orders", { categories, order, totalPages, currentPage: page });
     } catch (error) {
-      console.log(error);
-      res.status(500).json({ error: "Internal server error" });
+        console.error("Error fetching orders:", error);
+        res.status(500).json({ error: "Internal server error" });
     }
-  },
+},
+
   showOrderDetailsPage: async (req, res) => {
     const { userId } = req.session;
     const { orderId, productId } = req.params;
@@ -439,11 +454,22 @@ module.exports = {
 
   adminOrderPage: async (req, res) => {
     try {
+
+      const page = parseInt(req.query.page) || 1; // Current page number
+      const perPage = 10; // Number of orders per page
+
       const orders = await Order.find()
-        .populate("products.productId")
-        .populate("userId");
-      // console.log(orders,'..order')
-      res.render("admin/order", { orders });
+            .populate("products.productId")
+            .populate("userId")
+            .skip((page - 1) * perPage) // Skip orders for previous pages
+            .limit(perPage); // Limit orders for the current page
+
+            // console.log(orders,'..order')
+
+            const ordersCount = await Order.countDocuments();
+            const totalPages = Math.ceil(ordersCount / perPage);
+
+      res.render("admin/order", { orders, title:"Admin Orders Page",currentPage: page, totalPages ,perPage});
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Internal server error" });
@@ -463,7 +489,7 @@ module.exports = {
         return res.status(404).json({ error: "Order not found" });
       }
 
-      res.render("admin/orderview", { orders }); // Render the admin order view with order details
+      res.render("admin/orderview", { orders , title:"Admin OrderView"}); // Render the admin order view with order details
     } catch (error) {
       console.log(error);
       res.status(500).json({ error: "Internal server error" });
@@ -566,9 +592,10 @@ module.exports = {
         },
         paymentMethod: paymentMethod,
         paymentStatus: "Paid",
+        op:"Pending",
         discount: discount,
       });
-
+      
       for (const product of productsToUpdate) {
         const existingProduct = await productModel.findById(product.productId);
         console.log(existingProduct, "existinggggggggggggggggg");
@@ -577,9 +604,10 @@ module.exports = {
           await existingProduct.save();
         }
       }
-
+      
       await newOrder.save();
       console.log("ddddddd now my order details", newOrder);
+      req.session.orderId = newOrder._id
 
       userCart.items = [];
       await userCart.save();
@@ -611,14 +639,14 @@ module.exports = {
         req.body.payment.razorpay_payment_id
     );
     hmac = hmac.digest("hex");
-
+    const orderId = req.body.payment.razorpay_order_id;
+    const orderID = req.session.orderId;
+    console.log(orderID,"wwwwwwwwwwwwwwwwww");
+    const updateOrderDocument = await Order.findByIdAndUpdate(orderID, {
+        op: "Placed",
+        
+    });
     if (hmac === req.body.payment.razorpay_signature) {
-      const orderId = req.body.order.receipt;
-      const orderID = req.body.orderId;
-      // const updateOrderDocument = await order.findByIdAndUpdate(orderID, {
-      //     PaymentStatus: "Paid",
-      //     paymentMethod: "Online",
-      // });
       res.json({ success: true });
     } else {
       res.json({ failure: true });
@@ -632,8 +660,7 @@ module.exports = {
 
       const user = await Users.findOne({ email: userEmail });
 
-      const page = parseInt(req.query.page) || 1;
-      const limit = parseInt(req.query.limit) || 5;
+   
 
       console.log(user);
       // Fetch user's wallet
@@ -643,14 +670,35 @@ module.exports = {
         return res.status(404).send("Wallet not found for the user");
       }
 
+      // Pagination logic
+      // const page = parseInt(req.query.page) || 1;
+      // const limit = 3; // Display 3 transactions per page
+      // const startIndex = (page - 1) * limit;
+      // const endIndex = page * limit;
+
+      // const totalTransactions = wallet.transactions.length;
+      // const totalPages = Math.ceil(totalTransactions / limit);
+
+      // const transactions = wallet.transactions.slice(startIndex, endIndex);
+
+      const page = parseInt(req.query.page) || 1;
+      const limit = 3;
+      const skip = (page - 1) * limit;
+
       const totalTransactions = wallet.transactions.length;
       const totalPages = Math.ceil(totalTransactions / limit);
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
 
-      const transactions = wallet.transactions.slice(startIndex, endIndex);
-      console.log("startIndex:", startIndex);
-      console.log("endIndex:", endIndex);
+
+
+      const transactions = await Wallet.aggregate([
+        { $match: { userId: wallet._id } }, // Match transactions for the specific user
+        { $unwind: '$transactions' }, // Unwind the transactions array
+        { $sort: { 'transactions.date': -1 } }, // Sort transactions by date in descending order
+        { $skip: skip }, // Skip the specified number of transactions
+        { $limit: limit } // Limit the number of transactions per page
+    ]);
+
+     
 
       if (user) {
         res.render("user/wallet", {
@@ -658,9 +706,8 @@ module.exports = {
           categories,
           wallet,
           transactions,
-          totalPages,
-          currentPage: page,
-          limit,
+          totalPages, currentPage: page 
+        
         });
         req.session.email = userEmail;
       } else {

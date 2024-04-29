@@ -13,12 +13,64 @@ module.exports = {
         try {
             const coupons = await Coupon.find();
             console.log(coupons);
-            res.render('./admin/coupon', { coupons: coupons });
+            res.render('./admin/coupon', { coupons: coupons , title:"Admin Coupons"});
         } catch (error) {
             console.error('Error fetching coupons:', error);
             res.status(500).send('Internal Server Error');
         }
     },
+
+    // postAddCoupon: async (req, res) => {
+    //     try {
+    //         // Extract coupon details from the request body
+    //         const { couponName, couponCode, discountPercentage, maximumDiscountAmount, minimumPurchaseAmount, startDate, expirationDate } = req.body;
+    
+    //         // Validate coupon name
+    //         if (!couponName || couponName.trim() === '') {
+    //             return res.status(400).json({ error: 'Coupon name is required' });
+    //         }
+    
+    //         // Validate coupon code
+    //         if (!couponCode || couponCode.trim() === '') {
+    //             return res.status(400).json({ error: 'Coupon code is required' });
+    //         }
+    
+    //         // Validate discount percentage
+    //         if (!discountPercentage || isNaN(discountPercentage) || discountPercentage < 0 || discountPercentage > 100) {
+    //             return res.status(400).json({ error: 'Invalid discount percentage' });
+    //         }
+    
+    //         // Validate maximum discount amount
+    //         if (!maximumDiscountAmount || isNaN(maximumDiscountAmount) || maximumDiscountAmount < 0) {
+    //             return res.status(400).json({ error: 'Invalid maximum discount amount' });
+    //         }
+    
+    //         // Validate minimum purchase amount
+    //         if (!minimumPurchaseAmount || isNaN(minimumPurchaseAmount) || minimumPurchaseAmount < 0) {
+    //             return res.status(400).json({ error: 'Invalid minimum purchase amount' });
+    //         }
+    
+    //         // Validate start date and expiration date
+    //         const currentDate = new Date();
+    //         const startDateObj = new Date(startDate);
+    //         const expirationDateObj = new Date(expirationDate);
+    
+    //         if (isNaN(startDateObj) || isNaN(expirationDateObj) || startDateObj < currentDate || expirationDateObj <= startDateObj) {
+    //             return res.status(400).json({ error: 'Invalid start date or expiration date' });
+    //         }
+    
+    //         // Create the coupon in the database
+    //         await Coupon.create(req.body);
+            
+    //         // Send success response
+    //         console.log('Coupon added successfully');
+    //         res.redirect('/admin/coupon'); // Redirect to the coupon page after adding
+    //     } catch (error) {
+    //         console.error('Error adding coupon:', error);
+    //         res.status(500).send('Internal Server Error');
+    //     }
+    // },
+    
 
     postAddCoupon: async (req, res) => {
         try {
@@ -65,6 +117,7 @@ module.exports = {
         // console.log(req.session)
         const userId = req.session.userId._id; 
         console.log(userId);
+        
     
         try {
             // Retrieve user's cart data from the database based on their user ID
@@ -75,8 +128,11 @@ module.exports = {
             if (!userCart || userCart.items.length === 0) {
                 return res.status(400).json({ error: 'User cart not found or empty' });
             }
+
+          
     
             const couponCode = req.body.couponCode;
+
             const coupon = await Coupon.findOne({ couponCode });
     
             // Check if the coupon exists

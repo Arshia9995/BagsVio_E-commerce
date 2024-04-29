@@ -48,7 +48,7 @@ module.exports = {
       console.log(quantity, "quaty");
 
       // console.log('req.session.email:', req.session.email);
-
+      const product = await productModel.findById(productId)
       const user = await Users.findOne({ email: req.session.email });
 
       if (!user) {
@@ -78,7 +78,13 @@ module.exports = {
         );
 
         if (existingProduct) {
+          const totalQuantity = existingProduct.quantity + quantity;
+    
+                    if (totalQuantity > product.AvailableQuantity) {
+                        return res.status(400).json({ error: 'Total quantity in the cart exceeds available stock' });
+                    }
           existingProduct.quantity += quantity;
+
         } else {
           userCart.items.push({
             productId: productId,
@@ -179,7 +185,36 @@ module.exports = {
         .json({ success: false, message: "Internal server error" });
     }
   },
-  // Update the getCheckOutPage controller function
+
+  checkStock:async (req, res) => {
+    try {
+      const items = req.body.items; 
+  
+      
+      for (const item of items) {
+        
+        const product = await productModel.findById(item.itemId);
+        if (!product) {
+          return res.status(404).json({ success: false, message: `Product with ID ${item.itemId} not found` });
+        }
+  
+        // Check if the requested quantity exceeds the available stock
+        if (item.quantity > product.availableQuantity) {
+          return res.status(400).json({ success: false, message: `Not enough stock available for product ${product.name}` });
+        }
+      }
+  
+      // All items have sufficient stock
+      res.json({ success: true, message: "All items have sufficient stock" });
+    } catch (error) {
+      console.error("Error checking stock:", error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+  },
+
+
+
+
 getCheckOutPage: async (req, res) => {
   try {
       const { userId } = req.session;
@@ -212,7 +247,7 @@ getCheckOutPage: async (req, res) => {
               addresses: user?.addresses?.addresses,
               error: "Insufficient wallet balance",
               walletAmount,
-              totalPrice,
+              totalPrice
           });
       }
 
@@ -333,7 +368,7 @@ getCheckOutPage: async (req, res) => {
           // Optionally, update orderStatus to orderPlaced here
         }
       }
-      res.render("user/paymentsuccess", { categories, userCart });
+      res.render("user/paymentsuccess", { categories, userCart});
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Internal server errror" });

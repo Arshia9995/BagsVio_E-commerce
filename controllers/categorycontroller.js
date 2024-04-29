@@ -12,7 +12,7 @@ const categoryModel=require("../models/categorySchema")
         try {
             const categories = await categoryModel.find({})
             console.log(categories);
-            res.render('./admin/category',{categories})            
+            res.render('./admin/category',{categories, title:"Admin Category"})            
         } catch (error) {
             console.error(`Error fetching categories: ${error.message}`);
             res.status(500).send('Internal Server Error');            
@@ -21,7 +21,7 @@ const categoryModel=require("../models/categorySchema")
 
     getaddcategory:async (req,res)=>{
         try {
-            res.render('./admin/addcategory')            
+            res.render('./admin/addcategory',{ title:"Admin AddCategory"})            
         } catch (error) {
             console.log(error);            
         }
@@ -49,7 +49,7 @@ const categoryModel=require("../models/categorySchema")
         console.log(req.body);
         try {
            const editCategory= await categoryModel.findById({_id :id})
-           res.render('admin/editcategory',{editCategory})
+           res.render('admin/editcategory',{editCategory, title:"Admin EditCategory"})
         } catch (error) {
             console.log(error);  
         }
