@@ -59,6 +59,7 @@
 <!-- Coupon details -->
 <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-5"> 
     <div class="row">
+        <% if (coupons.length > 0) { %>
         <% coupons.forEach(coupon => { %>
         <div class="col-md-4 mb-4">
             <div class="card">
@@ -76,9 +77,18 @@
             </div>
         </div>
         <% }); %>
+        <% } else { %>
+            <div class="col-12">
+              <p>No coupons available</p>
+            </div>
+          <% } %>
     </div>
 </div>
 
+
+  <footer class="footer mt-auto py-3">
+  <%- include('../partials/user-footer') %>
+   </footer>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const copyButtons = document.querySelectorAll('.copy-coupon');
@@ -142,5 +152,3 @@
 
 
 
-
-      <%- include('../partials/user-footer') %>

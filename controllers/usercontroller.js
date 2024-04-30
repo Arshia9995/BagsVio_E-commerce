@@ -443,7 +443,7 @@ module.exports =
       const user = req.session.user
       console.log(user.password);
       console.log(user,"uuuuuuu");
-  
+      const categories = await category.find()
       // Check if the current password matches the user's actual password
       // if (currentPassword !== user.password) {
       //     return res.status(400).send('Current password is incorrect');
@@ -451,12 +451,12 @@ module.exports =
 
       const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
       if (!isPasswordValid) {
-        return res.status(400).send('Current password is incorrect');
+        return res.render('user/changepassword',{err:'Current password is incorrect',categories});
     }
   
       // Check if the new password matches the confirm password
       if (newPassword !== confirmPassword) {
-          return res.status(400).send('New password and confirm password do not match');
+          return res.render('user/changepassword',{err:'New password and confirm password do not match',categories});
       }
       try {
         // Hash the new password
@@ -510,11 +510,12 @@ module.exports =
           
         const {name,email,password,confirmPassword} =req.body;
         const userExist = await user.findOne({email:email})
+        const categories = await category.find()
        
          
 
          if(userExist){
-            res.render('user/usersignup',{err:"user already exist"})
+            res.render('user/usersignup',{err:"user already exist",categories})
          }
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
