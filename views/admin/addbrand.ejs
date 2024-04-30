@@ -69,6 +69,14 @@
 <div class="container mt-5 ml-3">
   <h2 class="mb-4">Add Brand</h2>
 
+
+  
+  <% if (typeof error !== 'undefined') { %>
+    <div class="alert alert-danger" role="alert">
+      <%= error %>
+    </div>
+  <% } %>
+
   <!-- Add brand Form -->
   <form action="/admin/addbrand" method="POST" >
     <div class="mb-3">

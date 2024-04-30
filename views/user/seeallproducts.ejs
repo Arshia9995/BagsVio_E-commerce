@@ -26,9 +26,11 @@
     <form id="brandFilterForm">
       <% brands.forEach(brand => { %>
         <div class="form-check">
+          <% if (!brand.isBlocked) { %>
           <input class="form-check-input" type="checkbox" value="<%= brand._id %>" id="<%= brand.brandName %>">
           <label class="form-check-label" for="<%= brand.brandName %>">
             <%= brand.brandName %>
+            <% } %>
           </label>
         </div>
       <% }); %>

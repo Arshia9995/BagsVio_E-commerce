@@ -32,7 +32,7 @@ const categoryModel=require("../models/categorySchema")
             console.log(req.body, '.......................................................................');
             const existingCategory = await categoryModel.findOne({ categoryName: req.body.categoryName });
             if (existingCategory) {
-                return res.render('./admin/addcategory', { error: 'Category already exists' });
+                return res.render('./admin/addcategory', { error: 'Category already exists',title:"Admin Category" });
             }
             const savecategory = await categoryModel.create(req.body);
             console.log("test");

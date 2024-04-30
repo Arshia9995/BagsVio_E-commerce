@@ -457,6 +457,8 @@ document.addEventListener('DOMContentLoaded', function() {
             couponCode.value = ''
             applyCouponBtn.style.display = 'block';
             removeCouponBtn.style.display = 'none';
+            document.getElementById('discountAmount').textContent =`Discount Amount : 0.00`
+            // location.reload()
         } else {
             console.error('Failed to remove coupon:', response.statusText);
         }

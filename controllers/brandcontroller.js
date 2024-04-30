@@ -25,7 +25,10 @@ module.exports={
     postaddBrand: async (req, res) => {
         try {
           console.log(req.body, 'lllllllllllllllllllllllllllllll');
-      
+          const existingBrand = await brandModel.findOne({ brandName: req.body.brandName });
+          if (existingBrand) {
+            return res.render('./admin/addbrand', { error: 'Brand already exists',title:"Admin Brand" });
+        }
           // Check if brandName is not null before creating a new brand
           if (req.body.brandName !== null) {
             const savebrand = await brandModel.create(req.body);

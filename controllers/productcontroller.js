@@ -230,8 +230,9 @@ module.exports = {
   postEditProduct: async (req, res) => {
     try {
       const productId = req.params.id;
+      console.log(productId,"ppppppppppp");
 
-      const product = await productModel.findById(productId);
+      const product = await productModel.findOne({_id: productId});
 
       // Check if the product exists
       if (!product) {

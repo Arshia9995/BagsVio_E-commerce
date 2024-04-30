@@ -65,15 +65,17 @@
       </div>
 
       <div class="container mt-5 mt-lg-1 shadow-lg rounded-2">
-        <form action="/admin/editproduct/<%= product._id%>" method="post" enctype="multipart/form-data" >
+  
           <div class="container-fluid">
             <div class="row ">
               <main class="px-md-4 icons">
                 <div class="row d-flex justify-content-between">
                   <div class="col-md-8">
                     <h1 class="mt-2 text-white">Add Product</h1>
+                    <div class="d-none" id="productId"><%=product._id %></div>
 
-
+                    <form onsubmit="formSubmitted('<%= product._id %>')" enctype="multipart/form-data" class="card p-3 bg-light mb-3 text-dark text-shadow" id="myForm"  method="post">
+           
                     <% if (messages.success) { %>
                       <div class="alert alert-success">
                         <%= messages.success %>
@@ -88,12 +90,14 @@
                             <label for="productName">Product Name:</label>
                             <input type="text" name="ProductName" class="form-control bg-light" id="productName"
                               placeholder="Enter product name" value="<%= product.ProductName %>" required />
+                              <div id="nameError"></div>
                           </div><br>
 
                           <div class="form-group">
                             <label for="productDescription">Product Description:</label>
                             <textarea class="form-control bg-light" name="Description" id="productDescription"
                               placeholder="Enter product description" required><%= product.Description %></textarea>
+                              <div id="DescriptionError"></div>
                           </div>
                           <br>
                           <div class="bg-light">
@@ -107,6 +111,7 @@
                               <img src="/uploads/<%=product.images[0]  %>" alt="Image 1" class="img-fluid imagePreview"
                                 style="max-height: 50px;width: auto;">
                             </div>
+                            <div id="fileError"></div>
 
 
                             <div class="form-group my-2">
@@ -132,6 +137,7 @@
                               <label for="basePrice">Base Price:</label>
                               <input type="number" name="Price" class="form-control bg-light" id="basePrice"
                                 placeholder="Enter base price" value="<%= product.Price %>" required />
+                                <div id="priceError"></div>
                             </div>
                             <br>
                             <!-- <div class="form-group">
@@ -149,6 +155,7 @@
                               <label for="quantity">Quantity:</label>
                               <input type="number" name="AvailableQuantity" class="form-control bg-light" id="quantity"
                                 placeholder="Enter quantity" value="<%= product.AvailableQuantity %>" required />
+                                <div id="stockError"></div>
                             </div>
                           </div>
                   </div>
@@ -164,6 +171,7 @@
                             </option>
                           <% }); %>
                         </select>
+                        <div id="categoryError"></div>
                       </div><br>
                       <div class="form-group">
                         <br>
@@ -176,6 +184,7 @@
                             </option>
                           <% }); %>
                         </select>
+                        <div id="BrandError"></div>
                       </div><br>
                       <!-- <div class="form-group">
                                   <label for="tags">Tags:</label>
@@ -218,29 +227,129 @@
               }
             });
           });
+          
         </script>
 
 
+<script>
+  // Function to handle form submission
+  function formSubmitted(event) {
+    let id = document.getElementById('productId').innerHTML
+    console.log(id,"iiiiiiiiiiiiiii");
+    event.preventDefault(); // Prevent default form submission
 
+    // Get form data
+    const form = document.querySelector('form'); // Assuming your form has a <form> tag
+    const formData = new FormData(form);
 
-        <!-- <script>
-  function previewImages() {
-    const previewContainer = document.getElementById('image-preview');
-    const filesInput = document.getElementById('photo');
-    previewContainer.innerHTML = ''; // Clear previous previews
+    // Perform validation
+    var productNameInput = document.getElementById('productName');
+    var productCategoryInput = document.getElementById('category');
+    var productPriceInput = document.getElementById('basePrice');
+    var productStockInput = document.getElementById('quantity');
+    var productDescriptionInput = document.getElementById('productDescription');
+    var productBrandInput = document.getElementById('brand');
 
-    // Display image previews
-    for (const file of filesInput.files) {
-      const imageElement = document.createElement('img');
-      imageElement.src = URL.createObjectURL(file);
-      imageElement.classList.add('preview-image');
+    var nameError = document.getElementById('nameError');
+    var categoryError = document.getElementById('categoryError');
+    var priceError = document.getElementById('priceError');
+    var stockError = document.getElementById('stockError');
+    var descriptionError = document.getElementById('DescriptionError');
+    var brandError = document.getElementById('BrandError');
+    var isValid = true; // Initialize isValid flag
 
-      // Set the size of the preview images (adjust the values accordingly)
-      imageElement.style.width = '200px';
-      imageElement.style.height = '200px';
+    // Name validation
+    if (productNameInput.value.trim() === '') {
+      nameError.textContent = 'Please enter a name.';
+      nameError.style.display = 'block';
+      nameError.style.color = 'red';
+      isValid = false;
+    } else {
+      nameError.textContent = '';
+      nameError.style.display = 'none';
+    }
 
-      previewContainer.appendChild(imageElement);
+    // Description validation
+    if (productDescriptionInput.value.trim() === '') {
+      descriptionError.textContent = 'Please enter a description.';
+      descriptionError.style.display = 'block';
+      descriptionError.style.color = 'red';
+      isValid = false;
+    } else {
+      descriptionError.textContent = '';
+      descriptionError.style.display = 'none';
+    }
+
+    // Category validation
+    if (productCategoryInput.value.trim() === '') {
+      categoryError.textContent = 'Please enter a category.';
+      categoryError.style.display = 'block';
+      categoryError.style.color = 'red';
+      isValid = false;
+    } else {
+      categoryError.textContent = '';
+      categoryError.style.display = 'none';
+    }
+
+    // Brand validation
+    if (productBrandInput.value.trim() === '') {
+      brandError.textContent = 'Please enter a brand.';
+      brandError.style.display = 'block';
+      brandError.style.color = 'red';
+      isValid = false;
+    } else {
+      brandError.textContent = '';
+      brandError.style.display = 'none';
+    }
+
+    // Price validation
+    var priceValue = parseFloat(productPriceInput.value);
+    if (isNaN(priceValue) || priceValue <= 0) {
+      priceError.textContent = 'Please enter a valid positive price.';
+      priceError.style.color = 'red';
+      priceError.style.display = 'block';
+      isValid = false;
+    } else {
+      priceError.textContent = '';
+      priceError.style.display = 'none';
+    }
+
+    // Stock validation
+    var stockValue = parseFloat(productStockInput.value);
+    if (isNaN(stockValue) || stockValue <= 0) {
+      stockError.textContent = 'Please enter a valid positive number.';
+      stockError.style.color = 'red';
+      stockError.style.display = 'block';
+      isValid = false;
+    } else {
+      stockError.textContent = '';
+      stockError.style.display = 'none';
+    }
+
+    // If all inputs are valid, submit the form
+    if (isValid) {
+      fetch(`/admin/editproduct/${id}`, {
+        method: 'POST',
+        body: formData,
+      })
+        .then(response => {
+          if (response.ok) {
+            console.log('Product edited successfully');
+            window.location.href = '/admin/adminproduct';
+          } else {
+            console.error('Failed to edit product');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
     }
   }
-</script> -->
+
+  // Attach event listener to the form submit event
+  const form = document.querySelector('form'); // Assuming your form has a <form> tag
+  form.addEventListener('submit', formSubmitted);
+</script>
+
+
         <%- include('footer')-%>
