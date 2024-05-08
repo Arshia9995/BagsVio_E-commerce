@@ -147,7 +147,7 @@ module.exports = {
         status = 'In Stock';
       }
 
-      cropImage(images)
+      // cropImage(images)
 
       // Create a new product instance
       const newProduct = new productModel({
@@ -165,6 +165,8 @@ module.exports = {
         isNewTrends:isnewtrends
       });
 
+
+     
       // Save the new product
       await newProduct.save();
 

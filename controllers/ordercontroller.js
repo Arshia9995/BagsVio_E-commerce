@@ -464,7 +464,7 @@ module.exports = {
             .skip((page - 1) * perPage) // Skip orders for previous pages
             .limit(perPage); // Limit orders for the current page
 
-            // console.log(orders,'..order')
+            console.log(orders,'..order')
 
             const ordersCount = await Order.countDocuments();
             const totalPages = Math.ceil(ordersCount / perPage);
