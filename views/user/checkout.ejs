@@ -218,8 +218,7 @@
                                             <p>Coupon Name: <%= coupon.couponName %></p>
                                             <p>Coupon Code: <%= coupon.couponCode %></p>
                                             <p>Discount: <%= coupon.discountPercentage %>%</p>
-                                            <button class="btn btn-primary copy-coupon" data-code="<%= coupon.couponCode %>">Copy Code</button>
-                                            <p class="copy-message" style="display: none; color: green;">Coupon code copied successfully!</p>
+                                           
                                         </div>
                                     </div>
                                 <% }); %>
@@ -228,14 +227,10 @@
                     </div>
                 </div>
             </div>
-             <form class="card p-2">              
-                
-                <div class="row">
-                  <div class="col-md-4 offset-md-8">
-                      <hr class="mb-4">
-                      <button class="btn btn-success btn-lg btn-block" type="submit"  >Continue to checkout</button>
+             <form class="p-2">              
+                  <div class="text-end"  style="padding-top: 75%;" >
+                      <button class="btn btn-success btn-block text-end" type="submit"  >Continue to checkout</button>
                   </div>
-              </div>
             </form>
         </div>
     </main>
@@ -561,15 +556,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 const couponDiscount = document.createElement('p');
                 couponDiscount.textContent = `Discount: ${coupon.discountPercentage}%`;
 
-                const copyButton = document.createElement('button');
-                copyButton.classList.add('btn', 'btn-primary', 'copy-coupon');
-                copyButton.textContent = 'Copy Code';
-                copyButton.setAttribute('data-code', coupon.couponCode);
-
+                
                 cardBody.appendChild(couponName);
                 cardBody.appendChild(couponCode);
                 cardBody.appendChild(couponDiscount);
-                cardBody.appendChild(copyButton);
+                
 
                 couponElement.appendChild(cardBody);
                 couponsContainer.appendChild(couponElement);
