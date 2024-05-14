@@ -1,4 +1,4 @@
-<!-- Wishlist Page (wishlist.ejs) -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +10,6 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <style>
-        /* Add your custom styles here */
         .cart-wrap {
             padding: 40px 0;
             font-family: 'Open Sans', sans-serif;
@@ -151,11 +150,10 @@
             color: #212529;
         }
 
-        /* Responsive styles */
         @media (max-width: 767px) {
             .table-wishlist tr td .name-product {
                 width: auto;
-                margin-left: 90px; /* Adjust as needed */
+                margin-left: 90px;
             }
         }
     </style>
@@ -178,7 +176,7 @@
                                     <th width="15%">Unit Price</th>
                                     <th width="15%">Stock Status</th>
                                     <th width="15%"></th>
-                                    <!-- <th width="10%"></th> -->
+                                  
                                     <th width="10%">Actions</th>
                                    
                                 </tr>
@@ -248,10 +246,7 @@
 <script>
     document.querySelectorAll('.remove-btn').forEach(btn => {
         btn.addEventListener('click', function() {
-            // Get the item ID from the data attribute
             const itemId = this.getAttribute('data-item-id');
-            // Here, you can add JavaScript code to remove the item from the wishlist using AJAX or any other method
-            // For now, let's just log the item ID
             console.log('Remove item with ID:', itemId);
         });
     });

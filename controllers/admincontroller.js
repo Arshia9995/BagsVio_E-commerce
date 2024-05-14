@@ -1,4 +1,4 @@
-// const { render } = require("ejs")
+
 const Product = require('../models/productSchema');
 const Category=require('../models/categorySchema');
 const Users = require("../models/user");
@@ -10,7 +10,7 @@ const pdf = require("../utility/pdf");
 const express = require('express');
 const router = express.Router();
 
-// const { render } = require("ejs")
+
 
 const credentials ={
     email:'admin@gmail.com',
@@ -53,7 +53,7 @@ const admindashboard = async (req, res) => {
         ]);
         console.log(topProducts,"toppppppppppppppppppp");
 
-       // Fetch top 10 best-selling categories
+      
 const topCategories = await Orders?.aggregate([
   { $unwind: '$products' },
   { $lookup: { from: 'products', localField: 'products.productId', foreignField: '_id', as: 'productDetails' } },
@@ -66,7 +66,7 @@ const topCategories = await Orders?.aggregate([
 ]);
 
 
-      console.log(topCategories, "topCategories");
+      
 
       const topBrands = await Orders?.aggregate([
         { $unwind: '$products' },
@@ -79,7 +79,7 @@ const topCategories = await Orders?.aggregate([
         { $limit: 10 }
     ]);
     
-    console.log(topBrands, "topBrands");
+   
        
         res.render('admin/admindashboard', {
             totalCustomers,
@@ -98,13 +98,13 @@ const topCategories = await Orders?.aggregate([
 };
 
 
-// Admin login post
+
 const adminLogin = (req,res)=>{
-    console.log(req.body)
+   
     const {email,password}=req.body;
 
     if(email==credentials.email&&password==credentials.password){
-        // return res.send('admin login successfull')
+        
         req.session.isAdmin=true;
         res.redirect('/admin/admindashboard')
     }
@@ -112,21 +112,18 @@ const adminLogin = (req,res)=>{
 const getSalesPage = async(req,res)=>{
     try {
 
-      // const { startDate, endDate } = req.query;
-
-      // const start = new Date(startDate);
-      // const end = new Date(endDate);
+    
       const orders = await Orders.find()
         .populate("products.productId")
         .populate("userId");
-        console.log(orders);
+      
 
         let totalIncome = 0;
         let totalQuantitySold = 0;
 
         orders.forEach(order => {
             if (order.status === 'Delivered') {
-                totalIncome += order.totalPrice; // Add the total price of each order
+                totalIncome += order.totalPrice; 
                 order.products.forEach(product => {
                     totalQuantitySold += product.quantity;
                 });
@@ -160,16 +157,16 @@ const getCount = async (req, res) => {
       let labelsByAmount;
       let dataByCount;
       let dataByAmount;
-      console.log('outside')
+     
       orders.forEach((order) => {
-        console.log('inside')
+       
         const orderDate = moment(order.orderDate, "ddd, MMM D, YYYY h:mm A");
         const dayMonthYear = orderDate.format("YYYY-MM-DD");
         const monthYear = orderDate.format("YYYY-MM");
         const year = orderDate.format("YYYY");
         
         if (req.url === "/count-orders-by-day") {
-          console.log("count");
+          
           if (!orderCountsByDay[dayMonthYear]) {
             orderCountsByDay[dayMonthYear] = 1;
             totalAmountByDay[dayMonthYear] = order.totalPrice
@@ -222,7 +219,7 @@ const getCount = async (req, res) => {
               total: totalAmountByMonthYear[monthYear],
             })
           );
-          console.log("by monthhh",amountsByMonth);
+         
         
           ordersByMonth.sort((a, b) => (a._id < b._id ? -1 : 1));
           amountsByMonth.sort((a, b) => (a._id < b._id ? -1 : 1));
@@ -297,7 +294,7 @@ const getCount = async (req, res) => {
       }
     }
   ])
-  console.log(totalSales)
+
   const sum = totalSales.length > 0 ? totalSales[0].totalSales : 0;
   pdf.downloadPdf(req,res,orders,startDate,endDate,totalSales)
   
@@ -314,7 +311,7 @@ const getCount = async (req, res) => {
         console.error('Error destroying session:', err);
         res.status(500).send('Internal Server Error');
       } else {
-        res.redirect('/admin/');
+        res.redirect('/admin');
       }
     }); 
   }

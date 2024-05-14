@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Wishlist</title>
-  <!-- Bootstrap CSS -->
+ 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 
@@ -161,7 +161,6 @@
 </head>
 <body>
 
-  <!-- Navbar/Header (Assuming the header is included using an external file) -->
   <div style="height: 40px;"></div>
 
   <%- include('../partials/navbar') %>
@@ -228,7 +227,6 @@
                             </tr>
                             <% }); %>
                             <% }); %>
-                            <!-- Repeat similar rows for other wishlist items -->
                         </tbody>
                     </table>
                 </div>
@@ -238,47 +236,11 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- <script>
-    async function addToCart(productId) {
-      // Fetch request to add wishlist item to the cart
-      await fetch('/wishlistcart', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ productId: productId }),
-      })
-      .then(response => {
-        if (!response.ok) {
-          // If there is an error response, show the error message using SweetAlert
-          throw new Error('Failed to add wishlist item to cart');
-        }
-        return response.json();
-      })
-      .then(data => {
-        // Show success message if the wishlist item is added to cart successfully
-        Swal.fire('Success!', 'Wishlist item added to cart successfully!', 'success');
-        // Reload the page to update the wishlist after adding to cart
-        location.reload();
-      })
-      .catch(error => {
-        // Show error message using SweetAlert in case of failure
-        Swal.fire('Error!', 'Failed to add wishlist item to cart', 'error');
-      });
-    }
-  
-    // Function to handle adding wishlist item to cart button click
-    function wishlistcart(productId) {
-      console.log(productId);
-      addToCart(productId);
-    }
-  </script>
-   -->
+
 
    <script>
     async function addToCart(productId) {
       try {
-        // Fetch request to add wishlist item to the cart
         const response = await fetch('/wishlistcart', {
           method: 'POST',
           headers: {
@@ -288,23 +250,19 @@
         });
 
         if (!response.ok) {
-          // If there is an error response, throw an error
           const errorMessage = await response.json();
           throw new Error('Failed to add wishlist item to cart');
         }
 
-        // If the request is successful, show success message using SweetAlert
         Swal.fire({
           title: 'Success!',
           text: 'Wishlist item added to cart successfully!',
           icon: 'success',
           showConfirmButton: true,
         }).then(() => {
-          // Reload the page to update the wishlist after adding to cart
           location.reload();
         });
       } catch (error) {
-        // Show error message using SweetAlert in case of failure
         Swal.fire({
           title: 'Error!',
           text: 'Failed to add wishlist item to cart',
@@ -314,7 +272,6 @@
       }
     }
 
-    // Function to handle adding wishlist item to cart button click
     function wishlistcart(productId) {
       console.log(productId);
       addToCart(productId);
@@ -333,18 +290,15 @@
           throw new Error('Failed to remove item from wishlist');
         }
 
-        // If the request is successful, show success message using SweetAlert
         Swal.fire({
           title: 'Success!',
           text: 'Item removed from wishlist successfully!',
           icon: 'success',
           showConfirmButton: true,
         }).then(() => {
-          // Reload the page to update the wishlist after removing an item
           location.reload();
         });
       } catch (error) {
-        // Show error message using SweetAlert in case of failure
         Swal.fire({
           title: 'Error!',
           text: 'Failed to remove item from wishlist',
@@ -354,7 +308,6 @@
       }
     }
 
-    // Function to handle removing item from wishlist button click
     function removeWishlistItem(productId) {
       removeFromWishlist(productId);
     }

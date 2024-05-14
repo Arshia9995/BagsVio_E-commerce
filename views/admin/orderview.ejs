@@ -18,15 +18,14 @@
                                 aria-hidden="true"></i>Coupons</a>
                     <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;"
                                     aria-hidden="true"></i>Banners</a>
-                    <!-- <a href="/admin/productoffer"><i class="fa fa-bars" style="margin-right: 10px;"
-                                    aria-hidden="true"></i>ProductOffer</a> -->
+                  
                     <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
                             aria-hidden="true"></i>Sales</a>
                     <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;"
                             aria-hidden="true"></i>Logout</a>
                 </div>
             </div>
-            <!-- Order details -->
+          
             <div class="col col-md-10">
                 <div class="container mt-5">
                     <div class="row">
@@ -36,7 +35,7 @@
                                     <h5 class="mb-0">Order View</h5>
                                 </div>
                                 <div class="card-body">
-                                    <!-- Order information -->
+                                  
                                     <div class="mb-4">
                                         <h5 class="text-uppercase"><strong>Order Information</strong></h5>
                                         <p><strong>Order ID:</strong>
@@ -88,10 +87,10 @@
                                                                     <%=orders.shippingAddress.city %><br>
                                                                         <%=orders.shippingAddress.state %><br>
                                                                             <%=orders.shippingAddress.mobile %>
-                                                                                <!-- Add more address details as needed -->
+                                                                                
                                                 </div>
                                     </div>
-                                    <!-- Order status dropdown -->
+                                   
                                     <div class="mb-4">
                                         <h5 class="text-uppercase"><strong>Change Order Status</strong></h5>
                                         <select class="form-select" id="orderStatusSelect">
@@ -104,10 +103,10 @@
                                             <option value="Processing">Processing</option>
                                             <option value="Shipped">Shipped</option>
                                             <option value="Delivered">Delivered</option>
-                                            <!-- <option value="Cancelled">Cancelled</option> -->
+                                           
                                         </select>
                                     </div>
-                                    <!-- Update status button -->
+                                  
                                     <div class="text-end">
                                         <button id="updateStatusBtn" class="btn btn-primary">Update Status</button>
                                     </div>
@@ -120,10 +119,10 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
+   
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SweetAlert JS -->
+   
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <script>
@@ -141,13 +140,13 @@
                 console.log(response);
 
                 if (response.ok) {
-                    const responseData = await response.json(); // Parse the response JSON
+                    const responseData = await response.json(); 
                     console.log(responseData);
 
-                    // If the request was successful, display a SweetAlert message
+                   
                     swal("Success!", "Order status updated successfully.", "success");
 
-                    // Update the order status badge
+                   
                     const orderStatusElement = document.getElementById('orderStatus');
                     if (orderStatusElement) {
                         orderStatusElement.innerText = newStatus;
@@ -155,7 +154,7 @@
                         console.error('Error: Could not find orderStatus element');
                     }
 
-                    // Update the payment status badge
+                   
                     const paymentStatusElement = document.getElementById('paymentStatus');
                     if (paymentStatusElement) {
                         paymentStatusElement.innerText = responseData.paymentStatus;
@@ -163,12 +162,12 @@
                         console.error('Error: Could not find paymentStatus element');
                     }
                 } else {
-                    // If there was an error, display a SweetAlert error message
+                  
                     swal("Error!", "Failed to update order status. Please try again later.", "error");
                 }
             } catch (error) {
                 console.error('Error:', error);
-                // If there was an error, display a SweetAlert error message
+               
                 swal("Error!", "Failed to update order status. Please try again later.", "error");
             }
         });

@@ -1,5 +1,5 @@
 function validateUserName() {
-    console.log("---------");
+   
     var user = /^[a-zA-Z0-9][a-zA-Z0-9_\s ]{2,50}[a-zA-Z0-9]$/
     var name = document.getElementById("username").value;
     var msg = document.getElementById("nameCheck");
@@ -41,7 +41,7 @@ function validateMobileNumber() {
 
 function validateUserAddress() {
     var userAddressPattern = /^[a-zA-Z0-9][a-zA-Z0-9_\s ]{2,50}[a-zA-Z0-9]$/
-    // var usernamePattern=/^[a-zA-Z](?:[a-zA-Z0-9_ ]{3,20}[a-zA-Z0-9_])?$/
+   
     var name = document.getElementById("address").value;
     var msg = document.getElementById("addressCheck");
     if ( userAddressPattern .test(name)) {
@@ -54,7 +54,7 @@ function validateUserAddress() {
 
 function validateUserCity() {
     var userCityPattern = /^[a-zA-Z][a-zA-Z0-9_\s ]{1,28}[a-zA-Z0-9]$/
-    // var usernamePattern=/^[a-zA-Z](?:[a-zA-Z0-9_ ]{3,20}[a-zA-Z0-9_])?$/
+    
     var name = document.getElementById("city").value;
     var msg = document.getElementById("cityCheck");
     if ( userCityPattern .test(name)) {
@@ -67,7 +67,7 @@ function validateUserCity() {
 
     function validateUserState() {
     var userStatePattern = /^[a-zA-Z][a-zA-Z0-9_\s ]{1,28}[a-zA-Z0-9]$/
-    // var usernamePattern=/^[a-zA-Z](?:[a-zA-Z0-9_ ]{3,20}[a-zA-Z0-9_])?$/
+   
     var name = document.getElementById("state").value;
     var msg = document.getElementById("stateCheck");
     if ( userStatePattern .test(name)) {

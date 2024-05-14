@@ -81,14 +81,13 @@
           <div class="col-lg-4">
             <div class="card">
               <a href="/productdetails/<%= product._id %>">
-              <!-- <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>"> -->
+            
               <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
 
 
               <div class="card-body">
                 <h5 class="card-title text-dark"><%= product.ProductName %></h5>
-                <!-- <p class="card-text"><%= product.Description %></p>
-                <p class="card-text">Brand: <%= product.BrandName.brandName %></p> -->
+              
                 <p class="card-text text-dark">Price: <%= product.Price %></p></a>
               </div>
             </a>
@@ -156,19 +155,7 @@
 
 <%- include('footer')-%>
 
-<!-- <script>
-  // Function to handle sorting
-  async function sortProducts(order) {
-    try {
-      const response = await fetch(`/products/sort/${order}`);
-      const sortedProducts = await response.json();
-      // Update UI to display sorted products
-      displayProducts(sortedProducts);
-    } catch (error) {
-      console.error('Error sorting products:', error);
-    }
-  }
-</script> -->
+
 
 <script>
   function applySort() {

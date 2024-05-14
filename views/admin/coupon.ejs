@@ -43,11 +43,7 @@
                 <i class="fa fa-bars"></i> Banners
             </a>
         </li>
-        <!-- <li class="nav-item">
-            <a class="nav-link" href="/admin/productoffer">
-                <i class="fa fa-bars"></i> ProductOffer
-            </a>
-        </li> -->
+       
         <li class="nav-item">
             <a class="nav-link" href="/admin/sales">
                 <i class="fa fa-line-chart"></i> Sales
@@ -63,16 +59,16 @@
         
    
 
-<!-- Main Content -->
+
 <div class="container mt-5 ml-3">
 
-     <!-- Add Coupon Button -->
+    
      <div class="mb-3">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCouponModal">
             <i class="fa fa-plus"></i> Add Coupon
         </button>
     </div>
-    <!-- Coupon Modal -->
+  
     <div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -81,7 +77,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Add Coupon Form -->
+                   
                     <form action="/admin/addcoupon" method="POST">
                        
                         <div class="mb-3">
@@ -127,7 +123,7 @@
             </div>
         </div>
     </div>
-<!-- Display Coupons -->
+
 <div class="row">
     <% coupons.forEach(coupon => { %>
         <div class="col-md-4 mb-3">
@@ -140,14 +136,14 @@
                     <p class="card-text">Minimum Purchase Amount: <%= coupon.minimumPurchaseAmount %></p>
                     <p class="card-text">Start Date: <%= coupon.startDate.toLocaleDateString() %></p>
                     <p class="card-text">Expiration Date: <%= coupon.expirationDate.toLocaleDateString() %></p>
-                    <!-- Edit and Delete Buttons -->
+                
                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal<%=coupon._id %>">Edit</a>
                     <button class="btn btn-danger delete-btn" data-coupon-id="<%= coupon._id %>">Delete</button>
                 </div>
             </div>
         </div>
         
-       <!-- Edit Coupon Modal -->
+       
 <div class="modal fade" id="exampleModal<%=coupon._id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -158,7 +154,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <!-- Edit Coupon Form -->
+              
                 <form action="/admin/editcoupon/<%= coupon._id %>" method="POST">
                     <div class="form-group">
                         <label for="couponName<%=coupon._id %>">Coupon Name</label>
@@ -193,7 +189,7 @@
 
                     </div>
                
-                    <!-- Add other input fields as needed -->
+                   
                     <button type="submit" class="btn btn-primary">Save Changes</button>
                 </form>
             </div>
@@ -209,86 +205,23 @@
 
 
 
-    <!-- Main Content -->
-    <!-- ... -->
+    
 </div>
 
 <%- include('footer')-%>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add event listener for edit button clicks
-        const editButtons = document.querySelectorAll('.edit-btn');
-        editButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const couponId = button.getAttribute('data-coupon-id');
-                fetch(`/admin/getcoupon/${couponId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Populate the edit modal with coupon details
-                        document.getElementById('editCouponId').value = data._id;
-                        document.getElementById('editCouponName').value = data.couponName;
 
-                      
-                        document.getElementById('editStartDate').value = formatDate(data.startDate);
-                        document.getElementById('editExpirationDate').value = formatDate(data.expirationDate);
-
-                        // Populate other fields accordingly
-                        // ...
-                        // Show the edit modal
-                        const editModal = new bootstrap.Modal(document.getElementById('editCouponModal'));
-                        editModal.show();
-                    })
-                    .catch(error => console.error('Error fetching coupon:', error));
-            });
-        });
-    });
-</script> -->
-
-
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add event listener for edit coupon form submission
-        const editForms = document.querySelectorAll('.edit-coupon-form');
-        editForms.forEach(form => {
-            form.addEventListener('submit', async function(event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                const formData = new FormData(form);
-                const couponId = formData.get('couponId');
-
-                try {
-                    const response = await fetch(`/admin/editcoupon/${couponId}`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Failed to update coupon');
-                    }
-
-                    // Reload the page to reflect the changes
-                    window.location.reload();
-                } catch (error) {
-                    console.error('Error updating coupon:', error);
-                    // Display an error message to the user
-                    // You can show a toast message or update a specific element to inform the user about the error
-                }
-            });
-        });
-    });
-</script> -->
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Add event listener for delete button clicks
+       
         const deleteButtons = document.querySelectorAll('.delete-btn');
         deleteButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const couponId = button.getAttribute('data-coupon-id');
                 
-                // Display SweetAlert confirmation dialog
+                
                 Swal.fire({
                     title: 'Are you sure?',
                     text: 'Once deleted, you will not be able to recover this coupon!',
@@ -299,17 +232,17 @@
                     confirmButtonText: 'Yes, delete it!'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // If user confirms, proceed with deletion
+                        
                         fetch(`/admin/deletecoupon/${couponId}`, {
                             method: 'DELETE'
                         })
                         .then(response => {
                             if (response.ok) {
-                                // Coupon deleted successfully, remove it from the UI
+                               
                                 window.location.reload();
                                 button.closest('.card').remove();
                             } else {
-                                // Handle error if deletion fails
+                               
                                 console.error('Failed to delete coupon');
                             }
                         })
@@ -323,36 +256,11 @@
     });
 </script>
 
-<!-- <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Add event listener for delete button clicks
-        const deleteButtons = document.querySelectorAll('.delete-btn');
-        deleteButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const couponId = button.getAttribute('data-coupon-id');
-                fetch(`/admin/deletecoupon/${couponId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Coupon deleted successfully, remove it from the UI
-                        button.closest('.card').remove();
-                    } else {
-                        // Handle error if deletion fails
-                        console.error('Failed to delete coupon');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error deleting coupon:', error);
-                });
-            });
-        });
-    });
-</script> -->
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // Function to validate coupon form
+   
     function validateCouponForm() {
         const couponName = document.getElementById('couponName').value.trim();
         const couponCode = document.getElementById('couponCode').value.trim();
@@ -361,7 +269,7 @@
 
         let isValid = true;
 
-        // Validate coupon name
+       
         if (couponName === '') {
             Swal.fire({
                 icon: 'error',
@@ -372,7 +280,7 @@
             console.log('Coupon name is empty');
         }
 
-        // Validate coupon code
+       
         if (couponCode === '') {
             Swal.fire({
                 icon: 'error',
@@ -383,7 +291,7 @@
             console.log('Coupon code is empty');
         }
 
-        // Validate start date and expiration date
+       
         const startDateObj = new Date(startDate);
         const expirationDateObj = new Date(expirationDate);
 
@@ -400,7 +308,7 @@
         return isValid;
     }
 
-    // Event listener for form submission
+    
     document.addEventListener('DOMContentLoaded', function() {
         const addCouponModal = document.getElementById('addCouponModal');
         const addCouponForm = addCouponModal.querySelector('form');

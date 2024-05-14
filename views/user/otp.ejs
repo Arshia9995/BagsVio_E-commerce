@@ -8,12 +8,11 @@
         <link rel="stylesheet" href="/user/css/form.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <!-- <link rel="stylesheet" href="/user/css/otp.css"> -->
+        
         <script src="/user/script/script.js" defer></script>
         <style>
             .main {
                 height: 100vh;
-                /* 100% of the viewport height */
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -22,7 +21,6 @@
 
             .login-card {
                 max-width: 600px;
-                /* Adjust the maximum width as needed */
                 width: 100%;
 
             }
@@ -66,18 +64,7 @@
                                                         style="margin-left: 250px;">Validate</button>
                                                 </div>
 
-                                                <!-- Countdown timer and Resend OTP button -->
-<!-- <div class="content d-flex justify-content-center align-items-center mb-5">
-    <span id="countdownText">OTP will expire in <span id="countdown">60</span> seconds</span>
-    <button id="resendOTPButton" onclick="resendOTP()">Resend OTP</button>
-</div> -->
-                                                <!-- <div
-                                                    class="content d-flex justify-content-center align-items-center mb-5">
-                                                    <span id="countdownText">otp will expire in <span
-                                                            id="countdown">60</span>
-                                                        seconds</span>
-                                                        <a href="#" onclick="resendOTP()" class="text-decoration-none ms-3" id="resend-otp">Resend OTP</a>
-                                                </div> -->
+                                              
                                                 <div class="content d-flex justify-content-center align-items-center mb-5">
                                                     <span id="countdownText">OTP will expire in <span id="countdown">60</span> seconds</span>
                                                     <span id="resendOtpContainer"></span>
@@ -97,17 +84,14 @@
             </div>
         </div>
         <script>
-            // Wait for the DOM to be fully loaded
             document.addEventListener('DOMContentLoaded', function () {
-                // Get references to the input fields
                 const inputs = document.querySelectorAll(".inputs input");
                 console.log(inputs)
-                // Get a reference to the "Validate" button
                 const validateButton = document.getElementById('validateButton');
                 const countdownText = document.getElementById('countdownText');
                 const countdown = document.getElementById('countdown');
                 const resend = document.getElementById('resend-otp')
-                let timer = 60; // 1 minutes ( 60 seconds)
+                let timer = 60; 
     
                 function updateCountdown() {
                 countdown.textContent = timer;
@@ -121,21 +105,16 @@
                 timer--;
             }
     
-                // Initialize the countdown
                 updateCountdown();
     
-                // Start the countdown timer
                 const countdownInterval = setInterval(updateCountdown, 1000);
-                // Add a click event listener to the "Validate" button5
                 validateButton.addEventListener('click', function () {
-                    // Extract the input values
                     // alert('d')
                     const otp = Array.from(inputs).map(input => input.value).join('');
                     const formBody = {
                         otp: otp
                     }
                     console.log(formBody);
-                    // Make an HTTP request to send the OTP to the backend
                     fetch('/user/otp', {
     
                         method: 'POST',
@@ -146,7 +125,6 @@
                     })
                         .then(response => { console.log(response); return response.json(); })
                         .then(data => {
-                            // Handle the response from the backend
                             if (data.status) {
                                 window.location.href = '/user/pass-change';
                             } else if (!data.status) {
@@ -166,13 +144,11 @@
     
             inputs.forEach((input, index) => {
                 input.addEventListener('input', function () {
-                    // Move to the next input field when a number is entered
                     if (input.value.length === 1 && index < inputs.length - 1) {
                         inputs[index + 1].focus();
                     }
                 });
     
-                // Allow only numeric input
                 input.addEventListener('keypress', function (event) {
                     const keyCode = event.keyCode || event.which;
                     const isValidKey = /\d/.test(String.fromCharCode(keyCode));
@@ -185,7 +161,6 @@
     </script>
    
    <script>
-    // Function to handle OTP resend
     
     async function resendOTP() {
     try {
@@ -223,9 +198,8 @@
             updateCountdown();
              countdownInterval = setInterval(updateCountdown, 1000);
 
-            // Show success message
             const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block'; // Display the success message
+            successMessage.style.display = 'block'; 
         } else {
             console.error('Error resending OTP:', data.error);
         }

@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Orders</title>
-  <!-- Bootstrap CSS -->
+ 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -15,22 +15,19 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      /* This ensures the body takes up at least the full height of the viewport */
     }
 
     main {
       flex-grow: 1;
-      /* This ensures the main content area expands to fill the remaining vertical space */
     }
 
     footer {
       margin-top: auto;
-      /* This pushes the footer to the bottom of the page */
     }
     .text-highlight {
-    /* background-color: #007bff; */
-    color: #e91818; /* Change to the desired text color */
-    font-weight: bold; /* Optionally, make the text bold */
+  
+    color: #e91818; 
+    font-weight: bold;
   }
   </style>
 
@@ -38,12 +35,11 @@
 
 <body>
 
-  <!-- Navbar/Header (Assuming the header is included using an external file) -->
   <div style="height: 75px;"></div>
 
   <%- include('../partials/navbar') %>
   <header>
-    <!-- Header content here -->
+    
   </header>
 
   <div class="container-fluid">
@@ -113,7 +109,7 @@
                 </div>
             </div>
            
-             <!-- Pagination -->
+            
              <ul class="pagination justify-content-center">
               <% if (currentPage > 1) { %>
               <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a>
@@ -128,8 +124,7 @@
               <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
               <% } %>
           </ul>
-          <!-- End Pagination -->
-
+         
         </div>
     </main>
     
@@ -141,33 +136,25 @@
   </div>
   <%- include('../partials/user-footer') %>
   <script>
-    // Get all the list items in the sidebar
     const sidebarItems = document.querySelectorAll('.list-group-item');
   
-    // Add click event listener to each list item
     sidebarItems.forEach(item => {
         item.addEventListener('click', function() {
-            // Remove 'text-highlight' class from all items
             sidebarItems.forEach(item => {
                 item.classList.remove('text-highlight');
             });
-            // Add 'text-highlight' class to the clicked item
             this.classList.add('text-highlight');
         });
     });
   
-    // Check if there is a highlighted item in local storage
     const highlightedItem = localStorage.getItem('highlightedItem');
     if (highlightedItem) {
-        // Remove 'text-highlight' class from all items
         sidebarItems.forEach(item => {
             item.classList.remove('text-highlight');
         });
-        // Add 'text-highlight' class to the item stored in local storage
         document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
     }
   
-    // Save the highlighted item to local storage when clicked
     sidebarItems.forEach(item => {
         item.addEventListener('click', function() {
             localStorage.setItem('highlightedItem', this.getAttribute('href'));
@@ -175,7 +162,7 @@
     });
   </script>
   
-  <!-- Bootstrap JS -->
+  
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

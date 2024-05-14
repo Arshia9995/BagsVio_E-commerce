@@ -36,13 +36,7 @@
               <p id="messagePwd" class="text-danger"></p>
             </div>
 
-            <!-- <div class="form-outline flex-fill mb-0 ps-4">
-
-              <label class="form-label fs-6" for="password">Password</label>
-              <input type="password" id="password" name="password" placeholder="Enter your password" required
-                oninput="validatePassword()">
-              <p id="messagePwd" class="text-danger"></p>
-            </div> -->
+           
 
 
 
@@ -52,9 +46,7 @@
               <p id="messagePwdMatch" class="text-danger"></p>
             </div>
             <div class="d-flex align-items-center justify-content-between">
-              <!-- <div class="d-flex align-items-center">
-                <input name="" type="checkbox" value="" /> <span class="pl-2 font-weight-bold">Remember Me</span>
-              </div> -->
+             
              
             </div>
             <div class="pb-2">
@@ -71,129 +63,5 @@
     </div>
   </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <!-- <script>
-
-    // form validation
-    function isEmpty(value){
-      const trimmed = value.trim()
-      return trimmed===""
-    }
-
-    function isValidName(value){
-      const regex = /^[a-zA-Z]+$/
-      return regex.test(value)
-    }
-    function isValidEmail(value){
-      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      return regex.test(value)
-    }
-
-    // password validation
-    function isValidPassword(value){
-      const regex =  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-      return regex.test(value)
-    }
-
-    // confirm password
-    function isEqualPassword(value1,value2){
-      if(value1===value2){
-        return true
-      }
-    }
-
-    document.querySelector('#form').addEventListener('submit',function(event){
-      
-      // name things
-      var nameInput = document.querySelector('#name')
-      var nameValue = nameInput.value
-      var nameError = document.querySelector('#nameError')
-
-      //email things
-      var emailInput = document.querySelector('#email')
-      var emailValue = emailInput.value
-      var emailError = document.querySelector('#emailError')
-
-      //password things
-      var passwordInput = document.querySelector('#password')
-      var passwordValue = passwordInput.value
-      var passwordError = document.querySelector('#passwordError')
-
-      //confirmpassword things
-      var confirmPasswordInput = document.querySelector('#confirmPassword')
-      var confirmPasswordValue = confirmPasswordInput.value
-      var confirmPasswordError = document.querySelector('#confirmPasswordError')
-
-      nameError.textContent=""
-      emailError.textContent=""
-      passwordError.textContent=""
-      confirmPasswordError.textContent=""
-
-
-      if(isEmpty(nameValue)){
-        nameError.textContent="please enter valid name"
-        nameError.style.color="red"
-        event.preventDefault()
-      }
-      if(isEmpty(emailValue)){
-        emailError.textContent="please enter valid email"
-        emailError.style.color="red"
-        event.preventDefault()
-      }
-      if(isEmpty(passwordValue)){
-        passwordError.textContent="please enter valid password"
-        passwordError.style.color="red"
-        event.preventDefault()
-      }
-      if(isEmpty(confirmPasswordValue)){
-        confirmPasswordError.textContent="both passwords are not match"
-        confirmPasswordError.style.color="red"
-        event.preventDefault()
-      }
-
-      if(!isValidName(nameValue)){
-        nameError.textContent="only use alphabets"
-        nameError.style.color="red"
-        event.preventDefault()
-      }
-      if(!isValidEmail(emailValue)){
-        emailError.textContent="please enter valid email"
-        emailError.style.color="red"
-        event.preventDefault()
-      }
-      if(!isValidPassword(passwordValue)){
-        passwordError.textContent="Your password must contain At least one lowercase letter,one uppercase,one digit,one symbol,minimum 8 characters "
-        passwordError.style.color="red"
-        event.preventDefault()
-      }
-      if(!isEqualPassword(passwordValue,confirmPasswordValue)){
-        confirmPasswordError.textContent="both passwords are not matching"
-        confirmPasswordError.style.color="red"
-        event.preventDefault()
-      }
-
-
-    })
-
-
-  </script> -->
   <%- include('../partials/user-footer') %>
   <%- include('footer')-%>

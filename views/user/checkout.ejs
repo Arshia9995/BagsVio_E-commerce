@@ -4,12 +4,19 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Checkout </title>
-    <!-- Bootstrap 5 CSS -->
+ 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
 
 
-	<!-- Demo CSS (No need to include it into your project) -->
+
 	<link rel="stylesheet" href="css/demo.css">
+    <style>
+        .coupon-card-container {
+            width: 200px;
+            margin-right: auto; 
+            margin-left: 0; 
+        }
+    </style>
   
   </head>
   <body>
@@ -18,66 +25,8 @@
 
     
 
-    <!-- <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
-        <div class="container-fluid">
-          <a class="navbar-brand" href="#">
-            <img src="/assets/images/logo.png" alt="Logo" height="40">
-          </a>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/userhome">Home</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">About</a>
-              </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Category
-                </a>
-                <% console.log(categories); %>
-                <ul class="dropdown-menu">
-                  
-                  <% categories.forEach(category => { %>
-                    <% if (!category.isBlocked) { %>
-                      <li><a class="dropdown-item" href="/products/<%= category.categoryName %>"><%= category.categoryName %></a></li>
-                    <% } %>
-                    <% }); %>
-                </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#">Contacts</a>
-              </li>
-            </ul>
-            <form class="d-flex" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-            <div class="icons">
-              <a href="/profile">
-                <i class="fa fa-user text-dark" aria-hidden="true"></i>
-              </a>
-              <a href="/cart">
-                <i class="fa fa-shopping-cart text-dark" aria-hidden="true"></i>
-              </a>
-              <a href="#">
-                <i class="fa fa-heart text-dark" aria-hidden="true"></i>
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav> -->
  <header class="intro">
- <!-- <h1> Bootstrap 5 Checkout Form Example </h1>
- <p> A checkout form page with Bootstrap native input fields.</p> -->
 
- <!-- <div class="action">
- <a href="https://www.codehim.com/bootstrap/bootstrap-forms/bootstrap-5-checkout-form-page/" title="Back to download and tutorial page" class="btn back">Back to Tutorial</a>
- 
- </div> -->
  
  </header>
   
@@ -89,7 +38,7 @@
           
             <form action="/placeorder" method="POST">
                 <div class="row">
-                    <!-- Addresses Column -->
+                 
                     <div class="col-md-8 order-md-1">
                         <div class="card mt-3">
                             <div class="card-header">
@@ -106,7 +55,7 @@
                                         <div class="card mb-2" style="width: 18rem;">
                                             <div class="card-body " style="height: 220px;">
                                               <div class="card-body d-flex flex-column justify-content-between" style="height: 220px;">
-                                                <!-- Radio button with label -->
+                                              
                                                 <label for="<%= data._id %>" class="d-flex align-items-center">
                                                     <input type="radio" id="<%= data._id %>" name="selectedAddress" value="<%= data._id %>">
                                                     <p class="card-title mb-0 ms-2">Deliver to this address</p>
@@ -160,7 +109,7 @@
                       
                             </div>
                             </div>
-                        <!-- Payment Section -->
+                       
                         <hr class="mb-4">
                         <h4 class="mb-3">Payment</h4>
                         
@@ -168,7 +117,7 @@
                             <input id="credit" name="paymentMethod" type="radio" class="custom-control-input" value="Online Payment" checked required>
                             <label class="custom-control-label" for="credit">Online Payment</label>
                           </div>
-                          <!-- Check if the total price is greater than 1000 -->
+                     
 <% if (totalPrice > 1000) { %>
     <div class="custom-control custom-radio">
         <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" value="Cash On Delivery" required disabled>
@@ -186,7 +135,7 @@
                           </div>
                     </div>
 
-                    <!-- Your Cart Column -->
+                  
                     <div class="col-md-4 order-md-2 mb-4">
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">Your cart</span>
@@ -210,7 +159,7 @@
                             </li>
                         <% }); %>
 
- 
+                   
             <li id="discountAmount" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
           
            
@@ -220,7 +169,7 @@
                             
            
                 
-                     <!-- Total Price -->
+                  
         <li id="totalPrice" class="list-group-item d-flex justify-content-between" style="margin-top: 10px;">
           
            
@@ -232,7 +181,7 @@
 
 
 
-                    <!-- Coupon Code Input Field -->
+                  
                     <li class="list-group-item">
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Enter Coupon Code" id="couponCodeInput">
@@ -241,17 +190,50 @@
                         </div>
                     </li>
            </ul>
+           <button type="button" id="showCouponsBtn" class="btn btn-primary">Show Available Coupons</button>
+
+
+
            <div id="errorContainer" style="display: none;" class="alert alert-danger" role="alert">
-            <!-- Error message will be displayed here -->
+          
         </div>
-                        <form class="card p-2">              
+
+        <div class="col-md-9 ms-sm-auto col-lg-10 px-md-4 mt-5"> 
+           
+               
+
+
+            <div id="couponsModal" class="modal fade" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Available Coupons</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="availableCouponsContainer">
+                                <% coupons.forEach(coupon => { %>
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <p>Coupon Name: <%= coupon.couponName %></p>
+                                            <p>Coupon Code: <%= coupon.couponCode %></p>
+                                            <p>Discount: <%= coupon.discountPercentage %>%</p>
+                                            <button class="btn btn-primary copy-coupon" data-code="<%= coupon.couponCode %>">Copy Code</button>
+                                            <p class="copy-message" style="display: none; color: green;">Coupon code copied successfully!</p>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <!-- Continue to checkout button -->
+            </div>
+             <form class="card p-2">              
+                
                 <div class="row">
                   <div class="col-md-4 offset-md-8">
                       <hr class="mb-4">
-                      <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
+                      <button class="btn btn-success btn-lg btn-block" type="submit"  >Continue to checkout</button>
                   </div>
               </div>
             </form>
@@ -260,7 +242,7 @@
  
 </form>
   
-<!-- Bootstrap 5 JavaScript Bundle with Popper -->
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -270,16 +252,16 @@
 <%- include('../partials/user-footer')  %>
 
 <script>
-  // Client-side JavaScript code
+ 
  document.addEventListener('DOMContentLoaded', function() {
-     // Event listener for Add Address button
+   
      document.getElementById('addAddressBtn').addEventListener('click', function() {
-         document.getElementById('newAddressForm').style.display = 'block'; // Show the new address form
+         document.getElementById('newAddressForm').style.display = 'block'; 
      });
  
-     // Event listener for Save Address button
+   
      document.getElementById('saveAddressBtn').addEventListener('click', async function() {
-         // Retrieve values from the input fields
+       
          const name = document.getElementById('name').value;
          const address = document.getElementById('address').value;
          const pincode = document.getElementById('pincode').value;
@@ -288,7 +270,7 @@
          const state = document.getElementById('state').value;
          const mobile = document.getElementById('mobile').value;
  
-         // Send the new address data to the server
+       
          try {
              const response = await fetch('/checkoutaddaddress', {
                  method: 'POST',
@@ -298,9 +280,9 @@
                  body: JSON.stringify({ name, address, pincode, city, street, state, mobile })
              });
              if (response.ok) {
-                 // Address added successfully
-                 document.getElementById('newAddressForm').style.display = 'none'; // Hide the form
-                 // Fetch and update the address list dynamically
+               
+                 document.getElementById('newAddressForm').style.display = 'none'; 
+               
                  location.reload();
                  await updateAddressList();
              } else {
@@ -311,14 +293,14 @@
          }
      });
  
-     // Function to fetch and update the address list dynamically
+    
      async function updateAddressList() {
          try {
-             const response = await fetch(`/getaddress/${addressId}`); // Assuming this endpoint returns the list of addresses
+             const response = await fetch(`/getaddress/${addressId}`); 
              if (response.ok) {
                  const addresses = await response.json();
                  const addressListContainer = document.getElementById('addressListContainer');
-                 addressListContainer.innerHTML = ''; // Clear previous address list
+                 addressListContainer.innerHTML = ''; 
                  addresses.forEach(address => {
                      const addressElement = document.createElement('div');
                      addressElement.textContent = address.name + ', ' + address.address;
@@ -332,53 +314,53 @@
          }
      }
  
-     // Call the updateAddressList function on page load
+    
      updateAddressList();
  });
  </script>
 
- <!-- Place this script at the end of the body section -->
+ 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const paymentButton = document.getElementById('paymentButton');
         const checkoutForm = document.getElementById('checkoutForm');
         const paymentMethodRadio = document.querySelectorAll('input[name="paymentMethod"]');
 
-        // Function to update button text and action
+         
         function updatePaymentButton() {
             const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
             if (selectedPaymentMethod && selectedPaymentMethod.value === 'Card') {
                 paymentButton.textContent = 'Pay Now';
-                checkoutForm.action = '/onlinepayment'; // Update form action for online payment
+                checkoutForm.action = '/onlinepayment';  
             } else {
                 paymentButton.textContent = 'Place Order';
-                checkoutForm.action = '/confirmorder'; // Update form action for other payment methods
+                checkoutForm.action = '/confirmorder';  
             }
         }
 
-        // Event listener for payment method change
+        
         paymentMethodRadio.forEach(function(radio) {
             radio.addEventListener('change', updatePaymentButton);
         });
 
-        // Initial call to update button text and action
+        
         updatePaymentButton();
     });
 </script>
 
 <script>
    document.addEventListener('DOMContentLoaded', function() {
-    // Check if the showCouponsBtn element exists
+
     const showCouponsBtn = document.getElementById('showCouponsBtn');
     if (showCouponsBtn) {
-        // Add event listener only if the element exists
+    
         showCouponsBtn.addEventListener('click', async function() {
-            alert("asdfghj")
+          
             try {
-                const response = await fetch('/getcoupons'); // Replace '/getcoupons' with your actual endpoint
+                const response = await fetch('/getcoupons'); 
                 if (response.ok) {
                     const coupons = await response.json();
-                    // Assuming you have a function to display the coupons, update the DOM here
+                 
                     displayCoupons(coupons);
                 } else {
                     console.error('Failed to fetch coupons:', response.statusText);
@@ -391,16 +373,16 @@
         console.error('Element with id "showCouponsBtn" not found.');
     }
 
-    // Function to display the coupons
+ 
     function displayCoupons(coupons) {
-        // Assuming you have a container element to display the coupons
+       
         const couponsContainer = document.getElementById('couponsContainer');
-        couponsContainer.innerHTML = ''; // Clear previous coupons
+        couponsContainer.innerHTML = ''; 
         coupons.forEach(coupon => {
-            // Create elements to display each coupon
+         
             const couponElement = document.createElement('div');
             couponElement.textContent = `Coupon Name: ${coupon.name}, Coupon Code: ${coupon.code}, Discount: ${coupon.discount}%`;
-            // Append coupon element to the container
+         
             couponsContainer.appendChild(couponElement);
         });
     }
@@ -431,8 +413,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     removeCouponBtn.style.display = 'block';
                 console.log(data);
             } else {
-                const errorData = await response.json(); // Parse the error JSON
-            // Display the error message in the UI
+                const errorData = await response.json(); 
+           
             document.getElementById('errorContainer').style.display = 'block';
             document.getElementById('errorContainer').textContent = errorData.error;
             console.error('Failed to apply coupon:', errorData.error);
@@ -451,14 +433,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         if (response.ok) {
             const data = await response.json();
-            // Update the total price displayed on the frontend with the original price (without discount)
+       
             document.getElementById('totalPrice').textContent = `Total Price: ₹ ${data.totalPrice}`;
             const couponCode = document.getElementById('couponCodeInput')
             couponCode.value = ''
             applyCouponBtn.style.display = 'block';
             removeCouponBtn.style.display = 'none';
             document.getElementById('discountAmount').textContent =`Discount Amount : 0.00`
-            // location.reload()
+          
         } else {
             console.error('Failed to remove coupon:', response.statusText);
         }
@@ -476,36 +458,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalPrice = <%= totalPrice %>;
     const walletAmount = <%= walletAmount %>;
 
-    // Function to handle button click
+   
     function handleButtonClick(event) {
-        // Check if wallet payment method is selected and the button is clicked
+     
         if (walletRadio.checked) {
-            // Check if wallet balance is insufficient
+           
             if (walletAmount < totalPrice) {
-                // Display Swal message for insufficient wallet balance
+            
                 Swal.fire({
                     icon: 'error',
                     title: 'Insufficient Wallet Balance',
                     text: 'Please choose another payment method or add funds to your wallet.',
                 });
-                event.preventDefault(); // Prevent form submission
+                event.preventDefault(); 
             }
         } else {
-            // Check if no address is selected
+         
             const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
             if (!selectedAddress) {
-                // Display Swal message for no address selected
+            
                 Swal.fire({
                     icon: 'error',
                     title: 'No Address Selected',
                     text: 'Please select a shipping address or add a new address before proceeding to checkout.',
                 });
-                event.preventDefault(); // Prevent form submission
+                event.preventDefault(); 
             }
         }
     }
     
-    // Event listener for button click
+   
     continueToCheckoutBtn.addEventListener('click', handleButtonClick);
 });
 
@@ -518,9 +500,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const cashOnDeliveryRadio = document.querySelector('input[value="Cash On Delivery"]');
         const totalPrice = <%= totalPrice %>;
 
-        // Function to handle button state based on total price
+      
         function handleButtonState() {
-            // Disable the Cash On Delivery button if total price is greater than 1000
+          
             if (totalPrice > 1000) {
                 cashOnDeliveryRadio.disabled = true;
             } else {
@@ -528,13 +510,104 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
-        // Call the function to set initial button state
+     
         handleButtonState();
 
-        // Add event listener for change in total price
+      
         document.getElementById('totalPrice').addEventListener('change', handleButtonState);
     });
 </script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const showCouponsBtn = document.getElementById('showCouponsBtn');
+        const couponsModal = new bootstrap.Modal(document.getElementById('couponsModal'), {});
+
+        showCouponsBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch('/getcoupons'); 
+                if (response.ok) {
+                    const coupons = await response.json();
+                    displayCoupons(coupons);
+                    couponsModal.show(); 
+                } else {
+                    console.error('Failed to fetch coupons:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching coupons:', error);
+            }
+        });
+
+        function displayCoupons(coupons) {
+            const couponsContainer = document.getElementById('availableCouponsContainer');
+            couponsContainer.innerHTML = ''; 
+
+            coupons.forEach(coupon => {
+                const couponElement = document.createElement('div');
+                couponElement.classList.add('card', 'mb-3');
+
+                const cardBody = document.createElement('div');
+                cardBody.classList.add('card-body');
+
+                const couponName = document.createElement('p');
+                couponName.textContent = `Coupon Name: ${coupon.couponName}`;
+
+                const couponCode = document.createElement('p');
+                couponCode.textContent = `Coupon Code: ${coupon.couponCode}`;
+
+                const couponDiscount = document.createElement('p');
+                couponDiscount.textContent = `Discount: ${coupon.discountPercentage}%`;
+
+                const copyButton = document.createElement('button');
+                copyButton.classList.add('btn', 'btn-primary', 'copy-coupon');
+                copyButton.textContent = 'Copy Code';
+                copyButton.setAttribute('data-code', coupon.couponCode);
+
+                cardBody.appendChild(couponName);
+                cardBody.appendChild(couponCode);
+                cardBody.appendChild(couponDiscount);
+                cardBody.appendChild(copyButton);
+
+                couponElement.appendChild(cardBody);
+                couponsContainer.appendChild(couponElement);
+            });
+
+         
+            const copyCouponButtons = document.querySelectorAll('.copy-coupon');
+
+copyCouponButtons.forEach(button => {
+  button.addEventListener('click', function(event) {
+    event.preventDefault();
+    const couponCode = button.getAttribute('data-code');
+  
+    const input = document.createElement('input');
+    input.value = couponCode;
+  document.body.appendChild(input);
+  input.select();
+  document.execCommand('copy');
+  document.body.removeChild(input);
+
+    const copyMessage = document.createElement('p');
+    copyMessage.textContent = 'Coupon code copied successfully!';
+    copyMessage.style.color = 'green';
+
+ 
+    button.parentNode.appendChild(copyMessage);
+  });
+});
+        }
+
+      
+        function copyToClipboard(text) {
+  
+}
+    });
+</script>
+
+
 
 
 

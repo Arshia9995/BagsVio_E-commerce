@@ -18,8 +18,7 @@
                                 aria-hidden="true"></i>Coupons</a>
                                 <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;"
                                     aria-hidden="true"></i>Banners</a>
-                    <!-- <a href="/admin/productoffer"><i class="fa fa-bars" style="margin-right: 10px;"
-                                    aria-hidden="true"></i>ProductOffer</a> -->
+                   
                     <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
                             aria-hidden="true"></i>Sales</a>
                     <a href="admin/adminlogin"><i class="fa fa-sign-out" style="margin-right: 10px;"
@@ -50,7 +49,7 @@
                                 <td><%= customer.name %></td>
                                 <td><%= customer.email %></td>
                                 
-                                <!-- <td><% customer.action %></td> -->
+                               
 
                                 <td>
                                     <% if (customer.isBlocked) { %>
@@ -74,7 +73,7 @@
                 </div>
 
 
-                <!-- Pagination -->
+               
         <ul class="pagination justify-content-center">
             <% if (currentPage > 1) { %>
                 <li class="page-item"><a class="page-link" href="?page=<%= currentPage - 1 %>">Previous</a></li>
@@ -88,7 +87,7 @@
                 <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
             <% } %>
         </ul>
-        <!-- End Pagination -->
+      
 
             </div>
         </div>

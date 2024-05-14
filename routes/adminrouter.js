@@ -20,9 +20,7 @@ admin.post('/adminlog',adminContoller.adminLogin);
 
 admin.get('/admindashboard',adminAuth.verifyadmin, adminContoller.admindashboard);
 
-// admin.get('/product', adminContoller.adminproduct);
 
-// admin.get('/addproduct', adminContoller.addproduct);
 
 //................................................category routes......................................................................
 
@@ -74,8 +72,7 @@ admin.get('/adminproduct',adminAuth.verifyadmin,productcontroller.getProductPage
 
 
 
-// admin.post('/blockproduct/:productId',productcontroller.Blockproduct)
-// admin.post('/unblockproduct/:productId',productcontroller.Unblockproduct)
+
 
  admin.get('/editproduct/:id',adminAuth.verifyadmin,productcontroller.editProduct)
  admin.post('/editproduct/:id',adminAuth.verifyadmin,upload.fields([{name:'image1',maxCount:1},{name:'image2',maxCount:1},{name:'image3',maxCount:1}]),productcontroller.postEditProduct)

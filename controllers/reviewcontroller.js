@@ -1,6 +1,6 @@
 const productModel = require("../models/productSchema");
 const categoryModel = require("../models/categorySchema");
-// const { uploadSingle, uploadMultiple }  = require('../util/multer');
+
 const Users = require("../models/user");
 const Order = require("../models/order");
 const Cart = require("../models/cartSchema");
@@ -14,7 +14,7 @@ module.exports = {
         try {
             const { userId } = req.session;
             const { productId, rating, reviewText } = req.body;
-            console.log(req.body,"review")
+         
     
             const review = new Review({
                 productId,

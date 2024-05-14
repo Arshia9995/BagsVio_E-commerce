@@ -10,7 +10,7 @@ module.exports = {
     getBannerPage:async(req,res)=>{
         try {
             const categories = await Category.find();
-            const banners = await Banner.find().populate('category'); // Fetch banners from the database
+            const banners = await Banner.find().populate('category'); 
             res.render('./admin/banner', { categories, banners, title:"Admin Banner" });
           } catch (error) {
             console.error('Error fetching categories and banners:', error);
@@ -30,7 +30,7 @@ module.exports = {
                     console.log('category',category)
                     const newObjectId = new mongoose.Types.ObjectId(category) 
                     console.log('this is teh new objectId',newObjectId)   
-                    // Find the category in the database
+                  
                     const categoryObject = await Category.findOne({ _id: newObjectId });
                     console.log('categoryobject',categoryObject)
     
@@ -39,17 +39,16 @@ module.exports = {
                     }
     
                     
-                    // Create a new banner object with the resized image and associated category
+                   
                     const newBanner = new Banner({
                         image: req.file.filename,
                         category: categoryObject._id,
                     });
     
-                    // Save the new banner to the database
+                 
                     const savedBanner = await newBanner.save();
-                    console.log('this is the saved banner',savedBanner)
+                  
     
-                    console.log('response sent ')
                     return res.json({ success: true, imageUrl: savedBanner.image,banner:savedBanner });
 
     
@@ -64,11 +63,11 @@ module.exports = {
     },
     deleteBanner: async (req, res) => {
         const bannerId = req.params.bannerId;
-        console.log(bannerId,"bannerid")
+       
         try {
             
             const deletedBanner = await Banner.findByIdAndDelete(bannerId);
-            console.log(deletedBanner)
+          
             if (deletedBanner) {
                 res.json({ success: true, message: 'Banner deleted successfully' });
             } else {
@@ -83,23 +82,16 @@ module.exports = {
     updateBanner: async (req, res) => {
 
         upload.single('image')(req, res, async (err) => {
-            // if (err) {
-            //     console.error('Multer error:', err);
-            //     return res.status(400).send('Error uploading file');
-            // }
+        
 
 
         const bannerId = req.params.bannerId; 
-        // console.log('inside banner',req.file)
+       
         
     
         try {
           
             const banner = await Banner.findById(bannerId);
-
-            console.log('category',req.body.category)
-            
-          
             if (!banner) {
                 return res.status(404).json({ success: false, message: 'Banner not found' });
             }
@@ -121,12 +113,6 @@ module.exports = {
         }
     })
 }
-
-
-
-
-
-
 
 
 }

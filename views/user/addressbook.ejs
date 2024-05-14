@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Address Book</title>
-  <!-- Bootstrap CSS -->
+ 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
@@ -16,22 +16,22 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      /* This ensures the body takes up at least the full height of the viewport */
+      
     }
 
     main {
       flex-grow: 1;
-      /* This ensures the main content area expands to fill the remaining vertical space */
+   
     }
 
     footer {
       margin-top: auto;
-      /* This pushes the footer to the bottom of the page */
+    
     }
     .text-highlight {
-    /* background-color: #007bff; */
-    color: #e91818; /* Change to the desired text color */
-    font-weight: bold; /* Optionally, make the text bold */
+   
+    color: #e91818; 
+    font-weight: bold;
   }
   </style>
 
@@ -39,12 +39,12 @@
 
 <body>
 
-  <!-- Navbar/Header (Assuming the header is included using an external file) -->
+ 
   <div style="height: 75px;"></div>
   <%- include('../partials/navbar') %>
   
   <header>
-    <!-- Header content here -->
+   
   </header>
 
   <div class="container-fluid">
@@ -88,8 +88,7 @@
               </div>
             </div>
 
-            <!-- Saved Addresses -->
-            <!-- Addresses will be dynamically added here using JavaScript -->
+          
 
             <% if (addresses?.addresses?.length > 0) { %>
               <% addresses?.addresses.forEach(data=> { %>
@@ -151,8 +150,7 @@
             </div>
             <%}%>
 
-              <!-- Modals -->
-              <!-- Add new address modal -->
+             
               <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -221,7 +219,7 @@
                         </div>
 
                         <div class="modal-footer">
-                          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                         
                           <button type="submit" class="btn btn-primary">Save</button>
                         </div>
                       </div>
@@ -297,26 +295,26 @@
 
   <div style="height: 50px;"></div>
   <footer>
-    <!-- Footer content here -->
+  
   </footer>
-  <!-- Bootstrap JS -->
+ 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Additional Scripts -->
+ 
   <script>
-    // Get the plus button element
+    
     var addAddressButton = document.getElementById('addAddressIcon');
 
-    // Get the modal element
+  
     var addAddressModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
 
-    // Add click event listener to the plus button
+   
     addAddressButton.addEventListener('click', function () {
-      // Show the modal when the button is clicked
+    
       addAddressModal.show();
     });
 
-    // var editAddressButton = document.getElementById('editAddressBtn')
+  
     document.querySelectorAll('.editAddressButton').forEach(btn => {
       btn.addEventListener('click', function () {
         var editAddressressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
@@ -324,29 +322,25 @@
       });
     });
 
-    // Get the modal element
+   
 
-    //  editAddressButton.addEventListener('click',function(){
-    //   editAddressressModal.show()
-    //  })
-
-    // Add click event listener to the plus button
+   
     addAddressButton.addEventListener('click', function () {
-      // Show the modal when the button is clicked
+     
       addAddressModal.show();
     });
-    // Function to handle the click event on the edit button
+  
 
 
 
-    // Event listener for edit buttons
+   
     document.addEventListener('DOMContentLoaded', function () {
-      // Add click event listener to all elements with class 'editButton'
+     
       document.querySelectorAll('.editButton').forEach(button => {
         button.addEventListener('click', function (event) {
           event.preventDefault();
           var addressId = this.getAttribute('data-addressid');
-          editAddress(addressId); // Call the editAddress function
+          editAddress(addressId); 
         });
       });
     });
@@ -361,8 +355,7 @@
           return response.json();
         })
         .then(address => {
-          // alert(JSON.stringify(address))
-          // Populate the edit modal form fields with the retrieved address details
+         
           document.getElementById('editName').value = address.userFirstAddress.name;
           document.getElementById('editAddress').value = address.userFirstAddress.addressline;
           document.getElementById('editPincode').value = address.userFirstAddress.pincode;
@@ -371,19 +364,19 @@
           document.getElementById('editState').value = address.userFirstAddress.state;
           document.getElementById('editMobile').value = address.userFirstAddress.mobile;
 
-          // Show the edit address modal
+        
           var editAddressModal = new bootstrap.Modal(document.getElementById('editAddressModal'));
           editAddressModal.show();
         })
         .catch(error => {
           console.error('Error fetching address details:', error);
-          // Handle error (e.g., display error message)
+          
         });
     }
 
 
 
-    // JavaScript function to delete an address
+ 
     function deleteAddress(addressId) {
   if (confirm("Are you sure you want to delete this address?")) {
     fetch(`/deleteaddress/${addressId}`, {
@@ -393,13 +386,13 @@
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      console.log('Address deleted successfully'); // Log success message
-      // Reload the page after successful deletion
+      console.log('Address deleted successfully'); 
+    
       window.location.reload();
     })
     .catch(error => {
       console.error('Error deleting address:', error);
-      // Handle error (e.g., display error message)
+     
     });
   }
 } 
@@ -411,33 +404,33 @@
   </script>
 
 <script>
-  // Get all the list items in the sidebar
+ 
   const sidebarItems = document.querySelectorAll('.list-group-item');
 
-  // Add click event listener to each list item
+
   sidebarItems.forEach(item => {
       item.addEventListener('click', function() {
-          // Remove 'text-highlight' class from all items
+        
           sidebarItems.forEach(item => {
               item.classList.remove('text-highlight');
           });
-          // Add 'text-highlight' class to the clicked item
+         
           this.classList.add('text-highlight');
       });
   });
 
-  // Check if there is a highlighted item in local storage
+ 
   const highlightedItem = localStorage.getItem('highlightedItem');
   if (highlightedItem) {
-      // Remove 'text-highlight' class from all items
+     
       sidebarItems.forEach(item => {
           item.classList.remove('text-highlight');
       });
-      // Add 'text-highlight' class to the item stored in local storage
+     
       document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
   }
 
-  // Save the highlighted item to local storage when clicked
+
   sidebarItems.forEach(item => {
       item.addEventListener('click', function() {
           localStorage.setItem('highlightedItem', this.getAttribute('href'));

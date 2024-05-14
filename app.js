@@ -17,7 +17,7 @@ dotenv.config()
 
 
 app.use(session({
-  secret: 'Aerwthgjwertyufdghj', // Change this to a secret key for session encryption
+  secret: 'Aerwthgjwertyufdghj', 
   resave: false,
   saveUninitialized: true,
 }));
@@ -34,8 +34,6 @@ app.use((req, res, next) => {
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'))
-// app.use(bodyParser.urlencoded({extended:true}))
-// app.use(bodyParser.json())
 
 app.use(flash());
 connectdb();

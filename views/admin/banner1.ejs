@@ -43,11 +43,7 @@
           <i class="fa fa-bars"></i> Banners
         </a>
       </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" href="/admin/productoffer">
-        <i class="fa fa-bars"></i> ProductOffer
-      </a>
-    </li> -->
+   
     <li class="nav-item">
       <a class="nav-link" href="/admin/sales">
         <i class="fa fa-line-chart"></i> Sales
@@ -63,14 +59,9 @@
 </div>
 
 
-<!-- Main Content -->
+
 <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
-  <!-- <div class="boxtop">
-      <div class="icon">
-          <i class="fa fa-list"></i>
-      </div>
-      <h2>Banner</h2>
-  </div> -->
+  
 
   <div>
     <div>
@@ -89,11 +80,11 @@
   <input type="file" name="image" id="bannerInput" accept="image/*" style="display: none">
 
 <div style="margin-top: 50px;">
-  <!-- Display uploaded banners dynamically -->
+ 
   <div id="bannerContainer" style="margin-top: 50px;">
       <% banners.forEach(banner => { %>
           <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
-              <!-- Adjust width and height of the image here -->
+             
               <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
               <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
           </div>
@@ -131,17 +122,16 @@
     .then(response => response.json())
     .then(data => {
       if (data.success) {
-        // Create a new img element for the uploaded banner
         const img = document.createElement('img');
         img.src = data.imageUrl;
         img.alt = 'Banner Image';
         img.classList.add('banner-image');
 
-        // Append the new img element to the banner container
+       
         const bannerContainer = document.getElementById('bannerContainer');
         bannerContainer.appendChild(img);
 
-        // Show SweetAlert for successful upload
+       
         Swal.fire({
           icon: 'success',
           title: 'Banner uploaded successfully!',
@@ -149,7 +139,7 @@
           confirmButtonText: 'OK',
         });
       } else {
-        // Show SweetAlert for failed upload
+      
         Swal.fire({
           icon: 'error',
           title: 'Oops...',
@@ -159,7 +149,7 @@
     })
     .catch(error => {
       console.error('Error:', error);
-      // Show SweetAlert for general error during upload
+     
       Swal.fire({
         icon: 'error',
         title: 'Oops...',
@@ -167,7 +157,7 @@
       });
     });
   } else {
-    // Show SweetAlert for not selecting a file
+   
     Swal.fire({
       icon: 'warning',
       title: 'Please select a banner to upload.',
@@ -183,7 +173,7 @@
 
 <script>
   function deleteBanner(bannerId) {
-    // Show SweetAlert confirmation message
+   
     Swal.fire({
       title: 'Are you sure?',
       text: 'Once deleted, you will not be able to recover this banner!',
@@ -194,16 +184,16 @@
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        // If user confirms deletion, send delete request
+       
         fetch(`/admin/deleteBanner/${bannerId}`, {
           method: 'DELETE',
         })
         .then(response => {
           if (response.ok) {
-            // Remove the deleted banner item from the page
+          
             const bannerItem = document.querySelector(`.banner-item[data-banner-id="${bannerId}"]`);
             bannerItem.remove();
-            // Show success message
+          
             Swal.fire('Deleted!', 'Your banner has been deleted.', 'success');
           } else {
             throw new Error('Failed to delete banner');
@@ -211,7 +201,7 @@
         })
         .catch(error => {
           console.error('Error:', error);
-          // Show error message or handle the error accordingly
+        
           Swal.fire('Error!', 'Failed to delete banner.', 'error');
         });
       }

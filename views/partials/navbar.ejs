@@ -35,10 +35,7 @@
             <a class="nav-link" href="#">Contacts</a>
           </li>
         </ul>
-        <!-- <form class="d-flex" action="/search" method="GET"> 
-          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="query"> 
-          <button class="btn btn-outline-success" type="submit">Search</button>
-      </form> -->
+       
       <form id="searchForm" class="d-flex ms-auto" onsubmit="search(); return false;">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" id="searchInput">
         <button class="btn btn-outline-success" type="submit">Search</button>
@@ -61,35 +58,20 @@
 
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script>
-    $(document).ready(function() {
-      
-        $('form').submit(function(event) {
-            event.preventDefault(); 
-            
-            const query = $('input[name="query"]').val(); 
-            console.log(query,"...........................")
-            
-            $.get('/search', { query: query }, function(data) {
-                
-                $('#searchResults').html(data);
-            });
-        });
-    });
-</script> -->
+
 
 <script>
   function search() {
 const searchInput = document.getElementById('searchInput');
 const searchTerm = searchInput.value;
 
-// Construct the URL with the search term
+
 const url = `/search?q=${searchTerm}`;
 
-// Redirect to the search results page
+
 window.location.href = url;
 
-// Prevent the form from submitting in the traditional way
+
 return false;
 }
 

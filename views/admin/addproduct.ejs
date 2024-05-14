@@ -46,11 +46,7 @@
               <i class="fa fa-bars"></i> Banners
             </a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="/admin/productoffer">
-              <i class="fa fa-bars"></i> ProductOffer
-            </a>
-          </li> -->
+         
         
           <li class="nav-item">
             <a class="nav-link" href="/admin/sales">
@@ -121,30 +117,33 @@
 
                           <div class="bg-light">
                             <h3>Media</h3>
-
-
                             <div class="form-group my-2">
                               <label for="image1">Image 1:</label>
-                              <input type="file" name="image1" class="form-control imageInput" id="imageInput"
-                                accept="image/*" />
-                                <img src="" alt="Image 1" class="img-fluid imagePreview" style="max-height: 50px;width: auto; display: none;">
+                              <input type="file" name="image1" class="form-control imageInput" id="image1" accept="image/*" />
+                              <img src="" alt="Image 1" class="img-fluid imagePreview" style="max-height: 50px; width: auto; display: none;" />
+                              <div class="cropper-container" style="display: none; width: fit-content;">
+                                <img id="cropperImage" src="" alt="Cropper Image" />
+                              </div>
+                              <button type="button" class="btn btn-primary cropButton" style="display: none;">Crop Image</button>
                             </div>
                             <div id="fileError"></div>
-
-
-                            <div class="form-group my-2">
+                            <div class="form -group my-2">
                               <label for="image2">Image 2:</label>
-                              <input type="file" name="image2" class="form-control imageInput" id="image2"
-                                accept="image/*" />
-                                <img src="" alt="Image 2" class="img-fluid imagePreview" style="max-height: 50px;width: auto; display: none;">
+                              <input type="file" name="image2" class="form-control imageInput" id="image2" accept="image/*" />
+                              <img src="" alt="Image 2" class="img-fluid imagePreview" style="max-height: 50px; width: auto; display: none;" />
+                              <div class="cropper-container" style="display: none; width: fit-content;">
+                                <img id="cropperImage2" src="" alt="Cropper Image" />
+                              </div>
+                              <button type="button" class="btn btn-primary cropButton" style="display: none;">Crop Image</button>
                             </div>
-
-
                             <div class="form-group my-2">
                               <label for="image3">Image 3:</label>
-                              <input type="file" name="image3" class="form-control imageInput" id="image3"
-                                accept="image/*" />
-                                <img src="" alt="Image 3" class="img-fluid imagePreview" style="max-height: 50px;width: auto; display: none;">
+                              <input type="file" name="image3" class="form-control imageInput" id="image3" accept="image/*" />
+                              <img src="" alt="Image 3" class="img-fluid imagePreview" style="max-height: 50px; width: auto; display: none;" />
+                              <div class="cropper-container" style="display: none; width: fit-content;">
+                                <img id="cropperImage3" src="" alt="Cropper Image" />
+                              </div>
+                              <button type="button" class="btn btn-primary cropButton" style="display: none;">Crop Image</button>
                             </div>
                           </div>
 
@@ -210,6 +209,11 @@
 
                     <br>
                     <div class="d-flex justify-content-end">
+
+                      <input type="hidden" name="croppedImage1" id="croppedImage1">
+                      <input type="hidden" name="croppedImage2" id="croppedImage2">
+                      <input type="hidden" name="croppedImage3" id="croppedImage3">
+
                       <button type="submit" id="addproduct" class="btn btn-primary mt-3 mb-0">Add Product</button>
                     </div>
                   </div>
@@ -220,15 +224,140 @@
           </div>
         </div>
 
-       
+
+
+ <!-- Modal for image cropping -->
+ <div class="modal fade" id="imageCropModal" tabindex="-1" aria-labelledby="imageCropModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="imageCropModalLabel">Crop Image</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <img src="" id="cropperImage" alt="Cropped Image" style="max-width: 100%;">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="cropImageBtn">Crop Image</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+
+
+
+        
+
+<script>
+  const croppers = {};
+
+  function initCropper(imageInput, imagePreview, cropperContainer, cropButton, no) {
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          imagePreview.style.display = 'block';
+          imagePreview.src = reader.result;
+          cropperContainer.style.display = 'block';
+          cropButton.style.display = 'inline-block';
+
+          const image = cropperContainer.querySelector('img');
+          image.src = reader.result;
+
+          if (!croppers[no]) {
+            croppers[no] = new Cropper(image, {
+              aspectRatio: 1,
+              guides: true,
+              autoCropArea: 0.8,
+              movable: true,
+              rotatable: true,
+              scalable: true,
+              zoomable: true,
+            });
+          } else {
+            croppers[no].replace(reader.result);
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    cropButton.addEventListener('click', () => {
+      const cropper = croppers[no];
+      if (cropper) {
+        const croppedCanvas = cropper.getCroppedCanvas();
+        if (croppedCanvas) {
+          const croppedImage = croppedCanvas.toDataURL('image/jpeg');
+          console.log("Cropped Image Data: ", croppedImage);
+          const fileName = `cropped_${no}.png`; 
+          const croppedBlob = dataURItoBlob(croppedImage);
+          const croppedFile = new File([croppedBlob], fileName, { type: 'image/png' });
+          const newFileList = new DataTransfer();
+          newFileList.items.add(croppedFile);
+          imageInput.files = newFileList.files;
+          imagePreview.src = croppedImage;
+          cropperContainer.style.display = 'none';
+          cropButton.style.display = 'none';
+        } else {
+          console.error("Failed to crop image.");
+        }
+      } else {
+        console.error("Cropper not found.");
+      }
+    });
+  }
+
+  function dataURItoBlob(dataURI) {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        intArray[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([arrayBuffer], { type: mimeString });
+  }
+
+  const imageInput1 = document.getElementById('image1');
+  const imagePreview1 = document.querySelector('#image1 ~ .imagePreview');
+  const cropperContainer1 = document.querySelector('#image1 ~ .cropper-container');
+  const cropButton1 = document.querySelector('#image1 ~ .cropButton');
+  initCropper(imageInput1, imagePreview1, cropperContainer1, cropButton1, 1);
+
+  const imageInput2 = document.getElementById('image2');
+  const imagePreview2 = document.querySelector('#image2 ~ .imagePreview');
+  const cropperContainer2 = document.querySelector('#image2 ~ .cropper-container');
+  const cropButton2 = document.querySelector('#image2 ~ .cropButton');
+  initCropper(imageInput2, imagePreview2, cropperContainer2, cropButton2, 2);
+
+  const imageInput3 = document.getElementById('image3');
+  const imagePreview3 = document.querySelector('#image3 ~ .imagePreview');
+  const cropperContainer3 = document.querySelector('#image3 ~ .cropper-container');
+  const cropButton3 = document.querySelector('#image3 ~ .cropButton');
+  initCropper(imageInput3, imagePreview3, cropperContainer3, cropButton3, 3);
+</script>
+
+
+
+
+
         <script>
           function formSubmitted(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();  
 
     // Get form data
     const form = document.getElementById('myForm');
     const formData = new FormData(form);
 
+     
 
     // validation
     var imageInputs = document.querySelectorAll('.imageInput');
@@ -240,7 +369,7 @@
             var productDescriptionInput = document.getElementById('productDescription');
             var productBrandInput = document.getElementById('brand');
 
-            // console.log(productNameInput.value, 'productNameInput');
+             
             console.log(productCategoryInput, 'productCategoryInput');
             console.log(productPriceInput, 'productPriceInput');
             console.log(productStockInput, 'productStockInput');
@@ -257,17 +386,17 @@
             var descriptionError = document.getElementById('DescriptionError');
             var brandError = document.getElementById('BrandError');
             var fileError = document.getElementById('fileError');
-            let isValid = []; // Store boolean values indicating input validity
+            let isValid = [];  
             // Name 
             if (productNameInput.value.trim() === '') {
               nameError.textContent = 'Please enter a name.';
               nameError.style.display = 'block';
               nameError.style.color = 'red';
-              isValid.push(false); // Push boolean value indicating invalid input
+              isValid.push(false);  
             } else {
               nameError.textContent = '';
               nameError.style.display = 'none';
-              isValid.push(true); // Push boolean value indicating valid input
+              isValid.push(true); 
             }
         
         
@@ -343,31 +472,30 @@
       body: formData,
     })
       .then(response => {
-        // Handle response
+        
         if (response.ok) {
-          // If the response is OK, do something (e.g., show success message)
+          
           console.log('Product added successfully');
           window.location.href = '/admin/adminproduct'
-          // You can redirect or display a success message here
+           
         } else {
-          // If the response is not OK, handle errors
+        
           console.error('Failed to add product');
-          // You can display an error message here
+           
         }
       })
       .catch(error => {
         console.error('Error:', error);
-        // Handle any errors that occurred during the fetch
-        // You can display an error message here
+         
       });
   }
 
-  // Attach event listener to the form submit event
+  
   const form = document.getElementById('myForm');
   form.addEventListener('submit', formSubmitted);
 
 
-  // Function to handle image preview
+ 
   const imageInput = document.querySelectorAll('.imageInput');
   const imagePreview = document.querySelectorAll('.imagePreview');
 

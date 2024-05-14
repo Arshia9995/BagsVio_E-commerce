@@ -43,11 +43,7 @@
         <i class="fa fa-bars"></i> Banners
       </a>
     </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" href="/admin/productoffer">
-        <i class="fa fa-bars"></i> ProductOffer
-      </a>
-    </li> -->
+   
     <li class="nav-item">
       <a class="nav-link" href="/admin/sales">
         <i class="fa fa-line-chart"></i> Sales
@@ -63,7 +59,7 @@
 
 <!-- Main Content -->
 <div class="container mt-5 ml-3">
-    <!-- Separate cards for total income and total quantity sold -->
+   
     <div class="row">
         <div class="col-md-6 mb-3">
             <div class="card">
@@ -83,32 +79,13 @@
         </div>
     </div>
 
-    <!-- <div class="row mb-3">
-      <div class="col-md-12">
-          <button class="btn btn-primary" onclick="generatePDF()">Generate PDF</button>
-      </div>
-  </div> -->
-    <!-- Sales report card -->
-     <!-- Sales report card -->
+   
      <div class="row">
       <div class="col-md-12">
           <h2>Sales Report</h2>
-          <!-- Filter form -->
-          <!-- <form action="/admin/salesreport" method="GET" class="mb-3">
-              <div class="form-row">
-                  <div class="col">
-                      <input type="date" class="form-control" name="startDate" placeholder="Start Date" required>
-                  </div>
-                  <div class="col">
-                      <input type="date" class="form-control" name="endDate" placeholder="End Date" required>
-                  </div>
-                  <div class="col">
-                      <button type="submit" class="btn btn-primary">Filter</button>
-                  </div>
-              </div>
-          </form> -->
+         
 
-          <!-- Sales report table -->
+        
           <table class="table">
               <thead>
                   <tr>
@@ -122,19 +99,19 @@
                   </tr>
               </thead>
               <tbody>
-                  <!-- Iterate over filtered orders and display sales report data -->
+               
                 
                   <% orders.forEach(order => { %>
                       <% if (order.status === 'Delivered') { %>
                           <% order.products.forEach(product => { %>
                               <tr>
-                                  <td><%= order.userId.name %></td> <!-- Display customer name -->
-                                  <td><%= order.totalPrice %></td> <!-- Display total price -->
-                                  <td><%= order.status %></td> <!-- Display order status -->
-                                  <td><%= product.productId.ProductName %></td> <!-- Display product name -->
-                                  <td><%= product.price %></td> <!-- Display product price -->
-                                  <td><%= product.quantity %></td> <!-- Display product quantity -->
-                                  <td><%= order.orderDate.toDateString() %></td> <!-- Display order date -->
+                                  <td><%= order.userId.name %></td> 
+                                  <td><%= order.totalPrice %></td>
+                                  <td><%= order.status %></td> 
+                                  <td><%= product.productId.ProductName %></td> 
+                                  <td><%= product.price %></td> 
+                                  <td><%= product.quantity %></td> 
+                                  <td><%= order.orderDate.toDateString() %></td> 
                               </tr>
                             
                           <% }) %>

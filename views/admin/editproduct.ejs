@@ -1,4 +1,4 @@
-<!-- Admin edit Product Page -->
+
 <%- include('header')-%>
 
   <div class="container-fluid">
@@ -46,11 +46,7 @@
               <i class="fa fa-bars"></i> Banners
             </a>
           </li>
-          <!-- <li class="nav-item">
-            <a class="nav-link" href="/admin/productoffer">
-              <i class="fa fa-bars"></i> ProductOffer
-            </a>
-          </li> -->
+        
           <li class="nav-item">
             <a class="nav-link" href="/admin/sales">
               <i class="fa fa-line-chart"></i> Sales
@@ -140,12 +136,7 @@
                                 <div id="priceError"></div>
                             </div>
                             <br>
-                            <!-- <div class="form-group">
-                              <label for="discountAmount">Discount Amount:</label>
-                              <input type="number" name="DiscountAmount" class="form-control bg-light"
-                                id="discountAmount" placeholder="Enter  After discount amount"
-                                value="<%= product.DiscountAmount %>" required />
-                            </div> -->
+                           
                           </div>
 
                           <div class="">
@@ -177,7 +168,7 @@
                         <br>
                         <label for="brandName">Brand Name:</label>
                         <select name="BrandName" class="form-select bg-light" id="brand" required>
-                          <!-- <option value="" selected disabled>Select a Brand</option> -->
+                        
                           <% brands.forEach(function (brand) { %>
                             <option value="<%= brand._id %>" <%= product.BrandName.equals(brand._id) ? 'selected' : '' %>>
                               <%= brand.brandName %>
@@ -186,11 +177,7 @@
                         </select>
                         <div id="BrandError"></div>
                       </div><br>
-                      <!-- <div class="form-group">
-                                  <label for="tags">Tags:</label>
-                                  <input type="text" class="form-control bg-light" name="Tags" id="tags"
-                                      placeholder="Enter tags" required />
-                              </div> -->
+                    
                       <div class="d-flex justify-content-end">
                         <button type="submit" class="btn btn-primary mt-3 mb-0">edit Product</button>
                       </div>
@@ -232,14 +219,14 @@
 
 
 <script>
-  // Function to handle form submission
+ 
   function formSubmitted(event) {
     let id = document.getElementById('productId').innerHTML
     console.log(id,"iiiiiiiiiiiiiii");
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault(); 
 
     // Get form data
-    const form = document.querySelector('form'); // Assuming your form has a <form> tag
+    const form = document.querySelector('form'); 
     const formData = new FormData(form);
 
     // Perform validation
@@ -256,7 +243,7 @@
     var stockError = document.getElementById('stockError');
     var descriptionError = document.getElementById('DescriptionError');
     var brandError = document.getElementById('BrandError');
-    var isValid = true; // Initialize isValid flag
+    var isValid = true; 
 
     // Name validation
     if (productNameInput.value.trim() === '') {
@@ -326,7 +313,7 @@
       stockError.style.display = 'none';
     }
 
-    // If all inputs are valid, submit the form
+   
     if (isValid) {
       fetch(`/admin/editproduct/${id}`, {
         method: 'POST',
@@ -346,8 +333,8 @@
     }
   }
 
-  // Attach event listener to the form submit event
-  const form = document.querySelector('form'); // Assuming your form has a <form> tag
+ 
+  const form = document.querySelector('form'); 
   form.addEventListener('submit', formSubmitted);
 </script>
 

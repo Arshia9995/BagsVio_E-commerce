@@ -1,9 +1,8 @@
 <%- include('header')-%>
 
 <style>
-  /* Style for Product Reviews */
   .mt-4 {
-    margin-top: 20px; /* Adjust as needed */
+    margin-top: 20px; 
   }
 
   .mt-4 h5 {
@@ -52,9 +51,8 @@
     color: #6c757d !important;
   }
 
-  /* Style for yellow stars */
   .rating-stars {
-    color: #f1c40f; /* Yellow color code */
+    color: #f1c40f; 
   }
 </style>
 <%- include('../partials/navbar') %>
@@ -130,30 +128,7 @@
           <hr />
 
           <div class="row mb-4">
-            <!-- <div class="col-md-4 col-6">
-              <label class="mb-2">Size</label>
-              <select class="form-select border border-secondary" style="height: 35px;">
-                <option>Small</option>
-                <option>Medium</option>
-                <option>Large</option>
-              </select>
-            </div> -->
-            <!-- col.// -->
-            <!-- <div class="col-md-4 col-6 mb-3">
-              <label class="mb-2 d-block">Quantity</label>
-              <div class="input-group mb-3" style="width: 170px;">
-                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon1"
-                  data-mdb-ripple-color="dark">
-                  <i class="fas fa-minus"></i>
-                </button>
-                <input type="text" class="form-control text-center border border-secondary" 
-                  aria-label="Example text with button addon" aria-describedby="button-addon1" />
-                <button class="btn btn-white border border-secondary px-3" type="button" id="button-addon2"
-                  data-mdb-ripple-color="dark">
-                  <i class="fas fa-plus"></i>
-                </button>
-              </div>
-            </div> -->
+          
 
             <div class="col-md-4 col-6 mb-3">
               <label class="mb-2 d-block">Quantity</label>
@@ -187,7 +162,6 @@
             </div>
           </div>
 
-          <!-- <a href="#" class="btn btn-warning shadow-0"> Buy now </a> -->
           <a
             href="#"
             class="btn btn-primary shadow-0"
@@ -204,10 +178,8 @@
             <i class="me-1 fa fa-heart fa-lg"></i>Add to Wishlist
           </a>
 
-          <!-- Product Reviews Section -->
           <div class="mt-4" id="productReviewsContainer">
             <h5 class="mb-3">Product Reviews</h5>
-            <!-- Reviews will be dynamically added here -->
             <% if (productReviews && productReviews.length > 0) { %> <%
             productReviews.forEach(review => { %>
             <div class="card mb-3">
@@ -268,7 +240,7 @@
   async function addToCart(productId, quantity) {
     try {
       const quantityInput = document.getElementById("quantityInput");
-      const quantity = parseInt(quantityInput.value); // Parse the value as an integer
+      const quantity = parseInt(quantityInput.value); 
       const existingQuantity = parseInt(
         quantityInput.getAttribute("data-quantity") || 0
       );
@@ -295,14 +267,12 @@
       const data = await response.json();
 
       if (data.success) {
-        // Use SweetAlert for success message
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Product added to cart successfully!",
         });
       } else {
-        // Use SweetAlert for failure message
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -311,7 +281,6 @@
       }
     } catch (error) {
       console.error("Error:", error);
-      // Use SweetAlert for error message
       Swal.fire({
         icon: "error",
         title: "Error",
@@ -320,30 +289,25 @@
     }
   }
 
-  // Increment quantity
 document.getElementById("button-addon2").addEventListener("click", function () {
   var quantityInput = document.getElementById("quantityInput");
   var currentQuantity = parseInt(quantityInput.value);
   var maxQuantity = parseInt(quantityInput.getAttribute("max"));
   var availableQuantity = parseInt(document.getElementById("stock").innerHTML);
   
-  // Check if the current quantity plus 1 exceeds the maximum available quantity
   if (currentQuantity + 1 > maxQuantity) {
-    // Show error message if quantity exceeds available stock
     Swal.fire({
       icon: "error",
       title: "Error",
       text: "Cannot exceed available stock.",
     });
   } else if (currentQuantity + 1 > availableQuantity) {
-    // Show error message if quantity exceeds available stock
     Swal.fire({
       icon: "error",
       title: "Error",
       text: "Cannot exceed available stock.",
     });
   } else {
-    // Increment quantity if it doesn't exceed available stock
     quantityInput.value = currentQuantity + 1;
   }
 });
@@ -371,14 +335,12 @@ document.getElementById("button-addon2").addEventListener("click", function () {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Product added successfully, show success message
         Swal.fire({
           icon: "success",
           title: "Success",
           text: "Product added to wishlist successfully!",
         });
       } else {
-        // Show error message
         Swal.fire({
           icon: "error",
           title: "Error",
@@ -387,7 +349,6 @@ document.getElementById("button-addon2").addEventListener("click", function () {
       }
     } catch (error) {
       console.error("Error:", error);
-      // Show error message
       Swal.fire({
         icon: "error",
         title: "Error",

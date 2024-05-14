@@ -4,7 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Place Order</title>
-    <!-- Bootstrap 5 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,7 +11,6 @@
       crossorigin="anonymous"
     />
     <style>
-      /* Custom CSS styles can be added here */
       body {
         background-color: #f8f9fa;
       }
@@ -53,7 +51,6 @@
 
   <body>
     <header>
-      <!-- Content for header (if any) -->
     </header>
 
     <section class="py-5">
@@ -65,7 +62,6 @@
                 <h5 class="mb-0">Order Details</h5>
               </div>
               <div class="card-body">
-                <!-- Display cart items -->
                 <% let totalPrice=0; %> <% userCart.items.forEach(item=> { %>
                 <div class="card mb-3">
                   <div class="row g-0">
@@ -97,7 +93,6 @@
                 %>
                 <% totalPrice=totalPrice-(discount || 0)%>
 
-                <!-- Display total amount -->
                 <div class="row">
                   <div class="col-md-9"></div>
                   <div class="col-md-3">
@@ -148,7 +143,6 @@
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-    <!-- Bootstrap 5 JavaScript Bundle with Popper -->
     <script>
       document
         .getElementById("onlinePaymentBtn")
@@ -157,8 +151,7 @@
         });
 
       function makePayment() {
-        // Perform AJAX request to handle online payment
-        // Example Fetch API request
+
         fetch("/makePayment", {
           method: "GET",
           headers: {
@@ -166,12 +159,10 @@
           },
         })
           .then((response) => {
-            // Handle response
             if (response.ok) {
-              // Payment successful
-              return response.json(); // or response.text(), depending on the response format
+              return response.json(); 
             } else {
-              // Payment failed
+              
               throw new Error("Payment failed");
             }
           })
@@ -187,6 +178,7 @@
               description: "Test Transaction",
               image: "",
               handler: function (response) {
+              
                 verifyPayment(response, order);
               },
               theme: {
@@ -197,12 +189,14 @@
             rzp1.open();
           })
           .catch((error) => {
-            // Handle errors
+       
             console.error("Error:", error);
+          
           });
       }
 
       function verifyPayment(payment, order) {
+     
         console.log("now in verifyPayment ", payment);
         fetch("/verifyPayment", {
           method: "POST",
@@ -217,6 +211,7 @@
           if (response.ok) {
             location.href = '/paymentsuccess'
           } else {
+         
             location.href = "";
           }
         });

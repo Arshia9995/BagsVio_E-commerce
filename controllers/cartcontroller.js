@@ -9,6 +9,7 @@ const categoryModel = require("../models/categorySchema");
 const Address = require("../models/address");
 const Wishlist=require("../models/wishlist")
 const wallet=require("../models/wallet")
+const Coupon = require("../models/coupon")
 
 
 
@@ -17,20 +18,17 @@ module.exports = {
   
   getCartPage: async (req, res) => {
     try {
-      const { userId } = req.session; // Use user instead of userId
+      const { userId } = req.session; 
       
-      console.log(userId);
+     
      
       let userCart = await Cart.findOne({ userId: userId }).populate(
         "items.productId"
       );
 
-      // req.session.user=userId
-      // if (!userCart) {
-      //   userCart = new Cart({ userId, items: [] });
-      // }
+      
       const categories = await categoryModel.find();
-      // console.log("Categories:", categories);
+     
       console.log(userCart,"usercart")
       res.render("user/cart", { cart: userCart, categories });
     } catch (error) {
@@ -44,10 +42,10 @@ module.exports = {
   addToCart: async (req, res) => {
     try {
       const { productId, quantity } = req.body;
-      // console.log(req.body)
+   
       console.log(quantity, "quaty");
 
-      // console.log('req.session.email:', req.session.email);
+      
       const product = await productModel.findById(productId)
       const user = await Users.findOne({ email: req.session.email });
 
@@ -63,7 +61,7 @@ module.exports = {
         quantity: quantity,
       };
 
-      // console.log('cartData', cartData);
+      
 
       if (!userCart) {
         const newCart = new Cart({
@@ -92,7 +90,7 @@ module.exports = {
           });
         }
 
-        await userCart.save(); // Save the entire userCart after making changes
+        await userCart.save(); 
       }
       res
         .status(200)
@@ -108,16 +106,13 @@ module.exports = {
 
   removeFromCart: async (req, res) => {
     try {
-      console.log(
-        "entered cart......>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>."
-      );
+    
       const { userId } = req.session;
       const { productId } = req.body;
-      //  console.log((userId));
-      //  console.log(productId);
+     
 
       const userCart = await Cart.findOne({ userId });
-      // console.log(userCart);
+     
 
       if (!userCart) {
         return res.status(404).json({ message: "Cart not found" });
@@ -126,9 +121,9 @@ module.exports = {
       const updatedItems = userCart.items.filter(
         (item) => item.productId.toString() !== productId
       );
-      console.log(updatedItems);
+     
 
-      // console.log(updatedItems);
+     
       if (userCart.items.length === updatedItems.length) {
         return res.status(404).json({ message: "Product not found in cart" });
       }
@@ -144,21 +139,21 @@ module.exports = {
           message: "Product removed from cart successfully",
         });
     } catch (err) {
-      // console.log("not entered cart.......")
+     
       console.error(err);
       res.status(500).json({ error: "Internal server error" });
     }
   },
 
-  // Update quantity of an item in the cart
+ 
   updateCartItemQuantity: async (req, res) => {
     try {
-      console.log("backend reached in cart update quantity", req.body);
+    
       const user = await Users.findOne({ email: req.session.email });
       const userId = user._id;
 
       const { itemId, newQuantity } = req.body;
-      // Find the cart item by both userId and itemId
+   
       const cartItem = await Cart.findOneAndUpdate(
         { userId: userId, "items._id": itemId },
         { $inc: { "items.$.quantity": newQuantity } },
@@ -170,7 +165,7 @@ module.exports = {
           .status(404)
           .json({ success: false, message: "Item not found in the cart" });
       }
-      console.log("quantity updated");
+     
       return res
         .status(200)
         .json({
@@ -198,13 +193,13 @@ module.exports = {
           return res.status(404).json({ success: false, message: `Product with ID ${item.itemId} not found` });
         }
   
-        // Check if the requested quantity exceeds the available stock
+      
         if (item.quantity > product.availableQuantity) {
           return res.status(400).json({ success: false, message: `Not enough stock available for product ${product.name}` });
         }
       }
   
-      // All items have sufficient stock
+     
       res.json({ success: true, message: "All items have sufficient stock" });
     } catch (error) {
       console.error("Error checking stock:", error);
@@ -222,41 +217,48 @@ getCheckOutPage: async (req, res) => {
       const user = await Users.findOne({ email }).populate("addresses");
      
       const categories = await categoryModel.find();
-      console.log(user,'=-=---=-=-==================');
+      
+      const coupons = await Coupon.find();
+     
 
-      // Retrieve user's wallet amount
+     
       const Wallet = await wallet.findOne({ userId });
       const walletAmount = Wallet ? Wallet.balance : 0;
 
       const userCart = await Cart.findOne({ userId }).populate("items.productId");
        
 
-      // Calculate total price of items in the cart
+      
       let totalPrice = 0;
       userCart.items.forEach((item) => {
           totalPrice += item.productId.Price * item.quantity;
       });
 
+      req.session.couponApplied = null;
+      req.session.discount = null;
 
-      // Check if the payment method is wallet and wallet balance is sufficient
-      const paymentMethod = req.body.paymentMethod; // Assuming payment method is sent in the request body
+
+      
+      const paymentMethod = req.body.paymentMethod; 
       if (paymentMethod === "Wallet" && walletAmount < totalPrice) {
-          // Wallet balance is insufficient
+        
           return res.render("user/checkout", {
               userCart,
               addresses: user?.addresses?.addresses,
               error: "Insufficient wallet balance",
               walletAmount,
-              totalPrice
+              totalPrice,
+              coupons: coupons,
           });
       }
 
-      // Render the checkout page
+     
       res.render("user/checkout", {
           userCart,
           addresses: user?.addresses?.addresses,
           walletAmount,
-          totalPrice,categories
+          totalPrice,categories,
+          coupons: coupons,
       });
   } catch (err) {
       console.error(err);
@@ -266,36 +268,34 @@ getCheckOutPage: async (req, res) => {
 
 
   continueCheckOut: async (req, res) => {
-    console.log("bhbnjbjbnjbnhj............................");
+  
     
     const email = req.session.email;
-    console.log(req.body, "body---------");
+  
     discount=req.session.discount
 
-    // const savedAddress = await newAddress.save();
-
-    // Find the user by email and populate their addresses
+   
     const user = await Users.findOne({ email: email }).populate("addresses");
 
-    // Retrieve the selected address ID from the request body
+   
     const selectedAddressId = req.body.selectedAddress;
 
-    // Initialize variable to hold the selected address
+   
     let selectedAddress;
 
-    // Check if an address ID was provided
+   
     if (selectedAddressId) {
-      // Find the selected address from the user's addresses array
+    
       selectedAddress = user.addresses.addresses.find((addr) =>
         addr._id.equals(selectedAddressId)
       );
     }
 
-    console.log("my address", selectedAddress);
+  
 
     const paymentMethod = req.body.paymentMethod;
 
-    // Store the selected address ID and payment method in the session
+  
     req.session.selectedAddress = selectedAddress;
     req.session.paymentMethod = paymentMethod;
 
@@ -312,26 +312,24 @@ getCheckOutPage: async (req, res) => {
     try {
       const { userId } = req.session;
       const { selectedAddresses, paymentMethod } = req.session;
-      // const selectedAddress = await Address.findById(selectedAddressId);
+    
       let discount=req.session.discount
       let couponApplied
       const categories = await categoryModel.find();
       const userCart = await Cart.findOne({ userId }).populate(
         "items.productId"
       );
-      console.log(discount);
+     
       let totalPrice = 0;  
       userCart.items.forEach((item) => {
         totalPrice += item.productId.price * item.quantity;
       });
       if(req.session.couponApplied){
-        console.log("inside couponApplied");
+     
         couponApplied = true
       }
      
-      console.log(totalPrice);
-      console.log(userId, "id....................");
-      console.log(userCart, "cart............");
+      
       res.render("user/placeorder", {
         userCart,
         selectedAddresses,
@@ -348,26 +346,37 @@ getCheckOutPage: async (req, res) => {
   },
   getPaymentSuccessPage: async (req, res) => {
     try {
-      const { userId } = req.session;
+      const { userId, productId, quantity } = req.session;
+
+   
       const categories = await categoryModel.find();
       const userCart = await Cart.findOne({ userId }).populate(
         "items.productId"
       );
-      console.log(req.session.paymentMethod, "=========================");
+      const existingProduct = await productModel.findById(productId);
+      if (existingProduct) {
+          existingProduct.AvailableQuantity -= quantity;
+          await existingProduct.save();
+        }
+    
       if (req.session.paymentMethod === "Online Payment") {
         const order = await Order.findOne({ userId, paymentStatus: "pending" });
-        console.log(order,'===================');
+      
         if (order) {
-          // Update paymentStatus to paid
+          
           const updatedOrder = await Order.findByIdAndUpdate(
             { _id: order._id },
             { $set: { paymentStatus: "paid" } },
             { new: true }
           );
           console.log(updatedOrder);
-          // Optionally, update orderStatus to orderPlaced here
+         
         }
       }
+      req.session.couponApplied = null;
+      req.session.discount = null;
+      userCart.items = [];
+      userCart.save()
       res.render("user/paymentsuccess", { categories, userCart});
     } catch (error) {
       console.error(error);
@@ -377,7 +386,7 @@ getCheckOutPage: async (req, res) => {
   postCheckoutaddAddress: async (req, res) => {
     try {
       console.log("backend reached>>>>>>>>>>>>");
-      // Extract new address data from the request body
+      
       const { name, address, pincode, city, street, state, mobile } = req.body;
       const user = await Users.findOne({ email: req.session.email });
       const userId = user._id;
@@ -398,7 +407,7 @@ getCheckOutPage: async (req, res) => {
       if (userAddressFound) {
         userAddressFound.addresses.push(userAddress);
         await userAddressFound.save();
-        console.log("Address saved for existing user");   
+        
       } else {
         const newAddress = new Address({
           userId: userId,
@@ -407,13 +416,13 @@ getCheckOutPage: async (req, res) => {
         user.addresses = newAddress._id
         await user.save()
         await newAddress.save();
-        console.log("New address created");
+       
       }
-      console.log("success bro set");
-      return res.status(200).json({ success: true }); // Send success response
+    
+      return res.status(200).json({ success: true }); 
     } catch (error) {
       console.error("Error adding address:", error);
-      res.status(500).send("Internal Server Error"); // Send error response
+      res.status(500).send("Internal Server Error"); 
     }
   },
 };

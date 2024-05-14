@@ -19,8 +19,7 @@
   
   /* Form Styles */
   .form-control {
-    /* background-color: #f8f9fa; */
-    /* color: #495057; */
+   
   }
   
   .btn-outline-success {
@@ -49,7 +48,7 @@
   
  /* New Arrivals Styles */
 .my-5 {
-    margin-top: 3rem !important; /* Adjust margin as needed */
+    margin-top: 3rem !important; 
   }
   
   .text-center {
@@ -58,28 +57,28 @@
   
   /* Card Styles */
   .card {
-    border: none; /* Remove card borders */
+    border: none; 
   }
   
  .card-img-top {
-  border-bottom: 1px solid #dee2e6; /* Add a border between image and card body */
-  max-width: 241px; /* Set your desired maximum width for the card images */
-  height: auto; /* Ensure the aspect ratio is maintained */
+  border-bottom: 1px solid #dee2e6; 
+  max-width: 241px; 
+  height: auto; 
 }
   
   .card-title {
-    font-size: 1.2rem; /* Adjust card title font size */
-    margin-bottom: 0.5rem; /* Adjust margin as needed */
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem; 
   }
   
   .card-text {
-    font-size: 0.9rem; /* Adjust card text font size */
+    font-size: 0.9rem; 
   }
   
   /* Responsive Styles */
   @media (max-width: 768px) {
     .card {
-      margin-bottom: 1.5rem; /* Adjust margin for smaller screens */
+      margin-bottom: 1.5rem; 
     }
   }
   
@@ -87,7 +86,7 @@
 
 
 
-  /* admin */
+
 
 
   /* Global Styles */
@@ -138,10 +137,7 @@ body {
   margin-bottom: 20px;
 }
 
-/* Footer Styles */
-/* Add your custom styles for the footer as needed */
 
-/* Responsive Styles */
 @media screen and (max-width: 600px) {
   .sidebar {
       width: 100%;
@@ -160,28 +156,27 @@ body {
 }
 
 
-/* Styles for Admin Dashboard Sections */
+
 
 /* Section Title */
 .content .box h3 {
-  color: #333; /* Set your desired text color */
+  color: #333; 
   margin-bottom: 10px;
 }
 
 /* Box Container */
 .content .box {
-  background-color: #fff; /* Set your desired background color */
-  border: 1px solid #ddd; /* Set your desired border color */
-  border-radius: 8px; /* Set your desired border radius */
+  background-color: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 8px; 
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
-  width:330px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Individual Box Content */
 .content .box h3 {
-  font-size: 18px; /* Set your desired font size */
+  font-size: 18px; 
   margin-bottom: 15px;
 }
 
@@ -211,12 +206,12 @@ body {
 
 
 body {
-  padding-top: 56px; /* Adjusted for fixed navbar */
+  padding-top: 56px; 
 }
 
 @media (max-width: 991.98px) {
   body {
-      padding-top: 0; /* Remove padding for mobile */
+      padding-top: 0; 
   }
 }
 

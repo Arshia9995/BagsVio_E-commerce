@@ -50,14 +50,13 @@
           <div class="col-lg-4">
             <div class="card">
               <a href="/productdetails/<%= product._id %>">
-              <!-- <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>"> -->
-              <img src="/uploads/cropped_images/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
+             
+              <img src="/uploads/<%= product.images[0] %>" class="card-img-top" alt="<%= product.ProductName %>" style="aspect-ratio: 3/3.5; object-fit: contain;">
 
 
               <div class="card-body">
                 <h5 class="card-title text-dark"><%= product.ProductName %></h5>
-                <!-- <p class="card-text"><%= product.Description %></p>
-                <p class="card-text">Brand: <%= product.BrandName.brandName %></p> -->
+               
                 <p class="card-text text-dark">Price: <%= product.Price %></p></a>
               </div>
             </a>
@@ -72,7 +71,7 @@
     </section>
 
 
-  <!-- Pagination -->
+
   <nav aria-label="Page navigation">
     <ul class="pagination">
       <% if (currentPage > 1) { %>

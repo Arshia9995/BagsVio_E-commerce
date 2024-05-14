@@ -6,15 +6,15 @@ const productSchema = new mongoose.Schema({
 
   ProductName:{
     type:String,
-    // required: true,
+   
     uppercase:true
 },
 Price:{
 type: Number,
-// required: true,
+
 validate: {
 validator: function (value) {
-  return value > 0; // Ensuring Price is a positive number
+  return value > 0; 
 },
 message: 'Price must be a positive number.'
 }
@@ -22,43 +22,44 @@ message: 'Price must be a positive number.'
 },
 Description: {
     type: String,
-    // required: true,
+   
   },
   BrandName: {
     type: Schema.Types.ObjectId,
-    // required:true,
+   
     ref:'brand'
   },
   images:{
    type:Array,
-  //  required:true,
+ 
   },
+
   AvailableQuantity: {
     type: Number,
     validate: {
       validator: function(value) {
-        return value >= 0; // Validates that Quantity is greater than 0
+        return value >= 0; 
       },
       message: "Quantity Can't be less than 0"
     }
 },      
 Category:{
     type: Schema.Types.ObjectId,
-    // required:true,
+   
     ref: 'category'
 },
 DiscountAmount:{
     type:Number,
     validate: {
         validator: function (value) {
-          return value >= 0 && value <= this.Price; // Ensuring DiscountAmount is positive and less than or equal to Price
+          return value >= 0 && value <= this.Price; 
         },
         message: 'Discount amount must be a positive number and less than the Price.'
       }
 },
 Status: {
     type: String,
-    // required: true,
+   
   },
   Variation: {
     type: String,
@@ -119,55 +120,3 @@ module.exports = Product;
 
 
 
-
- // productName: {
-    //     type: String,
-    //     required: true,
-    //     uppercase:true
-    //   },
-      
-     
-    //   category:{
-    //     type:String
-    //   },
-    //   // brand: {
-    //   //   type: Schema.Types.ObjectId,
-    //   //   required: true,
-    //   //   ref: 'brand'
-    //   // }, 
-    // photos: {
-    //     type: Array,
-    //     required: true,
-    //   },
-    //   stock: {
-    //     type: Number,
-    //     required: true,
-    //   },
-    //   brand:{
-    //     type:String,
-        
-    //   },
-    //   price: {
-    //     type: Number,
-    //     required: true,
-    //   },
-    //   // category: {
-    //   //   type: Schema.Types.ObjectId,
-    //   //   required: true,
-    //   //   ref: 'category'
-    //   // },
-    //   // status: {
-    //   //   type: String,
-    //   //   required: true,   
-    //   // },
-    //   // display: {
-    //   //   type: String,
-    //   //   required: true
-    //   // },
-
-    //   isBlocked: {
-    //     type: Boolean,
-    //     default: false,
-    // },
-
-    

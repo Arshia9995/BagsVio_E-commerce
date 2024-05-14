@@ -23,7 +23,7 @@ module.exports ={
         try {
             const productOffers = await ProductOffer.find();
 
-            // const productOffer = await ProductOffer.findOne({ productName: productName, discountPercentage: discountPercentage });
+           
             
             res.render('./admin/productoffer',{ productOffers: productOffers, productOffer: {} , title:"Admin ProductOffer"});
         } catch (error) {
@@ -36,9 +36,9 @@ module.exports ={
          
             const products = await Product.find({}, 'ProductName');
 
-            // Extract product names from the products
+           
             const productNames = products.map(product => product.ProductName);
-            // Send the product names as a response
+           
             res.json({ productNames });
                 
             } catch (error) {
@@ -48,7 +48,7 @@ module.exports ={
     postProductOffer:async(req,res)=>{
         try {
             const { productName, discountPercentage } = req.body;
-            console.log(req.body,"offer");
+            
             const product = await Product.findOne({ ProductName: productName });
 
             const newOffer = new ProductOffer({
@@ -64,17 +64,13 @@ module.exports ={
         product.productoffer = discountPercentage
 
         await product.save();
-
-        console.log(product.productofferPrice)
-        console.log(product.productoffer)
-            // Save the new offer to the database
-            await newOffer.save();
-             // Respond with success message
+        await newOffer.save();
+             
              res.redirect('/admin/productoffer')
             
         } catch (error) {
          console.error('Error adding offer:', error);
-        // Respond with error message
+        
         res.status(500).json({ message: 'Failed to add offer' });
             
         }
@@ -108,7 +104,7 @@ module.exports ={
             
             res.redirect("/admin/productoffer");
         } catch (error) {
-            // Handle errors
+          
             console.error('Error editing product offer:', error);
             res.status(500).json({ error: 'Internal Server Error' });
         }

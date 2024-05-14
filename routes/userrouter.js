@@ -6,7 +6,7 @@ const nodemailer=require('nodemailer');
 const usercontroller = require('../controllers/usercontroller');
 const cartcontroller = require('../controllers/cartcontroller');
 const ordercontroller = require('../controllers/ordercontroller');
-// let wishlistDatas = require('../controllers/wishlistcontroller')
+
 const demoWishlist = require('../controllers/wishlistcontroller');
 const wishlistcontroller = require('../controllers/wishlistcontroller');
 const couponcontroller = require('../controllers/couponcontroller')
@@ -16,7 +16,7 @@ const reviewController = require('../controllers/reviewcontroller')
 
 
 
-// home before login
+
 router.get('/',userAuth.userExist,userController.showUserHomePage)
 
 //login
@@ -111,7 +111,7 @@ router.get("/makePayment",ordercontroller.makePayment)
 
 router.post('/verifyPayment',ordercontroller.getVerifyPayment)
 
-// router.get('/wishlist',ordercontroller.getVerifyPayment)
+
 
 
 
@@ -142,6 +142,7 @@ router.get("/coupon",couponcontroller.getuserCouponPage)
 router.post("/applycoupon",couponcontroller.postApplyCoupon)
 router.post("/removecoupon",couponcontroller.removeCoupon)
 
+router.get("/getcoupons",couponcontroller.getcoupons)
 //logout
 router.get('/logout',userController.Logout)
 

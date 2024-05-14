@@ -23,8 +23,8 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: #f8f9fa; /* Adjust the background color as needed */
-  padding: 20px; /* Adjust the padding as needed */
+  background-color: #f8f9fa; 
+  padding: 20px; 
   text-align: center;
 }
 </style>
@@ -40,7 +40,7 @@
 <section class="bg-white">
     <div class="container-fluid p-5">
       <div class="row">
-        <!-- cart -->
+       
         <div class="col-lg-9">
           <div class="card border rounded shadow">
             <div class="m-4 rounded shadow-5">
@@ -98,8 +98,7 @@
                         </td>
 
                         <td>
-                          <!-- HTML - Update Quantity Buttons -->
-                          <!-- HTML - Update Quantity Buttons -->
+                         
                           <div class="input-group" style="width: 120px;">
                             <div class="input-group" style="width: 120px;">
                               <div class="input-group" style="width: 120px;">
@@ -258,7 +257,7 @@ input[type=number]::-webkit-outer-spin-button {
     let quantityExceeded = false;
     let cartEmpty = true;
 
-      // Check if the cart is empty
+   
   items.forEach(function(item) {
     const quantity = parseInt(item.value);
     if (quantity > 0) {
@@ -267,7 +266,7 @@ input[type=number]::-webkit-outer-spin-button {
   });
 
    if (cartEmpty) {
-    // If cart is empty, show error message
+ 
     Swal.fire("Error!", "Your cart is empty. Please add items to proceed.", "error");
     return;
   }
@@ -310,7 +309,7 @@ input[type=number]::-webkit-outer-spin-button {
 
 
 
-  // alert('update called')
+
   const newQuantity = parseInt(change);
   fetch('/updateQuantity', {
     method: 'POST',
@@ -333,17 +332,17 @@ input[type=number]::-webkit-outer-spin-button {
         totalQuantityElement.textContent = data.totalQuantity;
       }
         
-        // alert('quantity update succcess')
+      
         console.log('Quantity updated successfully');
    
       } else {
         console.error('Error updating quantity:', data.message);
-        // Optionally, show an error message to the user
+       
       }
     })
     .catch((error) => {
       console.error('Error updating quantity:', error);
-      // Optionally, show an error message to the user
+     
     });
 }
 
@@ -369,7 +368,7 @@ function notInStock() {
         .then((response) => response.json())
         .then((data) => {
           if (data.success) {
-            alert('success')
+         
             updateCartUI();
             swal("Success!", "Item added to cart", "success");
           } else {
@@ -406,17 +405,17 @@ function notInStock() {
     const data = await response.json();
 
     if (data.success) {
-      // Item removed successfully
+      
       Swal.fire({
         icon: 'success',
         title: 'Success',
         text: 'Item removed from cart successfully',
       }).then(() => {
-        // Reload the page to reflect the changes (you can also update the UI without reloading)
+     
         window.location.reload();
       });
     } else {
-      // Failed to remove item
+     
       console.error('Error removing item from cart:', data.message);
       Swal.fire({
         icon: 'error',
@@ -437,7 +436,7 @@ function notInStock() {
 
 
 
-  // Attach event listeners to your "Remove" buttons or links
+ 
   document.addEventListener('DOMContentLoaded', function () {
     const removeButtons = document.querySelectorAll('.remove-from-cart');
 
@@ -447,7 +446,7 @@ function notInStock() {
 
         const productId = button.getAttribute('data-product-id');
 
-        // Call the removeFromCart function with the product details
+      
         removeFromCart(productId);
       });
     });

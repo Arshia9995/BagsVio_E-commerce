@@ -43,11 +43,7 @@
           <i class="fa fa-bars"></i> Banners
         </a>
       </li>
-    <!-- <li class="nav-item">
-      <a class="nav-link" href="/admin/productoffer">
-        <i class="fa fa-bars"></i> ProductOffer
-      </a>
-    </li> -->
+   
     <li class="nav-item">
       <a class="nav-link" href="/admin/sales">
         <i class="fa fa-line-chart"></i> Sales
@@ -64,14 +60,14 @@
 
 
 
-<!-- Main Content -->
+
 <div class="col-md-9 col-lg-10 offset-md-3 offset-lg-2">
-    <!-- Button to trigger modal -->
+
     <button type="button" class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#addBannerModal">
         <i class="fa fa-plus"></i> Add Banner
     </button>
 
-    <!-- Modal -->
+ 
     <div class="modal fade" id="addBannerModal" tabindex="-1" aria-labelledby="addBannerModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -80,7 +76,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- Category selection dropdown -->
+                   
                     <div class="mb-3">
                         <label for="categorySelect" class="form-label">Select Category:</label>
                         <select class="form-select" id="categorySelect">
@@ -89,7 +85,7 @@
                             <% }); %>
                         </select>
                     </div>
-                    <!-- Upload banner button -->
+                  
                     <div class="mb-3">
                         <input type="file" name="image" id="bannerInput" accept="image/*" style="display: none">
                         <button type="button" class="btn btn-primary" onclick="chooseFile()">
@@ -105,11 +101,11 @@
         </div>
     </div>
 
-    <!-- Display uploaded banners dynamically -->
+   
     <div id="bannerContainer" style="margin-top: 50px;">
         <% banners.forEach(banner => { %>
             <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
-                <!-- Adjust width and height of the image here -->
+              
                 <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
                 <button onclick="editBanner('<%= banner._id %>')" class="btn btn-primary"   data-bs-toggle="modal"   data-bs-target="#editBannerModal<%= banner._id %>">Edit</button>
                 <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
@@ -132,7 +128,7 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-              <!-- Form for editing banner -->
+            
               <form id="editBannerForm">
                   <div class="mb-3">
                       <label for="categorySelect" class="form-label">Select Category:</label>
@@ -180,7 +176,7 @@
       }
   
       document.getElementById('bannerInput').addEventListener('change', function () {
-          // Automatically trigger upload when file is selected
+         
           uploadBanner();
       });
   
@@ -203,10 +199,10 @@
                   body: formData,
               });
               const data = await response.json();
-              // console.log('this is the data',data)
+             
               if (data.success) {
-                // alert(JSON.stringify(data))
-                  // Append the new banner to the banner container
+              
+                 
                   const bannerContainer = document.getElementById('bannerContainer');
                   const bannerItem = document.createElement('div');
                   bannerItem.classList.add('banner-item');
@@ -217,9 +213,9 @@
                   `;
                   bannerContainer.appendChild(bannerItem);
   
-                  // Close modal
+                 
                   $('#addBannerModal').modal('hide');
-                  // alert('set')
+                 
               } else {
                   alert('Error uploading banner');
               }
@@ -230,7 +226,7 @@
       }
   
       function deleteBanner(bannerId) {
-    // Show SweetAlert confirmation message
+   
     Swal.fire({
       title: 'Are you sure?',
       text: 'Once deleted, you will not be able to recover this banner!',
@@ -241,16 +237,16 @@
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        // If user confirms deletion, send delete request
+       
         fetch(`/admin/deleteBanner/${bannerId}`, {
           method: 'DELETE',
         })
         .then(response => {
           if (response.ok) {
-            // Remove the deleted banner item from the page
+         
             const bannerItem = document.querySelector(`.banner-item[data-banner-id="${bannerId}"]`);
             bannerItem.remove();
-            // Show success message
+        
             Swal.fire('Deleted!', 'Your banner has been deleted.', 'success');
           } else {
             throw new Error('Failed to delete banner');
@@ -258,7 +254,7 @@
         })
         .catch(error => {
           console.error('Error:', error);
-          // Show error message or handle the error accordingly
+       
           Swal.fire('Error!', 'Failed to delete banner.', 'error');
         });
       }
@@ -268,7 +264,7 @@
 
 
 <script>
-  // Function to handle edit banner action
+  
   function editBanner(bannerId) {
         fetch(`/admin/getBannerDetails/${bannerId}`)
             .then(response => {
@@ -278,9 +274,8 @@
                 return response.json();
             })
             .then(data => {
-                // Populate the form fields with the banner details
                 document.getElementById('editCategorySelect').value = data.banner.category;
-                // Display the edit banner modal
+              
                 const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
                 modal.show();
             })
@@ -289,16 +284,13 @@
             });
     }
 
-  // Function to update the banner
   function updateBanner(bannerId) {
     const category = document.getElementById('editCategorySelect').value;
     const fileInput = document.getElementById('editBannerInput');
     console.log(fileInput,'fileInput---')
     const file = fileInput.files[0];
     console.log(file,'file---')
-    // if (!file) {
-    //     return alert('Please select a file');
-    // }
+   
     const formData = new FormData();
     if(file) {
       formData.append('image', file);
@@ -318,15 +310,7 @@
     })
     .then(data => {
         if (data.success) {
-            // Update the banner image
-            // const bannerImage = document.querySelector(`.banner-item[data-banner-id="${bannerId}"] .banner-image`);
-            // bannerImage.src = `/uploads/${data.banner.image}`;
-            // Update the category
-            // const bannerCategory = document.querySelector(`.banner-item[data-banner-id="${bannerId}"] .banner-category`);
-            // bannerCategory.innerText = category;
-            // Close the modal
-            // const modal = new bootstrap.Modal(document.getElementById('editBannerModal'));
-            // modal.hide();
+            
             location.reload()
         } else {
             alert('Error updating banner');

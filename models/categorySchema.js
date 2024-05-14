@@ -8,10 +8,7 @@ const categorySchema= new mongoose.Schema({
         unique: true,
         uppercase:true, 
     },
-    // description: {
-    //     type: String,
-    //     required: true,
-    // },
+   
     isBlocked:{
         type:Boolean,
         default:false
