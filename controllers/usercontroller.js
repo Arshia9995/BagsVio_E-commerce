@@ -543,9 +543,9 @@ module.exports =
           console.log('signupdetails>>>>>>>>>>>>>>>>>><<<<<<,',req.session.signupDetails)
           const {name, email, password }=req.session.signupDetails
 
-          req.session.email = email
-          req.session.userLogged = true
-          req.session.save()
+          // req.session.email = email
+          // req.session.userLogged = true
+          // req.session.save()
          
           console.log('Email', email);
           console.log("entered otp", enteredOtp);
