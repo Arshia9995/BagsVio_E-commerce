@@ -36,8 +36,12 @@ module.exports = {
     
      getuserCouponPage: async (req, res) => {
         try {
+
+            const userId = req.session.userId
             const categories = await categoryModel.find();
-            const coupons = await Coupon.find();
+            const coupons = await Coupon.find({});
+
+
            
             const userEmail = req.session.email;
             const user = await Users.findOne({ email: userEmail });
@@ -85,6 +89,7 @@ module.exports = {
     
            
             let totalPrice = 0;
+
 
           if (userCart && userCart.items.length > 0) {
               for (const item of userCart.items) {
