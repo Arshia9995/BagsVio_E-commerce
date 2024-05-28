@@ -415,7 +415,13 @@ module.exports = {
       const page = parseInt(req.query.page) || 1;
       const perPage = 10;
 
-      const orders = await Order.find({ op: "Placed" })
+      const orders = await Order.find({
+        $or: [
+          { op: "Placed" },
+          { paymentMethod: { $in: ["Cash On Delivery", "Wallet"] } }
+        ]
+      })
+        .sort({ createdAt: 1 })
         .populate("products.productId")
         .populate("userId")
         .skip((page - 1) * perPage)
