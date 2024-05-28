@@ -29,7 +29,7 @@ module.exports = {
       
       const categories = await categoryModel.find();
      
-      console.log(userCart,"usercart")
+     
       res.render("user/cart", { cart: userCart, categories });
     } catch (error) {
       console.error("Error:", error);
@@ -43,7 +43,7 @@ module.exports = {
     try {
       const { productId, quantity } = req.body;
    
-      console.log(quantity, "quaty");
+     
 
       
       const product = await productModel.findById(productId)
@@ -218,7 +218,8 @@ getCheckOutPage: async (req, res) => {
      
       const categories = await categoryModel.find();
       
-      const coupons = await Coupon.find();
+      
+      const coupons = await Coupon.find({users:{$ne:userId._id}});
      
 
      
@@ -226,6 +227,10 @@ getCheckOutPage: async (req, res) => {
       const walletAmount = Wallet ? Wallet.balance : 0;
 
       const userCart = await Cart.findOne({ userId }).populate("items.productId");
+
+      if(userCart.items.length===0){
+        return res.redirect('/cart')
+      }
        
 
       
@@ -319,6 +324,10 @@ getCheckOutPage: async (req, res) => {
       const userCart = await Cart.findOne({ userId }).populate(
         "items.productId"
       );
+
+      if(userCart.items.length===0){
+        return res.redirect('/cart')
+      }
      
       let totalPrice = 0;  
       userCart.items.forEach((item) => {
@@ -359,18 +368,18 @@ getCheckOutPage: async (req, res) => {
           await existingProduct.save();
         }
     
+       
       if (req.session.paymentMethod === "Online Payment") {
-        const order = await Order.findOne({ userId, paymentStatus: "pending" });
+        
       
-        if (order) {
+        if (req.session.orderId) {
           
           const updatedOrder = await Order.findByIdAndUpdate(
-            { _id: order._id },
-            { $set: { paymentStatus: "paid" } },
+            { _id: req.session.orderId },
+            { $set: { paymentStatus: "Paid",op:"Placed" } },
             { new: true }
           );
           console.log(updatedOrder);
-         
         }
       }
       req.session.couponApplied = null;
@@ -385,7 +394,7 @@ getCheckOutPage: async (req, res) => {
   },
   postCheckoutaddAddress: async (req, res) => {
     try {
-      console.log("backend reached>>>>>>>>>>>>");
+    
       
       const { name, address, pincode, city, street, state, mobile } = req.body;
       const user = await Users.findOne({ email: req.session.email });

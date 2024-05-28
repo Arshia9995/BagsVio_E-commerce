@@ -107,7 +107,7 @@
   <% } else { %>
     <button class="btn btn-dark btn-sm" type="button" onclick="updateCartQuantity('<%= item._id %>', -1)" id="decrementButton">-</button>
   <% } %>
-  <input type="number" class="form-control allQuantity" value="<%= item.quantity %>" id="cartQuantity<%= item._id %>" min="1" max="<%= item.productId?.AvailableQuantity || 1 %>" onchange="updateCartQuantity('<%= item._id %>', this.value)">
+  <input type="number" disabled class="form-control allQuantity" value="<%= item.quantity %>" id="cartQuantity<%= item._id %>" min="1" max="<%= item.productId?.AvailableQuantity || 1 %>" onchange="updateCartQuantity('<%= item._id %>', this.value)">
   <% if (item.quantity >= item.productId?.AvailableQuantity) { %>
     <button class="btn btn-dark btn-sm" type="button" onclick="notInStock('<%= item._id %>', 1)">+</button>
   <% } else { %>

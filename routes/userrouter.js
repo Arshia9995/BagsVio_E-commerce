@@ -98,9 +98,10 @@ router.post('/checkStock',cartcontroller.checkStock)
 
 //checkout
 router.get("/checkout",cartcontroller.getCheckOutPage)
+router.post("/placeorder",cartcontroller.continueCheckOut)
 
 router.get("/placeorder",cartcontroller.getPlaceOrderPage)
-router.post("/placeorder",cartcontroller.continueCheckOut)
+
 
 router.post('/confirmorder', ordercontroller.placeOrder);
 
@@ -123,6 +124,10 @@ router.post('/cancelorder/:orderId',ordercontroller.cancelOrder)
 
 router.post('/returnorder/:orderId',ordercontroller.returnOrder)
 
+router.get("/failedpayments",ordercontroller.showFailedPayments)
+
+router.get("/findOrder/:orderId",ordercontroller.findOrder)
+
 
 //wishlist
 
@@ -134,6 +139,8 @@ router.get("/deleteFromWishlist/:id",wishlistcontroller.getDeleteWishlist)
 
 //wallet
 router.get("/wallet",ordercontroller.showWalletPage)
+router.post("/createOrder",ordercontroller.createOrder)
+router.post("/walletverifyPayment",ordercontroller.walletverifyPayment)
 
 //coupons
 

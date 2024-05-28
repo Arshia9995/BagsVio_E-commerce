@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Orders</title>
+  <title>Failed Payments</title>
  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -55,13 +55,13 @@
               <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
               <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
               <li><a href="/coupon" class="list-group-item list-group-item-action">Coupons</a></li>
-              <li><a href="/failedpayments" class="list-group-item list-group-item-action" style="list-style: none;">Failed Payment</a></li>
+              <li><a href="/failedpayments" class="list-group-item list-group-item-action" style="list-style: none;">Failed Payments</a></li>
             </ul>
             <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
             <ul class="pl-4">
               <li><a href="/orders" class="list-group-item list-group-item-action" style="list-style: none;">My
                   Orders</a></li>
-               
+                 
              
 
             </ul>
@@ -76,12 +76,12 @@
             <div class="osahan-account-page-right shadow bg-white p-4 h-100">
                 <div class="tab-content" id="myTabContent">
                     <div class="tab-pane fade show active" id="orders" role="tabpanel" aria-labelledby="orders-tab">
-                        <h4 class="font-weight-bold mt-0 mb-4">Orders</h4>
+                        <h4 class="font-weight-bold mt-0 mb-4">Failed Payments</h4>
                         <% if (order.length > 0) { %>
                         <% order.forEach(orderItem => { %>
                             <div class="bg-white card mb-4 order-list shadow-sm">
                                 <div class="gold-members p-4">
-                                    <span class="float-end text-info">Ordered On: <%= orderItem.orderDate.toLocaleDateString() %> <i class="icofont-check-circled text-success"></i></span>
+                                    <span class="float-end text-info">Ordered On: <%= orderItem?.orderDate?.toLocaleDateString() %> <i class="icofont-check-circled text-success"></i></span>
                                     <h6 class="mb-2">Products</h6>
                                     <% orderItem.products.forEach(product => { %>
                                         <div class="media mb-3">
@@ -101,21 +101,28 @@
                                     <% }) %>
                                     <p class="text-gray mb-3">Payment Method: <%= orderItem.paymentMethod %></p>
                                     <span class="badge rounded-pill bg-info"><%= orderItem.status %></span>
-
+    
                                     <div class="float-end">
-                                        <a class="btn btn-sm btn-primary" href="/orderdetails/<%= orderItem._id %>" class="text-decoration-none text-dark"><i class="icofont-refresh"></i> View Details</a>
+                                            <input type="hidden" name="orderId" value="<%= orderItem._id %>">
+                                            <button type="button" onclick="handleclick(this)" class="btn btn-sm btn-primary retry-payment-btn"  data-order-id="<%= orderItem._id %>" data-order-totalPrice="<%= orderItem.totalPrice %>">
+                                                 Retry Payment
+                                            </button>
+                                        <a class="btn btn-sm btn-secondary" href="/orderdetails/<%= orderItem._id %>" class="text-decoration-none text-dark"><i class="icofont-refresh"></i> View Details</a>
                                     </div>
                                 </div>
                             </div>
                         <% }) %>
                         <% } else { %>
                           <div class="col-12">
-                            <p><strong>No Orders</strong></p>
+                            <p><strong> No Payments</strong> </p>
                           </div> 
                         <% } %>
+
                     </div>
                 </div>
             </div>
+        </div>
+    </main>
            
             
              <ul class="pagination justify-content-center">
@@ -131,18 +138,20 @@
               <% if (currentPage < totalPages) { %>
               <li class="page-item"><a class="page-link" href="?page=<%= currentPage + 1 %>">Next</a></li>
               <% } %>
-          </ul>
-         
-        </div>
-    </main>
-    
-    
-    
-    
-    
+            </ul>
+            
+          </div>
+        </main>
+        
+        
+        
+        
+        
+      </div>
     </div>
-  </div>
-  <%- include('../partials/user-footer') %>
+    <%- include('../partials/user-footer') %>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     const sidebarItems = document.querySelectorAll('.list-group-item');
   
@@ -157,21 +166,76 @@
   
     const highlightedItem = localStorage.getItem('highlightedItem');
     if (highlightedItem) {
-        sidebarItems.forEach(item => {
-            item.classList.remove('text-highlight');
-        });
-        document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
+      sidebarItems.forEach(item => {
+        item.classList.remove('text-highlight');
+      });
+      document.querySelector(`.list-group-item[href="${highlightedItem}"]`).classList.add('text-highlight');
     }
-  
+    
     sidebarItems.forEach(item => {
         item.addEventListener('click', function() {
             localStorage.setItem('highlightedItem', this.getAttribute('href'));
         });
     });
   </script>
+
+<script>
+ 
+      const handleclick = async (button) => {
+        const orderId = button.getAttribute("data-order-id");
+        const data = await fetch(`/findOrder/${orderId}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        
+      })
+      const res = await data.json()
+      console.log(res,"dataaa");
+          var options = {
+            key: "rzp_test_0pK78JvD45gsXV",
+            amount: res.totalPrice*100,
+            currency: "INR",
+            name: "bagsvio",
+            description: "Test Transaction",
+            image: "",
+            handler: function (response) {
+            
+              verifyPayment(response, res);
+            },
+            theme: {
+              color: "#3c3c3c",
+            },
+          };
+          var rzp1 = new Razorpay(options);
+          rzp1.open();
+      }
+
+
+    function verifyPayment(payment, order) {
+   
+      console.log("now in verifyPayment ", payment);
+      fetch("/verifyPayment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          payment: payment,
+          order: order,
+        }),
+      }).then((response) => {
+        if (response.ok) {
+          location.href = '/paymentsuccess'
+        } else {
+       
+          location.href = "";
+        }
+      });
+    }
+  </script>
   
   
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

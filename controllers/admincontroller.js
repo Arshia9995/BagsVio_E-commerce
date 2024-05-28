@@ -51,7 +51,7 @@ const admindashboard = async (req, res) => {
             { $unwind: '$productDetails' },
             { $project: { _id: 0, productDetails: 1, totalQuantitySold: 1 } }
         ]);
-        console.log(topProducts,"toppppppppppppppppppp");
+      
 
       
 const topCategories = await Orders?.aggregate([
@@ -305,7 +305,7 @@ const getCount = async (req, res) => {
   },
 
   logout= (req, res) => {
-    console.log("inside logout",req.session);
+  
     req.session.destroy((err) => {
       if (err) {
         console.error('Error destroying session:', err);

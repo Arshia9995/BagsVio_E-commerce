@@ -68,6 +68,7 @@
               <li><a href="/changepassword" class="list-group-item list-group-item-action">Change Password</a></li>
               <li><a href="/wallet" class="list-group-item list-group-item-action">Wallet</a></li>
               <li><a href="/coupon" class="list-group-item list-group-item-action">Coupons</a></li>
+              <li><a href="/failedpayments" class="list-group-item list-group-item-action" style="list-style: none;">Failed Payment</a></li>
             </ul>
             <a href="/orders" class="list-group-item list-group-item-action"><b>Orders</b></a><br>
             <ul class="pl-4">
@@ -90,24 +91,35 @@
                   <h1 class="card-title text-center">Wallet Details</h1>
                   <div class="wallet-info">
                     <p><strong>User ID:</strong> <%= user._id %></p>
-                    <p><strong>Balance:</strong> ₹<%= wallet.balance.toFixed(2) %></p>
+                    <p><strong>Balance:</strong> ₹<%= wallet?.balance?.toFixed(2) %></p>
                   </div>
+                  <button id="topUpBtn" onclick="handleClick()" class="btn btn-primary mt-3">Top-Up Wallet</button>
                   <div class="transaction-history">
                     <h2>Transaction History</h2>
 
      
                     <ul class="list-group">
-                      <% wallet.transactions.forEach(transaction => { %>
+                      <% if (wallet?.transactions?.length > 0) { %>
+                      <% for (let i = wallet?.transactions?.length - 1; i >= 0; i--) { %>
                       <li class="list-group-item">
-                        <p><strong>Type:</strong>  <%= transaction.transactionType %></p>
-                        <p><strong>Amount:</strong> ₹<%= transaction.amount.toFixed(2) %></p>
-                        <p><strong>Date:</strong> <%= transaction.date.toLocaleString() %></p>
-                        <p><strong>From:</strong> <%= transaction.from %></p>
-                        <p><strong>Order ID:</strong> <%= transaction.orderId %></p>
+                        <p><strong>Type:</strong>  <%= wallet?.transactions[i]?.transactionType %></p>
+                        <p><strong>Amount:</strong> ₹<%= wallet?.transactions[i]?.amount?.toFixed(2) %></p>
+                        <p><strong>Date:</strong> <%= wallet?.transactions[i]?.date?.toLocaleString() %></p>
+                        <p><strong>From:</strong> <%= wallet?.transactions[i]?.from %></p>
+                        <% if (wallet?.transactions[i]?.from === 'Top-Up') { %>
+                          <p><strong>Payment ID:</strong> <%= wallet?.transactions[i]?.paymentId %></p>
+                        <% } else { %>
+                          <p><strong>Order ID:</strong> <%= wallet?.transactions[i]?.orderId %></p>
+                        <% } %>
                       </li>
-                    
-                      <% }); %>
+                      <% } %>
+                      <% } else { %>
+                        <div class="col-12">
+                          <p><strong>No  Transactions</strong> </p>
+                        </div> 
+                      <% } %>
                     </ul>
+                    
                   </div>
 
              <ul class="pagination justify-content-center">
@@ -132,6 +144,11 @@
         </div>
       </div>
     </div>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
   <script>
     const sidebarItems = document.querySelectorAll('.list-group-item');
@@ -158,9 +175,76 @@
             localStorage.setItem('highlightedItem', this.getAttribute('href'));
         });
     });
+
+
+    function handleClick() {
+      const amount = 100; 
+      fetch('/createOrder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ amount }),
+      })
+      .then(response => response.json())
+      .then(order => {
+        var options = {
+          "key": "rzp_test_5R2m8IF7tYZkkO", 
+          "amount": order.amount, 
+          "currency": "INR",
+          "name": "bagsvio",
+          "description": "Wallet Top-Up",
+          "order_id": order.id, 
+          "handler": function (response){
+            walletverifyPayment(response);
+          },
+          "prefill": {
+            "name": "<%= user.name %>",
+            "email": "<%= user.email %>",
+            "contact": "<%= user.contact %>"
+          },
+          "theme": {
+            "color": "#3399cc"
+          }
+        };
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      })
+      .catch(error => console.error('Error creating order:', error));
+    };
+
+    function walletverifyPayment(payment) {
+  fetch('/walletverifyPayment', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(payment),
+  })
+    .then(response => {
+      if (response.ok) {
+        Swal.fire({
+          title: 'Success!',
+          text: 'Wallet topped up successfully!',
+          icon: 'success',
+          confirmButtonText: 'OK'
+        }).then(() => {
+          document.getElementById('balanceAmount').textContent = data.newBalance.toFixed(2);
+        });
+      } else {
+        // Handle errors appropriately, e.g., using Swal
+        Swal.fire({
+          title: 'Error!',
+          text: 'An error occurred while topping up your wallet.',
+          icon: 'error',
+          confirmButtonText: 'Close'
+        });
+      }
+    });
+}
   </script>
   
-  
+  <!-- Footer -->
   <%- include('../partials/user-footer') %>
 
 </body>

@@ -7,6 +7,7 @@ const transactionSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
   from: { type: String }, 
   orderId: { type: ObjectId }, 
+  paymentId:{type: String}
 });
 
 const walletSchema = mongoose.Schema({

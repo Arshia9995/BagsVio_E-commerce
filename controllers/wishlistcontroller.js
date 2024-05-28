@@ -10,7 +10,7 @@ const Wishlist=require("../models/wishlist")
 module.exports = {
   
     showWishlistPage:async (req, res) => {
-      console.log('backend reached')
+     
         try {
 
           const categories=await categoryModel.find()

@@ -109,7 +109,7 @@ module.exports = {
 
   BlockProduct: async (req, res) => {
     const productId = req.params.productId;
-    console.log('Blocking product:', productId);
+   
 
     try {
      

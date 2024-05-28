@@ -11,6 +11,7 @@ const Cart = require("../models/cartSchema");
 module.exports = {
     getCouponPage: async (req, res) => {
         try {
+            
             const coupons = await Coupon.find();
            
             res.render('./admin/coupon', { coupons: coupons , title:"Admin Coupons"});
@@ -39,7 +40,8 @@ module.exports = {
 
             const userId = req.session.userId
             const categories = await categoryModel.find();
-            const coupons = await Coupon.find({});
+           
+            const coupons = await Coupon.find({users:{$ne:userId}});
 
 
            
@@ -57,49 +59,27 @@ module.exports = {
        
        
         const userId = req.session.userId._id; 
-      
-        
-    
         try {
-           
             const userCart = await Cart.findOne({ userId }).populate("items.productId")
-          
-    
-            
             if (!userCart || userCart.items.length === 0) {
                 return res.status(400).json({ error: 'User cart not found or empty' });
             }
-
-          
-    
             const couponCode = req.body.couponCode;
-
             const coupon = await Coupon.findOne({ couponCode });
-    
-          
             if (!coupon) {
                 return res.status(404).json({ error: 'Coupon not found' });
             }
-    
-           
             const currentDate = new Date();
             if (coupon.expirationDate && coupon.expirationDate < currentDate) {
                 return res.status(400).json({ error: 'Coupon has expired' });
             }
-    
-           
             let totalPrice = 0;
-
-
           if (userCart && userCart.items.length > 0) {
               for (const item of userCart.items) {
                   const productPrice =  item.productId.Price ;
                   totalPrice += productPrice * item.quantity;
               }
           }
-         
-
-
           if (totalPrice < coupon.minimumPurchaseAmount) {
             return res.status(400).json({ error: `Minimum purchase amount required: ₹${coupon.minimumPurchaseAmount}` });
         }
@@ -117,7 +97,9 @@ module.exports = {
 
             req.session.discount=discountAmount
            
-            req.session.couponApplied = true
+            req.session.couponApplied = true;
+            req.session.couponCode = couponCode;
+
             return res.status(200).json({ totalPrice: updatedTotalPrice,discountAmount });
         } catch (error) {
             console.error('Error applying coupon:', error);
@@ -202,7 +184,8 @@ module.exports = {
     getcoupons:async (req, res) => {
         try {
          
-            const coupons = await Coupon.find();
+            const userId = req.session.userId
+            const coupons = await Coupon.find({users:{$ne:userId}});
             res.json(coupons); 
         } catch (error) {
             console.error('Error fetching coupons:', error);

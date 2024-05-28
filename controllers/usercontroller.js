@@ -73,7 +73,6 @@ module.exports =
 
             let sortOption = {};
            
-
             if (req.query.sortOptions) {
                 switch (req.query.sortOptions) {
                     case 'priceAsc':
@@ -710,7 +709,7 @@ module.exports =
     },
     
 getAddress:async(req,res)=>{
-  console.log('backend reached bro')
+ 
   const addressId = req.params.addressId;
  
   const userData = await Users.findOne({email:req.session.email})

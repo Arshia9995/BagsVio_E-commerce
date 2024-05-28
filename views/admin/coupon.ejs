@@ -29,7 +29,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="/admin/orders">
+            <a class="nav-link" href="/admin/order">
                 <i class="fa fa-bars"></i> Orders
             </a>
         </li>
@@ -155,7 +155,7 @@
             </div>
             <div class="modal-body">
               
-                <form action="/admin/editcoupon/<%= coupon._id %>" method="POST">
+                <form action="/admin/editcoupon/<%= coupon._id %>" method="POST" onsubmit="return validateEditCouponForm('<%= coupon._id %>')">
                     <div class="form-group">
                         <label for="couponName<%=coupon._id %>">Coupon Name</label>
                         <input type="text" class="form-control" id="couponName<%=coupon._id %>" name="couponName" value="<%= coupon.couponName %>" required>
@@ -266,6 +266,8 @@
         const couponCode = document.getElementById('couponCode').value.trim();
         const startDate = document.getElementById('startDate').value.trim();
         const expirationDate = document.getElementById('expirationDate').value.trim();
+        const maximumDiscountAmount = parseFloat(document.getElementById('maximumDiscountAmount').value.trim());
+        const minimumPurchaseAmount = parseFloat(document.getElementById('minimumPurchaseAmount').value.trim());
 
         let isValid = true;
 
@@ -305,6 +307,17 @@
             console.log('Start date must be before expiration date');
         }
 
+        if (maximumDiscountAmount > minimumPurchaseAmount) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: 'Maximum Discount Amount cannot be greater than Minimum Purchase Amount!'
+        });
+        isValid = false;
+        console.log('Maximum Discount Amount cannot be greater than Minimum Purchase Amount');
+    }
+
+
         return isValid;
     }
 
@@ -319,4 +332,65 @@
             }
         });
     });
+
+
+
+    function validateEditCouponForm(couponId) {
+        const couponName = document.getElementById(`couponName${couponId}`).value.trim();
+        const couponCode = document.getElementById(`couponCode${couponId}`).value.trim();
+        const startDate = document.getElementById(`startDate${couponId}`).value.trim();
+        const expirationDate = document.getElementById(`expirationDate${couponId}`).value.trim();
+        const maximumDiscountAmount = parseFloat(document.getElementById(`maximumDiscountAmount${couponId}`).value.trim());
+        const minimumPurchaseAmount = parseFloat(document.getElementById(`minimumPurchaseAmount${couponId}`).value.trim());
+
+        let isValid = true;
+
+        if (couponName === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Coupon name cannot be empty!'
+            });
+            isValid = false;
+            console.log('Coupon name is empty');
+        }
+
+        if (couponCode === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Coupon code cannot be empty!'
+            });
+            isValid = false;
+            console.log('Coupon code is empty');
+        }
+
+        const startDateObj = new Date(startDate);
+        const expirationDateObj = new Date(expirationDate);
+
+        if (startDateObj >= expirationDateObj) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Start date must be before expiration date!'
+            });
+            isValid = false;
+            console.log('Start date must be before expiration date');
+        }
+
+        if (maximumDiscountAmount > minimumPurchaseAmount) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Maximum Discount Amount cannot be greater than Minimum Purchase Amount!'
+            });
+            isValid = false;
+            console.log('Maximum Discount Amount cannot be greater than Minimum Purchase Amount');
+        }
+
+        return isValid;
+    }
+
+
 </script>
+
