@@ -12,8 +12,8 @@ const coupon = require("../models/coupon");
 const Coupon = require("../models/coupon");
 
 var instance = new Razorpay({
-  key_id: "rzp_test_5R2m8IF7tYZkkO",
-  key_secret: "vEuAoYjZMP6ghEwU8P1tVbm5",
+  key_id: "rzp_test_yOdXB6QYxSIZDa",
+  key_secret: "4tAiYWi2wV8nlOQcYz30UJ9C",
 });
 
 module.exports = {
