@@ -106,7 +106,7 @@
         <% banners.forEach(banner => { %>
             <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
               
-                <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+                <img src="<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
                 <button onclick="editBanner('<%= banner._id %>')" class="btn btn-primary"   data-bs-toggle="modal"   data-bs-target="#editBannerModal<%= banner._id %>">Edit</button>
                 <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
             </div>
@@ -208,13 +208,14 @@
                   bannerItem.classList.add('banner-item');
                   bannerItem.setAttribute('data-banner-id', data.banner._id);
                   bannerItem.innerHTML = `
-                      <img src="/uploads/${data.banner.image}" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+                      <img src="${data.banner.image}" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
                       <button onclick="deleteBanner('${data.banner._id}')" class="btn btn-danger">Delete</button>
                   `;
                   bannerContainer.appendChild(bannerItem);
   
                  
                   $('#addBannerModal').modal('hide');
+                  
                  
               } else {
                   alert('Error uploading banner');

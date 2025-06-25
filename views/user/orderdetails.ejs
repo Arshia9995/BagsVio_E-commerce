@@ -80,7 +80,7 @@
                             <% order.products.forEach(product => { %>
                             <div class="row">
                                 <div class="col-md-2">
-                                    <img src="/uploads/<%= product.productId.images[0] %>"alt="" class="img-fluid">
+                                    <img src="<%= product.productId.images[0] %>"alt="" class="img-fluid">
                                 </div>
                                 <div class="col-md-10">
                                     <p><strong>Product Name:</strong><%= product.productId.ProductName %></p>

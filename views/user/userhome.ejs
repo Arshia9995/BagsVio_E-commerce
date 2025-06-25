@@ -9,7 +9,7 @@
 
 <div class="container-fluid p-0">
   <a href="/products/<%= banners[0].category.categoryName %>"> 
-  <img src="/uploads/<%= banners[0].image %>" class="img-fluid banner-img" style=" height: 600px; width: 100%; margin-top: 20px;" alt="Banner Image">
+  <img src="<%= banners[0].image %>" class="img-fluid banner-img" style=" height: 600px; width: 100%; margin-top: 20px;" alt="Banner Image">
 </a>
 </div>
 
@@ -32,7 +32,7 @@
             <div class="card text-center">
               <div style="text-align: center;">
                 <a href="/productdetails/<%= product._id %>">
-                <img src="/uploads/<%= product.images[0] %>" class="card-img-top mt-2" style="border-radius: 5px;"  alt="<%= product.ProductName %>">
+                <img src="<%= product.images[0] %>" class="card-img-top mt-2" style="border-radius: 5px;"  alt="<%= product.ProductName %>">
               </a>
               </div>
                 <div class="card-body d-flex flex-column justify-content-center">
@@ -56,7 +56,7 @@
   <% for (let i = 1; i < banners.length; i++) { %>
       <div class="banner-item">
           <a href="/products/<%= banners[i].category.categoryName %> ">
-              <img src="/uploads/<%= banners[i].image %>" alt="Banner <%= i + 1 %>" style="height: 600px; width: 100%; margin-top: 10px;">
+              <img src="<%= banners[i].image %>" alt="Banner <%= i + 1 %>" style="height: 600px; width: 100%; margin-top: 10px;">
           </a>
       </div>
   <% } %>
@@ -76,7 +76,7 @@
             <div class="card text-center">
               <div style="text-align: center;">
                 <a href="/productdetails/<%= product._id %>">
-                  <img src="/uploads/<%= product.images[0] %>" class="card-img-top mt-2" style="border-radius: 5px;" alt="<%= product.ProductName %>">
+                  <img src="<%= product.images[0] %>" class="card-img-top mt-2" style="border-radius: 5px;" alt="<%= product.ProductName %>">
                 </a>
               </div>
                 <div class="card-body d-flex flex-column justify-content-center">

@@ -85,7 +85,7 @@
       <% banners.forEach(banner => { %>
           <div class="banner-item" data-banner-id="<%= banner._id %>" style="margin-bottom: 50px;">
              
-              <img src="/uploads/<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
+              <img src="<%= banner.image %>" alt="Banner Image" class="banner-image" style="width: 400px; height: 250px;">
               <button onclick="deleteBanner('<%= banner._id %>')" class="btn btn-danger">Delete</button>
           </div>
       <% }); %>

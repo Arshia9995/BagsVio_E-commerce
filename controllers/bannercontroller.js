@@ -11,6 +11,7 @@ module.exports = {
         try {
             const categories = await Category.find();
             const banners = await Banner.find().populate('category'); 
+            console.log(banners,"these are the banners")
             res.render('./admin/banner', { categories, banners, title:"Admin Banner" });
           } catch (error) {
             console.error('Error fetching categories and banners:', error);
@@ -18,49 +19,48 @@ module.exports = {
           }
     },
     addBanner: async (req, res) => {
-        upload.single('image')(req, res, async (err) => {
-            if (err) {
-                console.error('Multer error:', err);
-                return res.status(400).send('Error uploading file');
-            }
-    
-            try {
-                if (req.file) {
-                    const { category } = req.body;
-                    console.log('category',category)
-                    const newObjectId = new mongoose.Types.ObjectId(category) 
-                    console.log('this is teh new objectId',newObjectId)   
-                  
-                    const categoryObject = await Category.findOne({ _id: newObjectId });
-                    console.log('categoryobject',categoryObject)
-    
-                    if (!categoryObject) {
-                        return res.status(400).json({ success: false, message: 'Category not found' });
-                    }
-    
-                    
-                   
-                    const newBanner = new Banner({
-                        image: req.file.filename,
-                        category: categoryObject._id,
-                    });
-    
-                 
-                    const savedBanner = await newBanner.save();
-                  
-    
-                    return res.json({ success: true, imageUrl: savedBanner.image,banner:savedBanner });
+    upload.single('image')(req, res, async (err) => {
+        if (err) {
+            console.error('Multer error:', err);
+            return res.status(400).send('Error uploading file');
+        }
 
-    
-                } else {
-                    return res.json({ success: false, message: 'No file provided' });
+        try {
+            console.log(req.file," file from banner coming here")
+            if (req.file) {
+                const { category } = req.body;
+                console.log('category', category);
+
+                const newObjectId = new mongoose.Types.ObjectId(category);
+                console.log('this is the new objectId', newObjectId);
+
+                const categoryObject = await Category.findOne({ _id: newObjectId });
+                console.log('categoryObject', categoryObject);
+
+                if (!categoryObject) {
+                    return res.status(400).json({ success: false, message: 'Category not found' });
                 }
-            } catch (error) {
-                console.error('Error saving to MongoDB:', error);
-                res.status(500).json({ success: false, message: 'Internal server error' });
+
+                // ✅ Use the Cloudinary image URL (not filename)
+                const newBanner = new Banner({
+                    image: req.file.path, // Cloudinary secure URL
+                    category: categoryObject._id,
+                });
+
+                const savedBanner = await newBanner.save();
+
+                return res.json({ success: true, imageUrl: savedBanner.image, banner: savedBanner });
+
+            } else {
+                return res.json({ success: false, message: 'No file provided' });
             }
-        });
-    },
+        } catch (error) {
+            console.error('Error saving to MongoDB:', error);
+            res.status(500).json({ success: false, message: 'Internal server error' });
+        }
+    });
+},
+
     deleteBanner: async (req, res) => {
         const bannerId = req.params.bannerId;
        
@@ -99,7 +99,7 @@ module.exports = {
            
             banner.category = req.body.category; 
             if(req.file){
-                banner.image = req.file.filename; 
+                banner.image = req.file.path; 
             }
     
            

@@ -189,7 +189,7 @@
                                                 <div class="display-flex align-center">
                                                     <div class="img-product">
                                                         <% if (item.productId && item.productId.images && item.productId.images.length > 0) { %>
-                                                            <img src="/uploads/<%= item.productId.images[0] %>" alt="<%= item.productId.ProductName %>" class="mCS_img_loaded">
+                                                            <img src="<%= item.productId.images[0] %>" alt="<%= item.productId.ProductName %>" class="mCS_img_loaded">
                                                         <% } else { %>
                                                             <p>No image available</p>
                                                         <% } %>
