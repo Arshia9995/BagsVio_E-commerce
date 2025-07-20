@@ -363,6 +363,7 @@ getCheckOutPage: async (req, res) => {
         "items.productId"
       );
       const existingProduct = await productModel.findById(productId);
+      console.log(existingProduct, "Existing product")
       if (existingProduct) {
           existingProduct.AvailableQuantity -= quantity;
           await existingProduct.save();
