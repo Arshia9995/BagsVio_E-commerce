@@ -51,7 +51,7 @@ module.exports = {
             req.session.email = userEmail;
         } catch (err) {
             console.error('Error fetching user details:', err);
-            res.status(500).send('Internal Server Error');
+            res.status(500).send('Internal Server Error'); 
         }
     },
 
