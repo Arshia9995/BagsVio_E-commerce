@@ -846,52 +846,98 @@ downloadInvoice: async (req, res) => {
         return res.status(404).json({ error: "Order not found" });
       }
 
-      // Set response headers so browser downloads the PDF
+      // Set headers for PDF download
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
         `attachment; filename=invoice-${orderId}.pdf`
       );
 
-      // Create PDF
-      const doc = new PDFDocument();
+      const doc = new PDFDocument({ margin: 50 });
       doc.pipe(res);
 
-      // ---- Example invoice content ----
-      doc.fontSize(18).text("Invoice", { align: "center" });
-      doc.moveDown();
-      doc.fontSize(12).text(`Order ID: ${orderData._id}`);
-      doc.text(`Order Date: ${orderData.orderDate.toLocaleDateString()}`);
-      doc.text(`Customer: ${orderData.shippingAddress.name}`);
+      // ---- HEADER ----
+      doc
+        .fontSize(20)
+        .text("👜 BagsVio E-Commerce", { align: "center" })
+        .moveDown();
+
+      doc.fontSize(12).text(`Invoice ID: INV-${orderId}`, { align: "right" });
+      doc.text(`Date: ${orderData.orderDate.toLocaleDateString()}`, {
+        align: "right",
+      });
       doc.moveDown();
 
-      doc.text("Products:");
-      orderData.products.forEach((p, idx) => {
-        doc.text(
-          `${idx + 1}. ${p.productId.ProductName} - ₹${p.price} x ${
-            p.quantity
-          } = ₹${p.price * p.quantity}`
-        );
+      // ---- ORDER INFO ----
+      doc.fontSize(14).text("Order Information", { underline: true });
+      doc.moveDown(0.5);
+      doc.fontSize(12).text(`Order ID: ${orderData._id}`);
+      doc.text(`Status: ${orderData.status}`);
+      doc.text(`Payment Method: ${orderData.paymentMethod}`);
+      doc.text(`Payment Status: ${orderData.paymentStatus}`);
+      doc.moveDown();
+
+      // ---- CUSTOMER INFO ----
+      doc.fontSize(14).text("Shipping Address", { underline: true });
+      doc.moveDown(0.5);
+      const addr = orderData.shippingAddress;
+      doc.fontSize(12).text(addr.name);
+      doc.text(addr.addressline);
+      doc.text(`${addr.street}, ${addr.city}`);
+      doc.text(`${addr.state} - ${addr.pincode}`);
+      doc.text(`Mobile: ${addr.mobile}`);
+      doc.moveDown();
+
+      // ---- PRODUCTS TABLE ----
+      doc.fontSize(14).text("Products", { underline: true });
+      doc.moveDown(0.5);
+
+      // Table headers
+      const tableTop = doc.y;
+      const itemX = 50,
+        qtyX = 280,
+        priceX = 350,
+        totalX = 450;
+
+      doc.fontSize(12).text("Item", itemX, tableTop, { bold: true });
+      doc.text("Qty", qtyX, tableTop);
+      doc.text("Price", priceX, tableTop);
+      doc.text("Total", totalX, tableTop);
+
+      doc.moveDown(0.5);
+      doc.moveTo(itemX, tableTop + 15).lineTo(550, tableTop + 15).stroke();
+
+      // Table rows
+      orderData.products.forEach((p, i) => {
+        const y = tableTop + 25 + i * 20;
+        doc.text(p.productId.ProductName, itemX, y);
+        doc.text(p.quantity.toString(), qtyX, y);
+        doc.text(`₹${p.price}`, priceX, y);
+        doc.text(`₹${p.price * p.quantity}`, totalX, y);
       });
 
-      doc.moveDown();
+      doc.moveDown(2);
+
+      // ---- TOTALS ----
       if (orderData.discount) {
-        doc.text(`Discount: ₹${orderData.discount}`);
+        doc.fontSize(12).text(`Discount: ₹${orderData.discount}`, {
+          align: "right",
+        });
       }
-      doc.text(`Total Price: ₹${orderData.totalPrice}`);
+      doc.fontSize(14).text(`Grand Total: ₹${orderData.totalPrice}`, {
+        align: "right",
+        bold: true,
+      });
 
-      doc.moveDown();
-      doc.text("Shipping Address:");
-      doc.text(orderData.shippingAddress.addressline);
-      doc.text(
-        `${orderData.shippingAddress.street}, ${orderData.shippingAddress.city}`
-      );
-      doc.text(
-        `${orderData.shippingAddress.state} - ${orderData.shippingAddress.pincode}`
-      );
-      doc.text(`Mobile: ${orderData.shippingAddress.mobile}`);
+      // ---- FOOTER ----
+      doc.moveDown(3);
+      doc
+        .fontSize(10)
+        .text(
+          "Thank you for shopping with BagsVio! For support, contact support@bagsvio.com",
+          { align: "center" }
+        );
 
-      // ---- End content ----
       doc.end();
     } catch (err) {
       console.error("Error generating invoice:", err);
