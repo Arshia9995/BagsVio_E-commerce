@@ -5,6 +5,7 @@ const Users = require("../models/user");
 const Orders = require("../models/order")
 const moment = require('moment')
 const pdf = require("../utility/pdf");
+const PDFDocument = require("pdfkit");
 
 
 const express = require('express');
@@ -274,35 +275,71 @@ const getCount = async (req, res) => {
       console.error(err);
     }
   }
-  const getDownloadSalesReport= async (req,res)=>{
-    console.log(req.body);
-    try {
-      const startDate = req.body.startDate
-      const format = req.body.fileFormat
-      const endDate = req.body.endDate
-      const orders = await Orders.find({ status: 'Delivered' }).populate('products.productId');
-      const totalSales = await Orders.aggregate([
-        {
-        $match:{
-          status: 'Delivered',
+ 
+
+const getDownloadSalesReport = async (req, res) => {
+  console.log(req.body);
+  try {
+    const startDate = req.body.startDate;
+    const format = req.body.fileFormat;
+    const endDate = req.body.endDate;
+
+    const orders = await Orders.find({ status: "Delivered" }).populate("products.productId");
+
+    const totalSales = await Orders.aggregate([
+      {
+        $match: { status: "Delivered" }
+      },
+      {
+        $group: {
+          _id: null,
+          totalSales: { $sum: "$totalPrice" }
         }
-    },
-    {
-      $group: {
-        _id: null,
-        totalSales: {$sum: '$totalPrice'}
       }
-    }
-  ])
+    ]);
 
-  const sum = totalSales.length > 0 ? totalSales[0].totalSales : 0;
-  pdf.downloadPdf(req,res,orders,startDate,endDate,totalSales)
-  
-    } catch (error) {
-      console.log(error);
-    }
+    const sum = totalSales.length > 0 ? totalSales[0].totalSales : 0;
 
-  },
+    // ---- PDFKIT IMPLEMENTATION ----
+    const doc = new PDFDocument({ margin: 50 });
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", "attachment; filename=sales-report.pdf");
+
+    // Pipe PDF to response
+    doc.pipe(res);
+
+    // Title
+    doc.fontSize(20).text("Sales Report", { align: "center" });
+    doc.moveDown();
+
+    // Date Range
+    doc.fontSize(12).text(`Start Date: ${startDate}`);
+    doc.text(`End Date: ${endDate}`);
+    doc.moveDown();
+
+    // Sales Summary
+    doc.fontSize(14).text(`Total Sales: ₹${sum}`);
+    doc.moveDown();
+
+    // Orders List
+    doc.fontSize(16).text("Orders:", { underline: true });
+    doc.moveDown();
+
+    orders.forEach((order, i) => {
+      doc.fontSize(12).text(
+        `${i + 1}. Order ID: ${order._id} | Price: ₹${order.totalPrice} | Date: ${order.createdAt.toDateString()}`
+      );
+    });
+
+    // End the document (important!)
+    doc.end();
+  } catch (error) {
+    console.log(error);
+    res.status(500).send("Error generating report");
+  }
+};
+
 
   logout= (req, res) => {
   
