@@ -15,6 +15,7 @@ const Banner = require("../models/banner")
 const Review = require("../models/review")
 const generateOtp =  require('../utility/generateOtp')
 const Brands = require("../models/brandSchema")
+const PDFDocument = require("pdfkit");
 
 module.exports = 
 {
@@ -807,29 +808,96 @@ Logout: (req, res) => {
     }
   }); 
 },
-downloadInvoice: async (req, res) => {
-  try {
+// downloadInvoice: async (req, res) => {
+//   try {
 
-    const orderId = req.body.orderId;
-    const orderData = await Orders.findById(orderId)
-    .populate("userId") 
-    .populate("products.productId"); 
+//     const orderId = req.body.orderId;
+//     const orderData = await Orders.findById(orderId)
+//     .populate("userId") 
+//     .populate("products.productId"); 
 
    
-    const filePath = await invoice.order(orderData);
+//     const filePath = await invoice.order(orderData);
     
-    res.json({ orderId });
-  } catch (error) {
-    console.error("Error in downloadInvoice:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-},
-downloadfile: async (req, res) => {
-  const id = req.params._id;
-  // const filePath = `C:/Users/arshi/OneDrive/Desktop/project week1/public/pdf/${id}.pdf`;
-  const filePath = `/home/ubuntu/BagsVio_E-commerce/public/pdf/${id}.pdf`;
-  res.download(filePath, `invoice.pdf`);
-},
+//     res.json({ orderId });
+//   } catch (error) {
+//     console.error("Error in downloadInvoice:", error);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// },
+// downloadfile: async (req, res) => {
+//   const id = req.params._id;
+//   // const filePath = `C:/Users/arshi/OneDrive/Desktop/project week1/public/pdf/${id}.pdf`;
+//   const filePath = `/home/ubuntu/BagsVio_E-commerce/public/pdf/${id}.pdf`;
+//   res.download(filePath, `invoice.pdf`);
+// },
+
+
+downloadInvoice: async (req, res) => {
+    try {
+      const orderId = req.params.id;
+
+      // Fetch order details
+      const orderData = await Orders.findById(orderId)
+        .populate("userId")
+        .populate("products.productId");
+
+      if (!orderData) {
+        return res.status(404).json({ error: "Order not found" });
+      }
+
+      // Set response headers so browser downloads the PDF
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=invoice-${orderId}.pdf`
+      );
+
+      // Create PDF
+      const doc = new PDFDocument();
+      doc.pipe(res);
+
+      // ---- Example invoice content ----
+      doc.fontSize(18).text("Invoice", { align: "center" });
+      doc.moveDown();
+      doc.fontSize(12).text(`Order ID: ${orderData._id}`);
+      doc.text(`Order Date: ${orderData.orderDate.toLocaleDateString()}`);
+      doc.text(`Customer: ${orderData.shippingAddress.name}`);
+      doc.moveDown();
+
+      doc.text("Products:");
+      orderData.products.forEach((p, idx) => {
+        doc.text(
+          `${idx + 1}. ${p.productId.ProductName} - ₹${p.price} x ${
+            p.quantity
+          } = ₹${p.price * p.quantity}`
+        );
+      });
+
+      doc.moveDown();
+      if (orderData.discount) {
+        doc.text(`Discount: ₹${orderData.discount}`);
+      }
+      doc.text(`Total Price: ₹${orderData.totalPrice}`);
+
+      doc.moveDown();
+      doc.text("Shipping Address:");
+      doc.text(orderData.shippingAddress.addressline);
+      doc.text(
+        `${orderData.shippingAddress.street}, ${orderData.shippingAddress.city}`
+      );
+      doc.text(
+        `${orderData.shippingAddress.state} - ${orderData.shippingAddress.pincode}`
+      );
+      doc.text(`Mobile: ${orderData.shippingAddress.mobile}`);
+
+      // ---- End content ----
+      doc.end();
+    } catch (err) {
+      console.error("Error generating invoice:", err);
+      res.status(500).json({ error: "Failed to generate invoice" });
+    }
+  },
 
 }
  

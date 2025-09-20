@@ -156,8 +156,11 @@ router.get('/logout',userController.Logout)
 
 //download invoice
 
-router.post('/download-invoice',userController.downloadInvoice)
-router.get('/download-invoice/:_id',userController.downloadfile)
+// router.post('/download-invoice',userController.downloadInvoice)
+// router.get('/download-invoice/:_id',userController.downloadfile)
+
+router.get('/download-invoice/:id', userController.downloadInvoice);
+
 
 //Review and Rating
 

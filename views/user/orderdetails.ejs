@@ -165,7 +165,11 @@
 
                         <!-- Button for downloading invoice -->
                         <% if (order.status === "Delivered" || order.status === "Returned") { %>
-                            <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice </button>
+                            <!-- <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">Download Invoice </button> -->
+                             <button class="btn btn-warning" onclick="downloadInvoice('<%= order._id %>')">
+  Download Invoice
+</button>
+
                         <% } %>
                     </div>
                 </div>
@@ -313,26 +317,31 @@ swal({
 </script>
 <script>
 
-async function downloadInvoice(orderId) {
-                  try {
-                    const response = await fetch('/download-invoice', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ orderId }),
-                    })
-                    if (response.ok) {
+// async function downloadInvoice(orderId) {
+//                   try {
+//                     const response = await fetch('/download-invoice', {
+//                       method: 'POST',
+//                       headers: {
+//                         'Content-Type': 'application/json',
+//                       },
+//                       body: JSON.stringify({ orderId }),
+//                     })
+//                     if (response.ok) {
 
-                      console.log("response inside", response)
-                      window.location.href = `/download-invoice/${orderId}`;
-                    }
-                  } catch (err) {
-                    console.error("error in order History", err)
-                  } finally {
+//                       console.log("response inside", response)
+//                       window.location.href = `/download-invoice/${orderId}`;
+//                     }
+//                   } catch (err) {
+//                     console.error("error in order History", err)
+//                   } finally {
                    
-                  }
-                }
+//                   }
+//                 }
+
+async function downloadInvoice(orderId) {
+  window.location.href = `/download-invoice/${orderId}`;
+}
+
 </script>
 
 <script>
