@@ -327,10 +327,12 @@ const getDownloadSalesReport = async (req, res) => {
     doc.moveDown();
 
     orders.forEach((order, i) => {
-      doc.fontSize(12).text(
-        `${i + 1}. Order ID: ${order._id} | Price: ₹${order.totalPrice} | Date: ${order.createdAt.toDateString()}`
-      );
-    });
+  const date = order.createdAt ? new Date(order.createdAt).toDateString() : "N/A";
+  doc.fontSize(12).text(
+    `${i + 1}. Order ID: ${order._id} | Price: ₹${order.totalPrice} | Date: ${date}`
+  );
+});
+
 
     // End the document (important!)
     doc.end();
