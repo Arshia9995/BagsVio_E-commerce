@@ -859,7 +859,7 @@ downloadInvoice: async (req, res) => {
       // ---- HEADER ----
       doc
         .fontSize(20)
-        .text("👜 BagsVio E-Commerce", { align: "center" })
+        .text("BagsVio E-Commerce", { align: "center" })
         .moveDown();
 
       doc.fontSize(12).text(`Invoice ID: INV-${orderId}`, { align: "right" });
