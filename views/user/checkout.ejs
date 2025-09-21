@@ -83,8 +83,14 @@
                             <% let totalPrice = 0; %>
                             
     <% userCart.items.forEach(item => { %>
-        <% let itemPrice = item.productId.Price * item.quantity; %>
-        <% totalPrice += itemPrice; %>
+        <% 
+            let itemPrice = item.productId.Price;
+            if (item.productId && item.productId.hasCategoryOffer) {
+                itemPrice = item.productId.discountedPrice;
+            }
+            let itemTotal = itemPrice * item.quantity;
+            totalPrice += itemTotal;
+        %>
     <% }); %>
 
 
@@ -153,7 +159,21 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted">Quantity: <%= item.quantity%>  </small>
-                                        <span class="text-muted">  </span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price:  ₹<%= item.productId.Price * item.quantity %></span>
+                                        <% 
+                                            let checkoutItemPrice = item.productId.Price;
+                                            if (item.productId && item.productId.hasCategoryOffer) {
+                                                checkoutItemPrice = item.productId.discountedPrice;
+                                            }
+                                        %>
+                                        <% if (item.productId && item.productId.hasCategoryOffer) { %>
+                                            <div class="text-end">
+                                                <span class="text-decoration-line-through text-muted">₹<%= item.productId.Price * item.quantity %></span><br>
+                                                <span class="text-success fw-bold">₹<%= checkoutItemPrice * item.quantity %></span>
+                                                <span class="badge bg-danger ms-1"><%= item.productId.categoryOffer.discountPercentage %>% OFF</span>
+                                            </div>
+                                        <% } else { %>
+                                            <span class="text-muted">Price: ₹<%= checkoutItemPrice * item.quantity %></span>
+                                        <% } %>
                                     </div>
                                 </div>
                             </li>

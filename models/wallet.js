@@ -6,7 +6,7 @@ const transactionSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now },
   from: { type: String }, 
-  orderId: { type: ObjectId }, 
+  orderId: { type: String }, 
   paymentId:{type: String}
 });
 

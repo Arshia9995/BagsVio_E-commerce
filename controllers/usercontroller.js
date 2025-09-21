@@ -16,6 +16,7 @@ const Review = require("../models/review")
 const generateOtp =  require('../utility/generateOtp')
 const Brands = require("../models/brandSchema")
 const PDFDocument = require("pdfkit");
+const { getCategoryOffersForProducts } = require('../utility/categoryOfferHelper');
 
 module.exports = 
 {
@@ -97,10 +98,11 @@ module.exports =
     
            
             const products = await Product.find(filterOptions).sort(sortOption).skip(skip).limit(perPage);
-           
-           
+            
+            // Get products with category offers
+            const productsWithOffers = await getCategoryOffersForProducts(products);
         
-            res.render('user/productlist', { categories, products, selectedCategory: selectedCategoryName,brands,totalPages, currentPage: page });
+            res.render('user/productlist', { categories, products: productsWithOffers, selectedCategory: selectedCategoryName,brands,totalPages, currentPage: page });
           } catch (e) {
             console.error(e);
             res.status(500).send('Internal Server Error');
@@ -146,11 +148,13 @@ module.exports =
           .populate('Category')
           .populate('BrandName');
 
+          // Get products with category offers
+          const productsWithOffers = await getCategoryOffersForProducts(products);
           
  res.render('user/seeallproducts', {
             categories,
             brands,
-            products,
+            products: productsWithOffers,
             totalPages,
             currentPage,
             sortOptions: req.query.sortOptions, 
@@ -169,8 +173,16 @@ module.exports =
             const products= await Product.findOne({_id:productId}).populate('BrandName').populate('Category')
           
             const productReviews = await Review.find({productId: productId})
+            
+            // Get category offer for this product
+            const { getCategoryOfferForProduct, calculateDiscountedPrice } = require('../utility/categoryOfferHelper');
+            const categoryOffer = await getCategoryOfferForProduct(products);
+            let discountedPrice = products.Price;
+            if (categoryOffer) {
+                discountedPrice = calculateDiscountedPrice(products.Price, categoryOffer.discountPercentage);
+            }
          
-            res.render('user/productdetails',{categories,products,productReviews})
+            res.render('user/productdetails',{categories,products,productReviews,categoryOffer,discountedPrice})
         } catch (e) {
             console.log(e)
         }
@@ -429,8 +441,11 @@ module.exports =
         const newarrival = await Product.find({ isNewArrival: true, isBlocked: false })
         const newtrends = await Product.find({ isNewTrends: true, isBlocked: false })
         
+        // Get products with category offers
+        const newarrivalWithOffers = await getCategoryOffersForProducts(newarrival);
+        const newtrendsWithOffers = await getCategoryOffersForProducts(newtrends);
         
-        res.render('user/userhome',{categories,newarrival,newtrends,banners})
+        res.render('user/userhome',{categories,newarrival: newarrivalWithOffers,newtrends: newtrendsWithOffers,banners})
     },
 
     getUserSignupWithReferralCode: async (req, res) => {
@@ -850,7 +865,7 @@ downloadInvoice: async (req, res) => {
       res.setHeader("Content-Type", "application/pdf");
       res.setHeader(
         "Content-Disposition",
-        `attachment; filename=invoice-${orderId}.pdf`
+        `attachment; filename=invoice-${orderData.orderId}.pdf`
       );
 
       const doc = new PDFDocument({ margin: 50 });
@@ -862,7 +877,7 @@ downloadInvoice: async (req, res) => {
         .text("BagsVio E-Commerce", { align: "center" })
         .moveDown();
 
-      doc.fontSize(12).text(`Invoice ID: INV-${orderId}`, { align: "right" });
+      doc.fontSize(12).text(`Invoice ID: INV-${orderData.orderId}`, { align: "right" });
       doc.text(`Date: ${orderData.orderDate.toLocaleDateString()}`, {
         align: "right",
       });
@@ -871,7 +886,7 @@ downloadInvoice: async (req, res) => {
       // ---- ORDER INFO ----
       doc.fontSize(14).text("Order Information", { underline: true });
       doc.moveDown(0.5);
-      doc.fontSize(12).text(`Order ID: ${orderData._id}`);
+      doc.fontSize(12).text(`Order ID: ${orderData.orderId}`);
       doc.text(`Status: ${orderData.status}`);
       doc.text(`Payment Method: ${orderData.paymentMethod}`);
       doc.text(`Payment Status: ${orderData.paymentStatus}`);

@@ -66,7 +66,13 @@
                     <% cart.items.forEach(item=> { %>
 
                       <% totalQuantity += item.quantity; %>
-                      <% totalPrice += (item.productId?.Price || 0) * item.quantity; %>
+                      <% 
+                        let itemPrice = item.productId?.Price || 0;
+                        if (item.productId && item.productId.hasCategoryOffer) {
+                          itemPrice = item.productId.discountedPrice;
+                        }
+                        totalPrice += itemPrice * item.quantity;
+                      %>
 
                       <tr data-item-id="<%= item._id %>">
                         <td>
@@ -93,8 +99,15 @@
                         </td>
 
                         <td id="totalPrice_<%= item._id %>">
-                          <p class="mb-2"><strong>&#x20B9;<%= item.productId ? item.productId.Price : 0 %></strong>
-                          </p>
+                          <% if (item.productId && item.productId.hasCategoryOffer) { %>
+                            <p class="mb-2">
+                              <span class="text-decoration-line-through text-muted">&#x20B9;<%= item.productId.Price %></span><br>
+                              <strong class="text-success">&#x20B9;<%= item.productId.discountedPrice %></strong>
+                              <span class="badge bg-danger ms-1"><%= item.productId.categoryOffer.discountPercentage %>% OFF</span>
+                            </p>
+                          <% } else { %>
+                            <p class="mb-2"><strong>&#x20B9;<%= item.productId ? item.productId.Price : 0 %></strong></p>
+                          <% } %>
                         </td>
 
                         <td>
@@ -122,8 +135,14 @@
                         
                         </td>
                         <td id="totalapriceofoneproduct_<%= item._id %>">
+                          <% 
+                            let currentItemPrice = item.productId?.Price || 0;
+                            if (item.productId && item.productId.hasCategoryOffer) {
+                              currentItemPrice = item.productId.discountedPrice;
+                            }
+                          %>
                           <p class="mb-2">
-                            <strong>&#x20B9;<%= (item.productId?.Price || 0) * item.quantity.toFixed(2) %></strong>
+                            <strong>&#x20B9;<%= (currentItemPrice * item.quantity).toFixed(2) %></strong>
                           </p>
                         </td>
 

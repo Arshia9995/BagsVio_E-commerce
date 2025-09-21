@@ -53,9 +53,19 @@
                      
                         <div class="mb-4">
                             <h6 class="text-uppercase">Order Information</h6>
-                            <p><strong>Order ID:</strong> <%= order._id %></p>
+                            <p><strong>Order ID:</strong> <%= order.orderId %></p>
                             <p><strong>Order Date:</strong> <%= order.orderDate.toLocaleDateString() %></p>
-                            <p><strong>Status:</strong> <span class="badge bg-success"><%= order.status%></span></p>
+                            <p><strong>Status:</strong> 
+                                <span class="badge 
+                                    <% if (order.status === 'Pending') { %>bg-warning<% } 
+                                    else if (order.status === 'Processing') { %>bg-info<% } 
+                                    else if (order.status === 'Shipped') { %>bg-primary<% } 
+                                    else if (order.status === 'Delivered') { %>bg-success<% } 
+                                    else if (order.status === 'Cancelled') { %>bg-danger<% } 
+                                    else if (order.status === 'Returned') { %>bg-secondary<% } %>">
+                                    <%= order.status%>
+                                </span>
+                            </p>
                             <p><strong>Payment Method:</strong> <%= order.paymentMethod %></p>
                             <p><strong>Payment Status:</strong> <%= order.paymentStatus %></p>
                         </div>
@@ -87,9 +97,34 @@
                                     <p><strong>Price:</strong> ₹<%= product.price %></p>
                                     <p><strong>Quantity:</strong> <%= product.quantity %></p>
                                     <p><strong>Total Price:</strong> ₹<%=  product.price *product.quantity  %></p>
+                                    <p><strong>Status:</strong> 
+                                        <span class="badge 
+                                            <% if (!product.status || product.status === 'Active') { %>bg-success<% } else if (product.status === 'Cancelled') { %>bg-danger<% } else if (product.status === 'Returned') { %>bg-warning<% } %>">
+                                            <%= product.status || 'Active' %>
+                                        </span>
+                                    </p>
                                   
+                                    <!-- Individual product actions -->
+                                    <% if (!product.status || product.status === 'Active') { %>
+                                        <% if (order.status === "Pending" || order.status === "Processing") { %>
+                                            <button class="btn btn-danger btn-sm cancel-product-btn" 
+                                                    data-order-id="<%= order._id %>" 
+                                                    data-product-id="<%= product.productId._id %>"
+                                                    data-product-name="<%= product.productId.ProductName %>">
+                                                Cancel Product
+                                            </button>
+                                        <% } else if (order.status === "Delivered") { %>
+                                            <button class="btn btn-warning btn-sm return-product-btn" 
+                                                    data-order-id="<%= order._id %>" 
+                                                    data-product-id="<%= product.productId._id %>"
+                                                    data-product-name="<%= product.productId.ProductName %>">
+                                                Return Product
+                                            </button>
+                                        <% } %>
+                                    <% } %>
+
                                     <% if (order.status === "Delivered" || order.status === "Returned") { %>
-                                        <button class="btn btn-warning add-review-btn" data-bs-toggle="modal" data-bs-target="#addReviewModal" data-product-id="<%= product.productId._id %>">Add Review</button>
+                                        <button class="btn btn-info btn-sm add-review-btn" data-bs-toggle="modal" data-bs-target="#addReviewModal" data-product-id="<%= product.productId._id %>">Add Review</button>
                                     <% } %>
                                 </div>
                                 <%if(order.discount) {  %>
@@ -419,6 +454,102 @@ async function downloadInvoice(orderId) {
     });
 });
 
+</script>
+
+<!-- Individual Product Cancellation Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cancelProductBtns = document.querySelectorAll('.cancel-product-btn');
+    
+    cancelProductBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const orderId = btn.getAttribute('data-order-id');
+            const productId = btn.getAttribute('data-product-id');
+            const productName = btn.getAttribute('data-product-name');
+            
+            swal({
+                title: "Cancel Product?",
+                text: `Are you sure you want to cancel "${productName}" from this order?`,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((confirmed) => {
+                if (confirmed) {
+                    fetch(`/cancelproduct/${orderId}/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            swal("Success!", data.message, "success")
+                            .then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            swal("Error!", data.message || "Failed to cancel product", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        swal("Error!", "Failed to cancel product. Please try again later.", "error");
+                    });
+                }
+            });
+        });
+    });
+});
+</script>
+
+<!-- Individual Product Return Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const returnProductBtns = document.querySelectorAll('.return-product-btn');
+    
+    returnProductBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const orderId = btn.getAttribute('data-order-id');
+            const productId = btn.getAttribute('data-product-id');
+            const productName = btn.getAttribute('data-product-name');
+            
+            swal({
+                title: "Return Product?",
+                text: `Are you sure you want to return "${productName}" from this order?`,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((confirmed) => {
+                if (confirmed) {
+                    fetch(`/returnproduct/${orderId}/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            swal("Success!", data.message, "success")
+                            .then(() => {
+                                window.location.reload();
+                            });
+                        } else {
+                            swal("Error!", data.message || "Failed to return product", "error");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        swal("Error!", "Failed to return product. Please try again later.", "error");
+                    });
+                }
+            });
+        });
+    });
+});
 </script>
 
 

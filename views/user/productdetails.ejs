@@ -106,7 +106,13 @@
           <h4 class="title text-dark"><%= products.ProductName %></h4>
 
           <div class="mb-3">
-            <span class="h5">₹<%= products.Price %></span>
+            <% if (categoryOffer) { %>
+              <span class="h5 text-decoration-line-through">₹<%= products.Price %></span>
+              <span class="h4 text-success fw-bold ms-2">₹<%= discountedPrice %></span>
+              <span class="badge bg-danger ms-2"><%= categoryOffer.discountPercentage %>% OFF</span>
+            <% } else { %>
+              <span class="h5">₹<%= products.Price %></span>
+            <% } %>
           </div>
 
           <p><%= products.Description %></p>

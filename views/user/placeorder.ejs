@@ -82,14 +82,28 @@
                     </div>
                     <div class="col-md-3">
                       <div class="card-body text-end">
-                        <p class="card-text">
-                          Price: ₹<%= item.productId.Price * item.quantity %>
-                        </p>
+                        <% 
+                            let placeOrderItemPrice = item.productId.Price;
+                            if (item.productId && item.productId.hasCategoryOffer) {
+                                placeOrderItemPrice = item.productId.discountedPrice;
+                            }
+                        %>
+                        <% if (item.productId && item.productId.hasCategoryOffer) { %>
+                            <p class="card-text">
+                                <span class="text-decoration-line-through text-muted">₹<%= item.productId.Price * item.quantity %></span><br>
+                                <span class="text-success fw-bold">₹<%= placeOrderItemPrice * item.quantity %></span>
+                                <span class="badge bg-danger ms-1"><%= item.productId.categoryOffer.discountPercentage %>% OFF</span>
+                            </p>
+                        <% } else { %>
+                            <p class="card-text">
+                                Price: ₹<%= placeOrderItemPrice * item.quantity %>
+                            </p>
+                        <% } %>
                       </div>
                     </div>
                   </div>
                 </div>
-                <% totalPrice +=item.productId.Price * item.quantity; %> <% });
+                <% totalPrice += placeOrderItemPrice * item.quantity; %> <% });
                 %>
                 <% totalPrice=totalPrice-(discount || 0)%>
 

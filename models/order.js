@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 
 
 const orderSchema = new mongoose.Schema({
+    orderId: {
+        type: String,
+        unique: true,
+        required: true
+    },
     userId:
     {
         type: mongoose.Schema.Types.ObjectId,
@@ -24,6 +29,11 @@ const orderSchema = new mongoose.Schema({
             price:
             {
                 type: Number
+            },
+            status: {
+                type: String,
+                default: "Active",
+                enum: ["Active", "Cancelled", "Returned"]
             }
 
         }

@@ -18,6 +18,9 @@
                             aria-hidden="true"></i>Orders</a>
                     <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;"
                                 aria-hidden="true"></i>Coupons</a>
+                                <a href="/admin/categoryoffer">
+                                    <i class="fa fa-percent" style="margin-right: 10px;" aria-hidden="true"></i> Category Offers
+                                  </a>
                                 <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;"
                                     aria-hidden="true"></i>Banners</a>
                     
@@ -53,7 +56,7 @@
                                     <td>  
                                         <%= orderItem.userId.name %>
                                     </td>
-                                    <td><%= orderItem._id %></td>
+                                    <td><%= orderItem.orderId %></td>
                                     <td><%= orderItem.status %></td> 
                                     <td><%= orderItem.totalPrice %></td>
                                     <td><%= orderItem.paymentStatus %></td>

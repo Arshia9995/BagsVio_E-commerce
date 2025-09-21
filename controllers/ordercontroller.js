@@ -10,6 +10,8 @@ const crypto = require("crypto");
 const Wallet = require("../models/wallet");
 const coupon = require("../models/coupon");
 const Coupon = require("../models/coupon");
+const generateOrderId = require("../utility/generateOrderId");
+const { getCategoryOffersForProducts } = require('../utility/categoryOfferHelper');
 
 var instance = new Razorpay({
   key_id: "rzp_test_yOdXB6QYxSIZDa",
@@ -30,9 +32,35 @@ module.exports = {
         "items.productId"
       );
 
+      // Get category offers for cart items
+      if (userCart && userCart.items && userCart.items.length > 0) {
+        const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
+        const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
+        
+        // Update cart items with offer information
+        userCart.items.forEach(item => {
+          const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
+          if (productWithOffer) {
+            // Merge offer information into the existing product object
+            item.productId.categoryOffer = productWithOffer.categoryOffer;
+            item.productId.discountedPrice = productWithOffer.discountedPrice;
+            item.productId.hasCategoryOffer = productWithOffer.hasCategoryOffer;
+          } else {
+            // Ensure properties exist even if no offer
+            item.productId.categoryOffer = null;
+            item.productId.discountedPrice = item.productId.Price;
+            item.productId.hasCategoryOffer = false;
+          }
+        });
+      }
+
       let totalPrice = 0;
       userCart.items.forEach((item) => {
-        totalPrice += item.productId.Price * item.quantity;
+        let itemPrice = item.productId.Price;
+        if (item.productId && item.productId.hasCategoryOffer) {
+            itemPrice = item.productId.discountedPrice;
+        }
+        totalPrice += itemPrice * item.quantity;
       });
       totalPrice = totalPrice - (discount || 0);
 
@@ -41,17 +69,27 @@ module.exports = {
         { "addresses.$": 1 }
       );
 
-      const productsToUpdate = userCart.items.map((item) => ({
-        productId: item.productId._id,
-        quantity: item.quantity,
-        price: item.productId.Price,
-      }));
+      const productsToUpdate = userCart.items.map((item) => {
+        let itemPrice = item.productId.Price;
+        if (item.productId && item.productId.hasCategoryOffer) {
+            itemPrice = item.productId.discountedPrice;
+        }
+        return {
+          productId: item.productId._id,
+          quantity: item.quantity,
+          price: itemPrice,
+          status: "Active",
+        };
+      });
 
       req.session.grantTotal = totalPrice;
       req.session.amounttopay = totalPrice;
 
+      const orderId = await generateOrderId();
+
       if (paymentMethod === "Cash On Delivery") {
         const newOrder = new Order({
+          orderId: orderId,
           userId: userId,
           products: productsToUpdate,
           totalPrice: totalPrice,
@@ -117,6 +155,7 @@ module.exports = {
         userWallet.balance -= totalPrice;
 
         const newOrder = new Order({
+          orderId: orderId,
           userId: userId,
           products: productsToUpdate,
           totalPrice: totalPrice,
@@ -277,6 +316,20 @@ module.exports = {
       );
 
       if (order) {
+        // Initialize product status for existing orders that don't have it
+        let needsUpdate = false;
+        for (let i = 0; i < order.products.length; i++) {
+          if (!order.products[i].status) {
+            order.products[i].status = "Active";
+            needsUpdate = true;
+          }
+        }
+        
+        if (needsUpdate) {
+          await order.save();
+          console.log("Updated order with product statuses");
+        }
+
         res.render("user/orderdetails", { order, categories });
       } else {
         res.status(404).json({ error: "Order not found" });
@@ -293,30 +346,35 @@ module.exports = {
   
 
     try {
+      const canceledOrder = await Order.findByIdAndUpdate(orderId, {
+        status: "Cancelled",
+        paymentStatus: "Cancelled",
+      }).populate("products.productId");
+
+      if (!canceledOrder) {
+        return res.status(404).json({ message: "Order not found" });
+      }
+
+      // Update all products to cancelled status
+      for (let i = 0; i < canceledOrder.products.length; i++) {
+        canceledOrder.products[i].status = "Cancelled";
+      }
+
+      for (const item of canceledOrder.products) {
+        const productId = item.productId._id;
+        const canceledQuantity = item.quantity;
+
+        const product = await productModel.findById(productId);
+        if (product) {
+          product.AvailableQuantity += canceledQuantity;
+          await product.save();
+        }
+      }
+
       if (
         req.body.paymentMethod == "Online Payment" ||
         req.body.paymentMethod == "Wallet"
       ) {
-        const canceledOrder = await Order.findByIdAndUpdate(orderId, {
-          status: "Cancelled",
-          paymentStatus: "Cancelled",
-        }).populate("products.productId");
-
-        if (!canceledOrder) {
-          return res.status(404).json({ message: "Order not found" });
-        }
-
-        for (const item of canceledOrder.products) {
-          const productId = item.productId._id;
-
-          const canceledQuantity = item.quantity;
-
-          const product = await productModel.findById(productId);
-          if (product) {
-            product.AvailableQuantity += canceledQuantity;
-            await product.save();
-          }
-        }
         const userWallet = await Wallet.findOne({ userId: userId });
 
         if (!userWallet) {
@@ -324,27 +382,22 @@ module.exports = {
             .status(400)
             .json({ error: "Wallet not found for the user" });
         }
-        // let totalRefundAmount = 0;
-        // canceledOrder.products.forEach((item) => {
-        //   totalRefundAmount += item.price * item.quantity;
-        // });
+
         userWallet.balance += Number(totalPrice);
         const refundTransaction = {
           transactionType: "credit",
           amount: Number(totalPrice),
           date: new Date(),
           from: "Refund for cancel",
-          orderId: orderId,
+          orderId: canceledOrder.orderId,
         };
 
         userWallet.transactions.push(refundTransaction);
         await userWallet.save();
-      } else {
-        const canceledOrder = await Order.findByIdAndUpdate(orderId, {
-          status: "Cancelled",
-          paymentStatus: "Cancelled",
-        }).populate("products.productId");
       }
+
+      await canceledOrder.save();
+      
       res
         .status(200)
         .json({ success: true, message: "Order cancelled successfully" });
@@ -365,9 +418,10 @@ module.exports = {
         return res.status(404).json({ message: "Order not found" });
       }
 
-      returnedOrder.status = "Returned";
-      returnedOrder.paymentStatus = "Refunded";
-      await returnedOrder.save();
+      // Update all products to returned status
+      for (let i = 0; i < returnedOrder.products.length; i++) {
+        returnedOrder.products[i].status = "Returned";
+      }
 
       for (const item of returnedOrder.products) {
         const productId = item.productId;
@@ -396,10 +450,12 @@ module.exports = {
         transactionType: "credit",
         amount: refundAmount,
         from: `Refund for return `,
-        orderId: returnedOrder._id,
+        orderId: returnedOrder.orderId,
       };
       userWallet.transactions.push(transaction);
       await userWallet.save();
+
+      await returnedOrder.save();
 
       res
         .status(200)
@@ -511,10 +567,35 @@ module.exports = {
         "items.productId"
       );
 
+      // Get category offers for cart items
+      if (userCart && userCart.items && userCart.items.length > 0) {
+        const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
+        const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
+        
+        // Update cart items with offer information
+        userCart.items.forEach(item => {
+          const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
+          if (productWithOffer) {
+            // Merge offer information into the existing product object
+            item.productId.categoryOffer = productWithOffer.categoryOffer;
+            item.productId.discountedPrice = productWithOffer.discountedPrice;
+            item.productId.hasCategoryOffer = productWithOffer.hasCategoryOffer;
+          } else {
+            // Ensure properties exist even if no offer
+            item.productId.categoryOffer = null;
+            item.productId.discountedPrice = item.productId.Price;
+            item.productId.hasCategoryOffer = false;
+          }
+        });
+      }
+
       let totalPrice = 0;
       userCart.items.forEach((item) => {
-      
-        totalPrice += item.productId.Price * item.quantity;
+        let itemPrice = item.productId.Price;
+        if (item.productId && item.productId.hasCategoryOffer) {
+            itemPrice = item.productId.discountedPrice;
+        }
+        totalPrice += itemPrice * item.quantity;
       });
       totalPrice = totalPrice - (discount || 0);
 
@@ -523,16 +604,25 @@ module.exports = {
         { "addresses.$": 1 }
       );
      
-      const productsToUpdate = userCart.items.map((item) => ({
-        productId: item.productId._id,
-        quantity: item.quantity,
-        price: item.productId.Price,
-      }));
+      const productsToUpdate = userCart.items.map((item) => {
+        let itemPrice = item.productId.Price;
+        if (item.productId && item.productId.hasCategoryOffer) {
+            itemPrice = item.productId.discountedPrice;
+        }
+        return {
+          productId: item.productId._id,
+          quantity: item.quantity,
+          price: itemPrice,
+          status: "Active",
+        };
+      });
 
       req.session.grantTotal = totalPrice;
       req.session.amounttopay = totalPrice;
 
+      const orderId = await generateOrderId();
       const newOrder = new Order({
+        orderId: orderId,
         userId: userId,
         products: productsToUpdate,
         totalPrice: totalPrice,
@@ -728,6 +818,198 @@ walletverifyPayment: async (req, res) => {
           await wallet.save();
 
           res.status(200).json({ success: true, newBalance: wallet.balance });
+},
+
+cancelIndividualProduct: async (req, res) => {
+  const { orderId, productId } = req.params;
+  const userId = req.session.userId._id;
+
+  try {
+    const order = await Order.findOne({ _id: orderId, userId }).populate("products.productId");
+    console.log(order, "order");
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    console.log("order found");
+
+    // Find the specific product in the order
+    const productIndex = order.products.findIndex(
+      item => item.productId._id.toString() === productId
+    );
+
+    if (productIndex === -1) {
+      return res.status(404).json({ message: "Product not found in order" });
+    }
+
+    const product = order.products[productIndex];
+    console.log(product, "product");
+
+    // Initialize status if it doesn't exist (for existing orders)
+    if (!product.status) {
+      product.status = "Active";
+    }
+
+    // Check if product can be cancelled (only if order is pending or processing)
+    if (order.status !== "Pending" && order.status !== "Processing") {
+      return res.status(400).json({ message: "Cannot cancel product from this order status" });
+    }
+
+    // Check if product is already cancelled
+    if (product.status === "Cancelled") {
+      return res.status(400).json({ message: "Product is already cancelled" });
+    }
+
+    // Update product status to cancelled
+    order.products[productIndex].status = "Cancelled";
+    
+    // Restore product quantity
+    const productToUpdate = await productModel.findById(productId);
+    if (productToUpdate) {
+      productToUpdate.AvailableQuantity += product.quantity;
+      await productToUpdate.save();
+    }
+    console.log(productToUpdate, "productToUpdate");
+
+    // Calculate refund amount for this product
+    const refundAmount = product.price * product.quantity;
+
+    // Handle refund based on payment method
+    if (order.paymentMethod === "Online Payment" || order.paymentMethod === "Wallet") {
+      const userWallet = await Wallet.findOne({ userId });
+      console.log(userWallet, "userWallet");
+      
+      if (!userWallet) {
+        return res.status(400).json({ error: "Wallet not found for the user" });
+      }
+
+      userWallet.balance += refundAmount;
+      
+      const refundTransaction = {
+        transactionType: "credit",
+        amount: refundAmount,
+        date: new Date(),
+        from: "Refund for product cancellation",
+        orderId: order.orderId,
+        productId: productId
+      };
+
+      userWallet.transactions.push(refundTransaction);
+      await userWallet.save();
+      console.log(userWallet, "userWallet");
+    }
+
+    // Check if all products are cancelled, then update order status
+    const activeProducts = order.products.filter(p => p.status === "Active");
+    if (activeProducts.length === 0) {
+      order.status = "Cancelled";
+      order.paymentStatus = "Cancelled";
+    }
+
+    await order.save();
+    console.log("order saved");
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Product cancelled successfully",
+      refundAmount: refundAmount
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+},
+
+returnIndividualProduct: async (req, res) => {
+  const { orderId, productId } = req.params;
+  const userId = req.session.userId._id;
+
+  try {
+    const order = await Order.findOne({ _id: orderId, userId }).populate("products.productId");
+    
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    // Find the specific product in the order
+    const productIndex = order.products.findIndex(
+      item => item.productId._id.toString() === productId
+    );
+
+    if (productIndex === -1) {
+      return res.status(404).json({ message: "Product not found in order" });
+    }
+
+    const product = order.products[productIndex];
+
+    // Initialize status if it doesn't exist (for existing orders)
+    if (!product.status) {
+      product.status = "Active";
+    }
+
+    // Check if product can be returned (only if order is delivered)
+    if (order.status !== "Delivered") {
+      return res.status(400).json({ message: "Can only return products from delivered orders" });
+    }
+
+    // Check if product is already returned
+    if (product.status === "Returned") {
+      return res.status(400).json({ message: "Product is already returned" });
+    }
+
+    // Update product status to returned
+    order.products[productIndex].status = "Returned";
+    
+    // Restore product quantity
+    const productToUpdate = await productModel.findById(productId);
+    if (productToUpdate) {
+      productToUpdate.AvailableQuantity += product.quantity;
+      await productToUpdate.save();
+    }
+
+    // Calculate refund amount for this product
+    const refundAmount = product.price * product.quantity;
+
+    // Add refund to wallet
+    const userWallet = await Wallet.findOne({ userId });
+    if (!userWallet) {
+      return res.status(404).json({ error: "User's wallet not found" });
+    }
+
+    userWallet.balance += refundAmount;
+    
+    const refundTransaction = {
+      transactionType: "credit",
+      amount: refundAmount,
+      date: new Date(),
+      from: "Refund for product return",
+      orderId: order.orderId,
+      productId: productId
+    };
+
+    userWallet.transactions.push(refundTransaction);
+    await userWallet.save();
+
+    // Check if all products are returned, then update order status
+    const activeProducts = order.products.filter(p => p.status === "Active");
+    if (activeProducts.length === 0) {
+      order.status = "Returned";
+      order.paymentStatus = "Refunded";
+    }
+
+    await order.save();
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Product returned successfully",
+      refundAmount: refundAmount
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 }
   
 };

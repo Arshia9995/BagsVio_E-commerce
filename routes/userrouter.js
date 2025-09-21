@@ -124,6 +124,11 @@ router.post('/cancelorder/:orderId',ordercontroller.cancelOrder)
 
 router.post('/returnorder/:orderId',ordercontroller.returnOrder)
 
+// Individual product cancellation and return
+router.post('/cancelproduct/:orderId/:productId',ordercontroller.cancelIndividualProduct)
+
+router.post('/returnproduct/:orderId/:productId',ordercontroller.returnIndividualProduct)
+
 router.get("/failedpayments",ordercontroller.showFailedPayments)
 
 router.get("/findOrder/:orderId",ordercontroller.findOrder)

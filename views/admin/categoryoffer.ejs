@@ -1,0 +1,421 @@
+<%- include('header')-%>
+
+<!-- Sidebar -->
+<div class="col-md-3 col-lg-2 sidebar">
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/admindashboard">
+        <i class="fa fa-home"></i> Dashboard
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/adminproduct">
+        <i class="fa fa-product-hunt"></i> Products
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/category">
+        <i class="fa fa-list"></i> Category
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/customers">
+        <i class="fa fa-users"></i> Customers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/brand">
+        <i class="fa fa-users"></i> Brand
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/order">
+        <i class="fa fa-bars"></i> Orders
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/coupon">
+        <i class="fa fa-bars"></i> Coupons
+      </a>
+    </li>
+    <!-- <li class="nav-item">
+      <a class="nav-link" href="/admin/productoffer">
+        <i class="fa fa-percent"></i> Product Offers
+      </a>
+    </li> -->
+    <li class="nav-item">
+      <a class="nav-link active" href="/admin/categoryoffer">
+        <i class="fa fa-percent"></i> Category Offers
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/banner">
+        <i class="fa fa-bars"></i> Banners
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/sales">
+        <i class="fa fa-line-chart"></i> Sales
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="/admin/logout">
+        <i class="fa fa-sign-out"></i> Logout
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div class="container mt-5 ml-3">
+  <div class="mb-3">
+    <button
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#addCategoryOfferModal"
+    >
+      <i class="fa fa-plus"></i> Add Category Offer
+    </button>
+  </div>
+
+  <div class="row">
+    <% categoryOffers.forEach(categoryOffer => { %>
+      <div class="col-md-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              Category: <%= categoryOffer.categoryName %>
+            </h5>
+            <p class="card-text">
+              Discount: <%= categoryOffer.discountPercentage %>%
+            </p>
+            <p class="card-text">
+              <small class="text-muted">
+                Start: <%= new Date(categoryOffer.startDate).toLocaleDateString() %><br>
+                End: <%= new Date(categoryOffer.endDate).toLocaleDateString() %>
+              </small>
+            </p>
+            <p class="card-text">
+              Status: 
+              <span class="badge <%= categoryOffer.isActive ? 'bg-success' : 'bg-danger' %>">
+                <%= categoryOffer.isActive ? 'Active' : 'Inactive' %>
+              </span>
+            </p>
+           
+            <div class="btn-group" role="group" aria-label="Basic example">
+              <button 
+                type="button" 
+                class="btn btn-primary me-2" 
+                data-bs-toggle="modal" 
+                data-bs-target="#editCategoryOfferModal<%= categoryOffer._id %>"
+                data-category-id="<%= categoryOffer.categoryId %>"
+                data-discount-percentage="<%= categoryOffer.discountPercentage %>"
+                data-start-date="<%= new Date(categoryOffer.startDate).toISOString().split('T')[0] %>"
+                data-end-date="<%= new Date(categoryOffer.endDate).toISOString().split('T')[0] %>"
+              >
+                Edit
+              </button>
+              <button 
+                type="button" 
+                class="btn <%= categoryOffer.isActive ? 'btn-warning' : 'btn-success' %> me-2"
+                onclick="toggleOfferStatus('<%= categoryOffer._id %>')"
+              >
+                <%= categoryOffer.isActive ? 'Deactivate' : 'Activate' %>
+              </button>
+              <button 
+                type="button" 
+                class="btn btn-danger"
+                onclick="deleteCategoryOffer('<%= categoryOffer._id %>')"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Modal -->
+      <div class="modal fade" id="editCategoryOfferModal<%= categoryOffer._id %>" tabindex="-1" aria-labelledby="editCategoryOfferModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editCategoryOfferModalLabel">Edit Category Offer</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <form id="editCategoryOfferForm<%= categoryOffer._id %>" action="/admin/editcategoryoffer/<%= categoryOffer._id %>" method="POST">
+                <div class="mb-3">
+                  <label for="editCategoryId<%= categoryOffer._id %>" class="form-label">Category</label>
+                  <select class="form-select" id="editCategoryId<%= categoryOffer._id %>" name="categoryId" required>
+                    <option value="">Select Category</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="editDiscountPercentage<%= categoryOffer._id %>" class="form-label">Discount Percentage</label>
+                  <input 
+                    type="number" 
+                    class="form-control" 
+                    id="editDiscountPercentage<%= categoryOffer._id %>" 
+                    name="discountPercentage" 
+                    min="0" 
+                    max="100" 
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="editStartDate<%= categoryOffer._id %>" class="form-label">Start Date</label>
+                  <input 
+                    type="date" 
+                    class="form-control" 
+                    id="editStartDate<%= categoryOffer._id %>" 
+                    name="startDate" 
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="editEndDate<%= categoryOffer._id %>" class="form-label">End Date</label>
+                  <input 
+                    type="date" 
+                    class="form-control" 
+                    id="editEndDate<%= categoryOffer._id %>" 
+                    name="endDate" 
+                    required
+                  />
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+</div>
+
+<!-- Add Category Offer Modal -->
+<div class="modal fade" id="addCategoryOfferModal" tabindex="-1" aria-labelledby="addCategoryOfferModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addCategoryOfferModalLabel">Add Category Offer</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="addCategoryOfferForm" action="/admin/addcategoryoffer" method="POST">
+          <div class="mb-3">
+            <label for="categoryId" class="form-label">Category</label>
+            <select class="form-select" id="categoryId" name="categoryId" required>
+              <option value="">Select Category</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label for="discountPercentage" class="form-label">Discount Percentage</label>
+            <input
+              type="number"
+              class="form-control"
+              id="discountPercentage"
+              name="discountPercentage"
+              min="0"
+              max="100"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="startDate" class="form-label">Start Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="startDate"
+              name="startDate"
+              required
+            />
+          </div>
+          <div class="mb-3">
+            <label for="endDate" class="form-label">End Date</label>
+            <input
+              type="date"
+              class="form-control"
+              id="endDate"
+              name="endDate"
+              required
+            />
+          </div>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('footer')-%>
+
+<script>
+  // Fetch categories for dropdown
+  async function fetchCategories() {
+    try {
+      const response = await fetch("/admin/categories");
+      if (!response.ok) {
+        throw new Error("Failed to fetch categories");
+      }
+      const data = await response.json();
+      const categories = data.categories;
+
+      // Populate add form dropdown
+      const categoryDropdown = document.getElementById("categoryId");
+      categories.forEach((category) => {
+        const option = document.createElement("option");
+        option.value = category._id;
+        option.text = category.categoryName;
+        categoryDropdown.add(option);
+      });
+
+      // Populate all edit form dropdowns
+      document.querySelectorAll('[id^="editCategoryId"]').forEach(dropdown => {
+        const currentCategories = categories.slice(); // Copy array
+        currentCategories.forEach((category) => {
+          const option = document.createElement("option");
+          option.value = category._id;
+          option.text = category.categoryName;
+          dropdown.add(option);
+        });
+      });
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
+  }
+
+  // Handle edit modal opening
+  document.querySelectorAll('[id^="editCategoryOfferModal"]').forEach(function(modal) {
+    modal.addEventListener('show.bs.modal', function(event) {
+      const button = event.relatedTarget;
+      const categoryId = button.getAttribute('data-category-id');
+      const discountPercentage = button.getAttribute('data-discount-percentage');
+      const startDate = button.getAttribute('data-start-date');
+      const endDate = button.getAttribute('data-end-date');
+
+      const modalId = modal.id;
+      const offerId = modalId.replace('editCategoryOfferModal', '');
+
+      const editCategoryDropdown = modal.querySelector(`#editCategoryId${offerId}`);
+      const editDiscountInput = modal.querySelector(`#editDiscountPercentage${offerId}`);
+      const editStartDateInput = modal.querySelector(`#editStartDate${offerId}`);
+      const editEndDateInput = modal.querySelector(`#editEndDate${offerId}`);
+
+      if (editCategoryDropdown) editCategoryDropdown.value = categoryId;
+      if (editDiscountInput) editDiscountInput.value = discountPercentage;
+      if (editStartDateInput) editStartDateInput.value = startDate;
+      if (editEndDateInput) editEndDateInput.value = endDate;
+    });
+  });
+
+  // Handle form submissions
+  document.getElementById('addCategoryOfferForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData);
+
+    try {
+      const response = await fetch('/admin/addcategoryoffer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        location.reload();
+      } else {
+        alert(result.error || 'Failed to add category offer');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while adding the category offer');
+    }
+  });
+
+  // Handle edit form submissions
+  document.querySelectorAll('[id^="editCategoryOfferForm"]').forEach(form => {
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData(this);
+      const data = Object.fromEntries(formData);
+      const offerId = this.action.split('/').pop();
+
+      try {
+        const response = await fetch(`/admin/editcategoryoffer/${offerId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          location.reload();
+        } else {
+          alert(result.error || 'Failed to update category offer');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while updating the category offer');
+      }
+    });
+  });
+
+  // Toggle offer status
+  async function toggleOfferStatus(offerId) {
+    try {
+      const response = await fetch(`/admin/togglecategoryoffer/${offerId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        location.reload();
+      } else {
+        alert(result.error || 'Failed to toggle offer status');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('An error occurred while toggling offer status');
+    }
+  }
+
+  // Delete category offer
+  async function deleteCategoryOffer(offerId) {
+    if (confirm('Are you sure you want to delete this category offer?')) {
+      try {
+        const response = await fetch(`/admin/deletecategoryoffer/${offerId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        const result = await response.json();
+        
+        if (result.success) {
+          location.reload();
+        } else {
+          alert(result.error || 'Failed to delete category offer');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('An error occurred while deleting the category offer');
+      }
+    }
+  }
+
+  // Initialize on page load
+  document.addEventListener("DOMContentLoaded", fetchCategories);
+</script>

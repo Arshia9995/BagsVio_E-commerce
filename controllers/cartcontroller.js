@@ -10,6 +10,7 @@ const Address = require("../models/address");
 const Wishlist=require("../models/wishlist")
 const wallet=require("../models/wallet")
 const Coupon = require("../models/coupon")
+const { getCategoryOffersForProducts } = require('../utility/categoryOfferHelper');
 
 
 
@@ -26,6 +27,27 @@ module.exports = {
         "items.productId"
       );
 
+      // Get category offers for cart items
+      if (userCart && userCart.items && userCart.items.length > 0) {
+        const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
+        const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
+        
+        // Update cart items with offer information
+        userCart.items.forEach(item => {
+          const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
+          if (productWithOffer) {
+            // Merge offer information into the existing product object
+            item.productId.categoryOffer = productWithOffer.categoryOffer;
+            item.productId.discountedPrice = productWithOffer.discountedPrice;
+            item.productId.hasCategoryOffer = productWithOffer.hasCategoryOffer;
+          } else {
+            // Ensure properties exist even if no offer
+            item.productId.categoryOffer = null;
+            item.productId.discountedPrice = item.productId.Price;
+            item.productId.hasCategoryOffer = false;
+          }
+        });
+      }
       
       const categories = await categoryModel.find();
      
@@ -234,9 +256,35 @@ getCheckOutPage: async (req, res) => {
        
 
       
+      // Get category offers for cart items
+      if (userCart && userCart.items && userCart.items.length > 0) {
+        const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
+        const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
+        
+        // Update cart items with offer information
+        userCart.items.forEach(item => {
+          const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
+          if (productWithOffer) {
+            // Merge offer information into the existing product object
+            item.productId.categoryOffer = productWithOffer.categoryOffer;
+            item.productId.discountedPrice = productWithOffer.discountedPrice;
+            item.productId.hasCategoryOffer = productWithOffer.hasCategoryOffer;
+          } else {
+            // Ensure properties exist even if no offer
+            item.productId.categoryOffer = null;
+            item.productId.discountedPrice = item.productId.Price;
+            item.productId.hasCategoryOffer = false;
+          }
+        });
+      }
+
       let totalPrice = 0;
       userCart.items.forEach((item) => {
-          totalPrice += item.productId.Price * item.quantity;
+          let itemPrice = item.productId.Price;
+          if (item.productId && item.productId.hasCategoryOffer) {
+              itemPrice = item.productId.discountedPrice;
+          }
+          totalPrice += itemPrice * item.quantity;
       });
 
       req.session.couponApplied = null;
@@ -329,9 +377,35 @@ getCheckOutPage: async (req, res) => {
         return res.redirect('/cart')
       }
      
+      // Get category offers for cart items
+      if (userCart && userCart.items && userCart.items.length > 0) {
+        const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
+        const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
+        
+        // Update cart items with offer information
+        userCart.items.forEach(item => {
+          const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
+          if (productWithOffer) {
+            // Merge offer information into the existing product object
+            item.productId.categoryOffer = productWithOffer.categoryOffer;
+            item.productId.discountedPrice = productWithOffer.discountedPrice;
+            item.productId.hasCategoryOffer = productWithOffer.hasCategoryOffer;
+          } else {
+            // Ensure properties exist even if no offer
+            item.productId.categoryOffer = null;
+            item.productId.discountedPrice = item.productId.Price;
+            item.productId.hasCategoryOffer = false;
+          }
+        });
+      }
+
       let totalPrice = 0;  
       userCart.items.forEach((item) => {
-        totalPrice += item.productId.price * item.quantity;
+        let itemPrice = item.productId.Price;
+        if (item.productId && item.productId.hasCategoryOffer) {
+            itemPrice = item.productId.discountedPrice;
+        }
+        totalPrice += itemPrice * item.quantity;
       });
       if(req.session.couponApplied){
      

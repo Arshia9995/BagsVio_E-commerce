@@ -11,6 +11,7 @@ const adminAuth = require('../middleware/adminAuth');
 const ordercontroller = require('../controllers/ordercontroller');
 const couponcontroller = require("../controllers/couponcontroller")
 const offercontroller = require("../controllers/offercontroller")
+const categoryoffercontroller = require("../controllers/categoryoffercontroller")
 const bannerController = require("../controllers/bannercontroller");
 
 
@@ -116,6 +117,14 @@ admin.post("/addOffer",offercontroller.postProductOffer)
 
 
 admin.post("/editoffer/:offerId",offercontroller.posteditProductOffer)
+
+//category offers
+admin.get("/categoryoffer",adminAuth.verifyadmin,categoryoffercontroller.getCategoryOfferPage)
+admin.get("/categories",categoryoffercontroller.getCategories)
+admin.post("/addcategoryoffer",categoryoffercontroller.addCategoryOffer)
+admin.post("/editcategoryoffer/:offerId",categoryoffercontroller.editCategoryOffer)
+admin.delete("/deletecategoryoffer/:offerId",categoryoffercontroller.deleteCategoryOffer)
+admin.post("/togglecategoryoffer/:offerId",categoryoffercontroller.toggleOfferStatus)
 
 //sales
 

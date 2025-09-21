@@ -52,7 +52,15 @@
           </a>
           <div class="card-body">
             <h5 class="card-title text-dark"><%= product.ProductName %></h5>
-            <p class="card-text text-dark">Price: <%= product.Price %></p>
+            <% if (product.hasCategoryOffer) { %>
+              <p class="card-text text-dark">
+                <span class="text-decoration-line-through">₹<%= product.Price %></span>
+                <span class="text-success fw-bold">₹<%= product.discountedPrice %></span>
+                <span class="badge bg-danger ms-2"><%= product.categoryOffer.discountPercentage %>% OFF</span>
+              </p>
+            <% } else { %>
+              <p class="card-text text-dark">Price: ₹<%= product.Price %></p>
+            <% } %>
           </div>
         </div>
       </div>
