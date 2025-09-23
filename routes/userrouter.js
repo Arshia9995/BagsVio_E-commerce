@@ -78,7 +78,7 @@ router.get('/products/filterByBrand', userController.filterProductsByBrand);
 //profile
 
 router.get('/profile',userAuth.verifyUser,userController.getProfilePage)
-router.post('/updateProfile', userController.updateUserProfile);
+router.put('/updateProfile', userController.updateUserProfile);
 
 //Address
 

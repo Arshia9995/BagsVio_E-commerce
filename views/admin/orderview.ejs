@@ -134,7 +134,7 @@
             console.log(newStatus, "new      ...............");
             try {
                 const response = await fetch('/admin/updateOrderStatus/<%= orders._id %>', {
-                    method: 'POST',
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
                     },

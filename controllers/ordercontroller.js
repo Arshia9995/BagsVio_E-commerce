@@ -11,7 +11,7 @@ const Wallet = require("../models/wallet");
 const coupon = require("../models/coupon");
 const Coupon = require("../models/coupon");
 const generateOrderId = require("../utility/generateOrderId");
-const { getCategoryOffersForProducts } = require('../utility/categoryOfferHelper');
+const { getCategoryOffersForProducts } = require('../utility/categoryOfferHelper'); 
 
 var instance = new Razorpay({
   key_id: "rzp_test_yOdXB6QYxSIZDa",
@@ -201,7 +201,7 @@ module.exports = {
           }
         }
 
-        const orderId = newOrder._id;
+        // const orderId = newOrder._id;
 
         const transaction = {
           transactionType: "debit",

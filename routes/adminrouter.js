@@ -98,7 +98,7 @@ admin.post('/unblock/:customerId',adminAuth.verifyadmin,customercontroller.Unblo
 admin.get('/order',ordercontroller.adminOrderPage)
 admin.get('/orderview/:orderId',ordercontroller.adminOrderViewPage)
 
-admin.post("/updateOrderStatus/:orderId",ordercontroller.updateOrderStatus)
+admin.patch("/updateOrderStatus/:orderId",ordercontroller.updateOrderStatus)
 
 //coupons
 
@@ -124,7 +124,7 @@ admin.get("/categories",categoryoffercontroller.getCategories)
 admin.post("/addcategoryoffer",categoryoffercontroller.addCategoryOffer)
 admin.post("/editcategoryoffer/:offerId",categoryoffercontroller.editCategoryOffer)
 admin.delete("/deletecategoryoffer/:offerId",categoryoffercontroller.deleteCategoryOffer)
-admin.post("/togglecategoryoffer/:offerId",categoryoffercontroller.toggleOfferStatus)
+admin.patch("/togglecategoryoffer/:offerId",categoryoffercontroller.toggleOfferStatus)
 
 //sales
 
@@ -143,7 +143,7 @@ admin.get('/banner',bannerController.getBannerPage)
 admin.post('/addbanner',  bannerController.addBanner);
 admin.delete('/deletebanner/:bannerId', bannerController.deleteBanner);
 
-admin.post('/updateBanner/:bannerId', bannerController.updateBanner);
+admin.put('/updateBanner/:bannerId', bannerController.updateBanner);
 
 //logout
 
