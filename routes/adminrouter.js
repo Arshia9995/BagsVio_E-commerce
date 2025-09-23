@@ -128,6 +128,7 @@ admin.patch("/togglecategoryoffer/:offerId",categoryoffercontroller.toggleOfferS
 
 //sales
 
+
 admin.get("/sales",adminContoller.getSalesPage)
 admin.get('/count-orders-by-day',adminContoller.getCount)
 admin.get('/count-orders-by-month',adminContoller.getCount)
