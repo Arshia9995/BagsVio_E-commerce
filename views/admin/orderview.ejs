@@ -1,120 +1,98 @@
 <%- include('header')-%>
-    <div class="container-fluid">
-        <div class="row justify-content-center align-items-center g-2">
-            <div class="col col-md-2">
-                <div class="sidebar">
-                    <a href="/admin/admindashboard"><i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
-                    <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Products</a>
-                    <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Category</a>
-                    <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Customers</a>
-                    <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Brand</a>
-                    <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Orders</a>
-                    <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;"
-                                aria-hidden="true"></i>Coupons</a>
-                                <a href="/admin/categoryoffer">
-                                    <i class="fa fa-percent" style="margin-right: 10px;" aria-hidden="true"></i> Category Offers
-                                  </a>
-                    <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;"
-                                    aria-hidden="true"></i>Banners</a>
-                  
-                    <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Sales</a>
-                    <a href="/admin/logout"><i class="fa fa-sign-out" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Logout</a>
-                </div>
-            </div>
-          
-            <div class="col col-md-10">
-                <div class="container mt-5">
-                    <div class="row">
-                        <div class="col-md-8 offset-md-2">
-                            <div class="card">
-                                <div class="card-header bg-info text-white">
-                                    <h5 class="mb-0">Order View</h5>
-                                </div>
-                                <div class="card-body">
-                                  
-                                    <div class="mb-4">
-                                        <h5 class="text-uppercase"><strong>Order Information</strong></h5>
-                                        <p><strong>Order ID:</strong>
-                                            <%= orders.orderId %>
-                                        </p>
-                                        <p><strong>Order Date:</strong>
-                                            <%= orders.orderDate.toLocaleDateString() %>
-                                            
-                                        </p>
-                                        <p><strong>Order Status:</strong>
-                                            <span class="badge bg-success" id="orderStatus">
-                                                <%= orders.status%>
-                                            </span>
-                                        </p>
-                                        <p><strong>Payment Method:</strong>
-                                            <%= orders.paymentMethod %>
-                                        </p>
-                                        <p><strong>Payment Status:</strong> <span id="paymentStatus">
-                                                <%= orders.paymentStatus %>
-                                            </span></p>
+<%- include('sidebar') -%>
 
-                                        <h5 class="text-uppercase"><strong>Products</strong></h5>
-                                        <% orders.products.forEach(product=> { %>
-                                            <div class="row">
-                                                <div class="col-md-2">
-                                                    <img src="<%= product.productId.images[0] %>" alt=""
-                                                        class="img-fluid">
-                                                </div>
-                                                <div class="col-md-10">
-                                                    <p><strong>Product Name:</strong>
-                                                        <%= product.productId.ProductName %>
-                                                    </p>
-                                                    <p><strong>Price:</strong> ₹<%= product.productId.Price %>
-                                                    </p>
-                                                    <p><strong>Quantity:</strong>
-                                                        <%= product.quantity %>
-                                                    </p>
-                                                    <p><strong>Total Price:</strong> ₹<%= orders.totalPrice %>
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            <% }); %>
-                                                <div class="mb-4">
-                                                    <h5 class="text-uppercase"><strong>Shipping Address</strong></h5>
-                                                    <%=orders.shippingAddress.name %><br>
-                                                        <%=orders.shippingAddress.addressline %><br>
-                                                            <%=orders.shippingAddress.street %><br>
-                                                                <%=orders.shippingAddress.pincode %><br>
-                                                                    <%=orders.shippingAddress.city %><br>
-                                                                        <%=orders.shippingAddress.state %><br>
-                                                                            <%=orders.shippingAddress.mobile %>
-                                                                                
-                                                </div>
+<style>
+.admin-content-container {
+    margin-left: 0;
+}
+@media (min-width: 992px) {
+    .admin-content-container {
+        margin-left: 230px;
+    }
+}
+</style>
+    <div class="container mt-5 admin-content-container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Order View</h5>
+                    </div>
+                    <div class="card-body">
+                      
+                        <div class="mb-4">
+                            <h5 class="text-uppercase"><strong>Order Information</strong></h5>
+                            <p><strong>Order ID:</strong>
+                                <%= orders.orderId %>
+                            </p>
+                            <p><strong>Order Date:</strong>
+                                <%= orders.orderDate.toLocaleDateString() %>
+                                
+                            </p>
+                            <p><strong>Order Status:</strong>
+                                <span class="badge bg-success" id="orderStatus">
+                                    <%= orders.status%>
+                                </span>
+                            </p>
+                            <p><strong>Payment Method:</strong>
+                                <%= orders.paymentMethod %>
+                            </p>
+                            <p><strong>Payment Status:</strong> <span id="paymentStatus">
+                                    <%= orders.paymentStatus %>
+                                </span></p>
+
+                            <h5 class="text-uppercase"><strong>Products</strong></h5>
+                            <% orders.products.forEach(product=> { %>
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <img src="<%= product.productId.images[0] %>" alt=""
+                                            class="img-fluid">
                                     </div>
-                                   
-                                    <div class="mb-4">
-                                        <h5 class="text-uppercase"><strong>Change Order Status</strong></h5>
-                                        <select class="form-select" id="orderStatusSelect">
-
-                                            <option value="Pending">
-                                                <%= orders.status%>
-                                            </option>
-                                            <option value="Pending">Pending</option>
-
-                                            <option value="Processing">Processing</option>
-                                            <option value="Shipped">Shipped</option>
-                                            <option value="Delivered">Delivered</option>
-                                           
-                                        </select>
-                                    </div>
-                                  
-                                    <div class="text-end">
-                                        <button id="updateStatusBtn" class="btn btn-primary">Update Status</button>
+                                    <div class="col-md-10">
+                                        <p><strong>Product Name:</strong>
+                                            <%= product.productId.ProductName %>
+                                        </p>
+                                        <p><strong>Price:</strong> ₹<%= product.productId.Price %>
+                                        </p>
+                                        <p><strong>Quantity:</strong>
+                                            <%= product.quantity %>
+                                        </p>
+                                        <p><strong>Total Price:</strong> ₹<%= orders.totalPrice %>
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
+                                <% }); %>
+                                    <div class="mb-4">
+                                        <h5 class="text-uppercase"><strong>Shipping Address</strong></h5>
+                                        <%=orders.shippingAddress.name %><br>
+                                            <%=orders.shippingAddress.addressline %><br>
+                                                <%=orders.shippingAddress.street %><br>
+                                                    <%=orders.shippingAddress.pincode %><br>
+                                                        <%=orders.shippingAddress.city %><br>
+                                                            <%=orders.shippingAddress.state %><br>
+                                                                <%=orders.shippingAddress.mobile %>
+                                                                    
+                                    </div>
+                        </div>
+                       
+                        <div class="mb-4">
+                            <h5 class="text-uppercase"><strong>Change Order Status</strong></h5>
+                            <select class="form-select" id="orderStatusSelect">
+
+                                <option value="Pending">
+                                    <%= orders.status%>
+                                </option>
+                                <option value="Pending">Pending</option>
+
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                               
+                            </select>
+                        </div>
+                      
+                        <div class="text-end">
+                            <button id="updateStatusBtn" class="btn btn-primary">Update Status</button>
                         </div>
                     </div>
                 </div>

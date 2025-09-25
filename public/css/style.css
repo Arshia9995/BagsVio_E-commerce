@@ -131,6 +131,22 @@ body {
   padding: 16px;
 }
 
+/* Collapsed sidebar on desktop */
+.sidebar.sidebar-collapsed {
+  width: 60px;
+}
+
+.sidebar.sidebar-collapsed a {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+  padding-left: 12px;
+}
+
+.content-expanded {
+  margin-left: 80px !important;
+}
+
 .box {
   background-color: #fff;
   padding: 20px;
@@ -222,6 +238,8 @@ body {
   left: 0;
   width: 200px;
   padding-top: 15px;
+  background-color: #343a40;
+  z-index: 1030;
 }
 
 .sidebar a {
@@ -233,8 +251,25 @@ body {
 }
 
 .sidebar a:hover {
-  background-color: #ddd;
-  color: #333;
+  background-color: #495057;
+  color: #fff;
+}
+
+/* Responsive sidebar toggle */
+@media (max-width: 767.98px) {
+  #toggleSidebar {
+    position: fixed;
+    left: 10px;
+    top: 10px;
+    z-index: 1040;
+  }
+  .sidebar {
+    width: 75%;
+    max-width: 260px;
+  }
+  .content {
+    margin-left: 0 !important;
+  }
 }
 
 /* category */

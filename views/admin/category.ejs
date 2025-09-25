@@ -1,88 +1,58 @@
 <%- include('header')-%>
-    <div class="container-fluid">
+<%- include('sidebar') -%>
 
-        <div class="row justify-content-center align-items-center g-2">
-            <div class="col col-md-2">
+<style>
+.admin-content-container {
+    margin-left: 0;
+}
+@media (min-width: 992px) {
+    .admin-content-container {
+        margin-left: 230px;
+    }
+}
+</style>
 
-                <div class="sidebar">
-                    <a href="/admin/admindashboard"><i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
-                    <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Products</a>
-                    <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Category</a>
-                    <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Customers</a>
-                    <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;"
-                                aria-hidden="true"></i>Brand</a>
-                    <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Orders</a>
-                    <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;"
-                                aria-hidden="true"></i>Coupons</a>
-                                <a href="/admin/categoryoffer">
-                                    <i class="fa fa-percent" style="margin-right: 10px;" aria-hidden="true"></i> Category Offers
-                                  </a>
-                     <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;"
-                                    aria-hidden="true"></i>Banners</a>
-                   
-                                
-                    <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Sales</a>
-                    <a href="/admin/logout"><i class="fa fa-sign-out" style="margin-right: 10px;"
-                            aria-hidden="true"></i>Logout</a>
-                </div>
-            </div>
-            <div class="main-content col-md-10">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h2 class="mb-0">Category List</h2>
-                  
-                    <a href="/admin/addcategory" class="btn btn-success">Add Category</a>
-                </div>
-                <div class="table-responsive" style="margin-top: 20px;">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Category</th>
-
-                                <th>Edit</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% categories.forEach((category,index)=>{ %>
-                                <tr>
-                                    <td>
-                                        <%= index+1%>
-                                    </td>
-                                    <td>  
-                                        <%= category.categoryName %>
-                                    </td>
-
-                                    <td><a class="btn btn-success" href="/admin/editcategory/<%=category._id%>">Edit</a>
-                                    </td>
-                                   
-                                    <td> 
-                                        <% if (category.isBlocked) { %>
-                                            <form id="unblockForm_<%= category._id %>" action="/admin/unblockcategory/<%= category._id %>" method="post">
-                                                <button class="btn btn-danger unblock-button" data-categoryid="<%= category._id %>">Unblock</button>
-                                            </form>
-                                        <% } else { %>
-                                            <form id="blockForm_<%= category._id %>" action="/admin/blockcategory/<%= category._id %>" method="post">
-                                                <button class="btn btn-success block-button" data-categoryid="<%= category._id %>">Block</button>
-                                            </form>
-                                        <% } %>
-                                        
-                                    </td>
-                                    
-                                </tr>
-                                <% })%>
-                            
-
-
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="container mt-4 admin-content-container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2 class="mb-0">Category List</h2>
+            <a href="/admin/addcategory" class="btn btn-success">Add Category</a>
+        </div>
+        <div class="table-responsive" style="margin-top: 20px;">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Category</th>
+                        <th>Edit</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% categories.forEach((category,index)=>{ %>
+                        <tr>
+                            <td>
+                                <%= index+1%>
+                            </td>
+                            <td>  
+                                <%= category.categoryName %>
+                            </td>
+                            <td><a class="btn btn-success" href="/admin/editcategory/<%=category._id%>">Edit</a>
+                            </td>
+                            <td> 
+                                <% if (category.isBlocked) { %>
+                                    <form id="unblockForm_<%= category._id %>" action="/admin/unblockcategory/<%= category._id %>" method="post">
+                                        <button class="btn btn-danger unblock-button" data-categoryid="<%= category._id %>">Unblock</button>
+                                    </form>
+                                <% } else { %>
+                                    <form id="blockForm_<%= category._id %>" action="/admin/blockcategory/<%= category._id %>" method="post">
+                                        <button class="btn btn-success block-button" data-categoryid="<%= category._id %>">Block</button>
+                                    </form>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% })%>
+                </tbody>
+            </table>
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>

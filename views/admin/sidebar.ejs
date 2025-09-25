@@ -1,0 +1,74 @@
+<div class="d-flex align-items-center">
+  <button id="toggleSidebar" class="btn btn-secondary d-md-none m-2" type="button">
+    <i class="fa fa-bars" aria-hidden="true"></i> Menu
+  </button>
+</div>
+
+<style>
+#adminSidebar {
+  max-height: 100vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+</style>
+
+<div class="sidebar" id="adminSidebar">
+  <a href="/admin/admindashboard"><i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
+  <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;" aria-hidden="true"></i>Products</a>
+  <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;" aria-hidden="true"></i>Category</a>
+  <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Customers</a>
+  <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Brand</a>
+  <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Orders</a>
+  <a href="/admin/coupon"><i class="fa fa-ticket" style="margin-right: 10px;" aria-hidden="true"></i>Coupons</a>
+  <a href="/admin/categoryoffer"><i class="fa fa-percent" style="margin-right: 10px;" aria-hidden="true"></i>Category Offers</a>
+  <a href="/admin/banner"><i class="fa fa-image" style="margin-right: 10px;" aria-hidden="true"></i>Banners</a>
+  <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;" aria-hidden="true"></i>Sales</a>
+  <a href="/admin/logout"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>Logout</a>
+  
+</div>
+
+<script>
+  (function() {
+    var toggleBtn = document.getElementById('toggleSidebar');
+    var collapseBtn = document.getElementById('collapseSidebar');
+    var sidebar = document.getElementById('adminSidebar');
+    var bodyContentContainers = document.querySelectorAll('.content');
+    if (!toggleBtn || !sidebar) return;
+
+    function ensureSidebarForViewport() {
+      if (window.innerWidth >= 768) {
+        sidebar.classList.remove('d-none');
+        // Keep collapsed state if user set it
+      }
+    }
+
+    toggleBtn.addEventListener('click', function() {
+      sidebar.classList.toggle('d-none');
+    });
+
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        sidebar.classList.toggle('sidebar-collapsed');
+        // Adjust content margin when collapsed/expanded
+        bodyContentContainers.forEach(function(el) {
+          if (sidebar.classList.contains('sidebar-collapsed')) {
+            el.classList.add('content-expanded');
+          } else {
+            el.classList.remove('content-expanded');
+          }
+        });
+        // Swap icon direction
+        var icon = collapseBtn.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-angle-double-left');
+          icon.classList.toggle('fa-angle-double-right');
+        }
+      });
+    }
+
+    window.addEventListener('resize', ensureSidebarForViewport);
+    ensureSidebarForViewport();
+  })();
+</script>
+
+

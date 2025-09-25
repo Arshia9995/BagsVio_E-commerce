@@ -25,28 +25,20 @@
   font-size: 16px;
 }
 
+/* Container spacing: no left margin on small screens, add on large */
+.admin-content-container {
+  margin-left: 0;
+}
+@media (min-width: 992px) {
+  .admin-content-container {
+    margin-left: 230px;
+  }
+}
+
 
 </style>
 
-    <!-- The sidebar -->
-<div class="sidebar">
-  <a href="/admin/admindashboard">  <i class="fa fa-home" style="margin-right: 10px;"></i>Dashboard</a>
-  <a href="/admin/adminproduct"><i class="fa fa-product-hunt" style="margin-right: 10px;" aria-hidden="true"></i>Products</a>
-  <a href="/admin/category"><i class="fa fa-list" style="margin-right: 10px;" aria-hidden="true"></i>Category</a>
-
-  <a href="/admin/customers"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Customers</a>
-  <a href="/admin/brand"><i class="fa fa-users" style="margin-right: 10px;" aria-hidden="true"></i>Brand</a>
-  <a href="/admin/order"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Orders</a>
-  <a href="/admin/coupon"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Coupons</a>
-  
-   <a href="/admin/categoryoffer">
-      <i class="fa fa-percent" style="margin-right: 10px;" aria-hidden="true"></i> Category Offers
-    </a>
-  <a href="/admin/banner"><i class="fa fa-bars" style="margin-right: 10px;" aria-hidden="true"></i>Banners</a>
- 
-  <a href="/admin/sales"><i class="fa fa-line-chart" style="margin-right: 10px;" aria-hidden="true"></i>Sales</a>
-  <a href="/admin/logout"><i class="fa fa-sign-out" style="margin-right: 10px;" aria-hidden="true"></i>Logout</a>
-</div>
+<%- include('sidebar') -%>
 
 
 
@@ -120,7 +112,7 @@
     </div>
   </div>
 
-<div class="container mt-4">
+<div class="container mt-4 admin-content-container">
   <div class="row">
     <div class="col-lg-12">
         <div class="card mb-4" style="background: linear-gradient(to right, rgba(255,0,0,0), rgb(229, 255, 251));">
