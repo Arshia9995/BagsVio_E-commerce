@@ -32,12 +32,12 @@ module.exports = {
         "items.productId"
       );
 
-      // Get category offers for cart items
+      
       if (userCart && userCart.items && userCart.items.length > 0) {
         const cartProducts = userCart.items.map(item => item.productId).filter(product => product);
         const productsWithOffers = await getCategoryOffersForProducts(cartProducts);
         
-        // Update cart items with offer information
+        
         userCart.items.forEach(item => {
           const productWithOffer = productsWithOffers.find(p => p._id.toString() === item.productId._id.toString());
           if (productWithOffer) {

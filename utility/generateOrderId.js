@@ -12,7 +12,7 @@ async function generateOrderId() {
         // Generate a 6-digit random number
         orderId = Math.floor(100000 + Math.random() * 900000).toString();
         
-        // Check if this orderId already exists in the database
+        
         const existingOrder = await Order.findOne({ orderId });
         if (!existingOrder) {
             isUnique = true;

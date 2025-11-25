@@ -1,7 +1,7 @@
 const CategoryOffer = require('../models/categoryoffer');
 const Category = require('../models/categorySchema');
 
-// Get category offer page
+
 const getCategoryOfferPage = async (req, res) => {
     try {
         const categoryOffers = await CategoryOffer.find()
@@ -18,7 +18,7 @@ const getCategoryOfferPage = async (req, res) => {
     }
 };
 
-// Get categories for dropdown
+
 const getCategories = async (req, res) => {
     try {
         const categories = await Category.find({ isBlocked: false });
@@ -29,12 +29,12 @@ const getCategories = async (req, res) => {
     }
 };
 
-// Add category offer
+
 const addCategoryOffer = async (req, res) => {
     try {
         const { categoryId, discountPercentage, startDate, endDate } = req.body;
 
-        // Check if category already has an active offer
+        
         const existingOffer = await CategoryOffer.findOne({
             categoryId: categoryId,
             isActive: true,
@@ -52,7 +52,7 @@ const addCategoryOffer = async (req, res) => {
             });
         }
 
-        // Get category name
+        
         const category = await Category.findById(categoryId);
         if (!category) {
             return res.status(404).json({ error: 'Category not found' });
@@ -74,13 +74,13 @@ const addCategoryOffer = async (req, res) => {
     }
 };
 
-// Edit category offer
+
 const editCategoryOffer = async (req, res) => {
     try {
         const { offerId } = req.params;
         const { categoryId, discountPercentage, startDate, endDate } = req.body;
 
-        // Check if category already has an active offer (excluding current offer)
+        
         const existingOffer = await CategoryOffer.findOne({
             categoryId: categoryId,
             isActive: true,
@@ -99,7 +99,7 @@ const editCategoryOffer = async (req, res) => {
             });
         }
 
-        // Get category name
+        
         const category = await Category.findById(categoryId);
         if (!category) {
             return res.status(404).json({ error: 'Category not found' });
@@ -128,7 +128,7 @@ const editCategoryOffer = async (req, res) => {
     }
 };
 
-// Delete category offer
+
 const deleteCategoryOffer = async (req, res) => {
     try {
         const { offerId } = req.params;
@@ -146,7 +146,7 @@ const deleteCategoryOffer = async (req, res) => {
     }
 };
 
-// Toggle offer status
+
 const toggleOfferStatus = async (req, res) => {
     try {
         const { offerId } = req.params;
