@@ -1,6 +1,8 @@
 const OTP=require("../models/otpSchema");
 const generateOTP =require("../utility/generateOtp")
 const sendEmail=require("../utility/mail")
+dotenv.config()
+
 
 const {AUTH_EMAIL}=process.env;
 
@@ -17,7 +19,7 @@ const sendOTP = async (email) => {
         const generatedOTP = await generateOTP();
 
         const mailOptions = {
-            from: AUTH_EMAIL,
+            from: process.env.BREVO_EMAIL,
             to: email,
             subject: "Verify the Email using this OTP",
             html: `<p>Hello new user, use this OTP to verify your email and continue:</p><b>${generatedOTP}</b><p>OTP will expire in 10 minutes</p>`,
