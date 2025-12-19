@@ -1,7 +1,7 @@
 const OTP=require("../models/otpSchema");
 const generateOTP =require("../utility/generateOtp")
 const sendEmail=require("../utility/mail")
-dotenv.config()
+// dotenv.config()
 
 
 const {AUTH_EMAIL}=process.env;

@@ -33,7 +33,7 @@
 
 
 const nodemailer = require("nodemailer");
-dotenv.config()
+// dotenv.config()
 
 
 const mailTransporter = nodemailer.createTransport({
