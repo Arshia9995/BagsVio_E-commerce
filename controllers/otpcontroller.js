@@ -25,10 +25,12 @@ const sendOTP = async (email) => {
             html: `<p>Hello new user, use this OTP to verify your email and continue:</p><b>${generatedOTP}</b><p>OTP will expire in 10 minutes</p>`,
         };
         await sendEmail(mailOptions);
+        console.log("OTP email sent to:", email);
       
 
        
         const currentDate = new Date();
+        
         const newDate = new Date(currentDate.getTime() + 2 * 60000); 
         const newOTP = await new OTP({
             email,
